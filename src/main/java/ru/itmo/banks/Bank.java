@@ -1,6 +1,9 @@
 package ru.itmo.banks;
 
+import ru.itmo.clients.Client;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -12,12 +15,27 @@ public class Bank {
     private float creditCommission;
     private ArrayList<DepositAndInterest> depositInterests;
 
+    private HashMap<UUID, Client> clients;
+
     private Bank(UUID id, String name, float interestOnBalance, float creditCommission, ArrayList<DepositAndInterest> depositInterests) {
         this.id = id;
         this.name = name;
         this.interestOnBalance = interestOnBalance;
         this.creditCommission = creditCommission;
         this.depositInterests = depositInterests;
+    }
+
+    public Client createClient(String name, String surname, String passport, String address) throws IllegalArgumentException {
+        Client.ClientBuilder builder = new Client.ClientBuilder();
+        UUID id = UUID.randomUUID();
+        Client client = builder.withId(id)
+                .withName(name)
+                .withSurname(surname)
+                .withPassport(passport)
+                .withAddress(address)
+                .build();
+        clients.put(id, client);
+        return client;
     }
 
     public static class BankBuilder {
@@ -27,19 +45,19 @@ public class Bank {
         private float creditCommission;
         private ArrayList<DepositAndInterest> depositInterests;
 
-        public BankBuilder setId(UUID id) {
+        public BankBuilder withId(UUID id) {
             this.id = id;
             return this;
         }
 
-        public BankBuilder setName(String name) throws IllegalArgumentException {
+        public BankBuilder withName(String name) throws IllegalArgumentException {
             if (name.isEmpty())
                 throw new IllegalArgumentException("You must indicate the name of the bank");
             this.name = name;
             return this;
         }
 
-        public BankBuilder setInterestOnBalance(float interestOnBalance) throws IllegalArgumentException {
+        public BankBuilder withInterestOnBalance(float interestOnBalance) throws IllegalArgumentException {
             if (interestOnBalance < 0)
                 throw new IllegalArgumentException("Interest on balance can't be less than 0");
 
@@ -47,7 +65,7 @@ public class Bank {
             return this;
         }
 
-        public BankBuilder setCreditCommission(float creditCommission) throws IllegalArgumentException {
+        public BankBuilder withCreditCommission(float creditCommission) throws IllegalArgumentException {
             if (creditCommission < 0)
                 throw new IllegalArgumentException("Credit commission can't be less than 0");
 
@@ -55,7 +73,7 @@ public class Bank {
             return this;
         }
 
-        public BankBuilder setDepositInterests(ArrayList<DepositAndInterest> depositInterests) throws IllegalArgumentException {
+        public BankBuilder withDepositInterests(ArrayList<DepositAndInterest> depositInterests) throws IllegalArgumentException {
             depositInterests.sort(DepositAndInterest.ByDepositAscending);
             Optional<DepositAndInterest> withNegativeBalance = depositInterests.stream().filter(pair -> pair.deposit() < 0).findFirst();
 

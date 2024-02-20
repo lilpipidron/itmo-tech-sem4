@@ -7,7 +7,7 @@ import java.util.UUID;
 public class CentralBank {
     private HashMap<UUID, Bank> banks;
 
-    public CentralBank(){
+    public CentralBank() {
         banks = new HashMap<>();
     }
 
@@ -15,17 +15,18 @@ public class CentralBank {
             depositInterests) throws IllegalArgumentException {
         Bank.BankBuilder bankBuilder = new Bank.BankBuilder();
         UUID id = UUID.randomUUID();
-        Bank bank = bankBuilder.setId(id)
-                .setInterestOnBalance(interestOnBalance)
-                .setCreditCommission(creditCommission)
-                .setDepositInterests(depositInterests)
+        Bank bank = bankBuilder.withId(id)
+                .withName(name)
+                .withInterestOnBalance(interestOnBalance)
+                .withCreditCommission(creditCommission)
+                .withDepositInterests(depositInterests)
                 .build();
 
         banks.put(id, bank);
         return bank;
     }
 
-    public HashMap<UUID, Bank> getBanks(){
+    public HashMap<UUID, Bank> getBanks() {
         return banks;
     }
 }

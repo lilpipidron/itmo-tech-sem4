@@ -60,12 +60,17 @@ public class Client {
 
     public static class ClientBuilder {
 
+        private UUID id;
         private String name = null;
         private String surname = null;
         private String passport = null;
         private String address = null;
 
-        public ClientBuilder setName(String name) throws IllegalArgumentException {
+        public ClientBuilder withId(UUID id) {
+            this.id = id;
+            return this;
+        }
+        public ClientBuilder withName(String name) throws IllegalArgumentException {
             if (name.isEmpty()) {
                 throw new IllegalArgumentException("You must provide a name");
             }
@@ -73,7 +78,7 @@ public class Client {
             return this;
         }
 
-        public ClientBuilder setSurname(String surname) throws IllegalArgumentException {
+        public ClientBuilder withSurname(String surname) throws IllegalArgumentException {
             if (surname.isEmpty()) {
                 throw new IllegalArgumentException("You must provide a surname");
             }
@@ -81,18 +86,18 @@ public class Client {
             return this;
         }
 
-        public ClientBuilder setPassport(String passport) {
+        public ClientBuilder withPassport(String passport) {
             this.passport = passport;
             return this;
         }
 
-        public ClientBuilder setAddress(String address) {
+        public ClientBuilder withAddress(String address) {
             this.address = address;
             return this;
         }
 
         public Client build() {
-            return new Client(UUID.randomUUID(),name, surname, passport, address);
+            return new Client(name, surname, passport, address);
         }
     }
 }
