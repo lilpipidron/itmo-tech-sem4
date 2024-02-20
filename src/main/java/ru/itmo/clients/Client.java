@@ -97,7 +97,7 @@ public class Client {
         }
 
         public Client build() {
-            return new Client(name, surname, passport, address);
+            return new Client(id, name, surname, passport, address);
         }
     }
 }
