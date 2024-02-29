@@ -20,15 +20,17 @@ public class Bank {
     private String name;
     private float interestOnBalance;
     private float creditCommission;
+    private BigDecimal accountRestrictions;
     private ArrayList<DepositAndInterest> depositInterests;
     private HashMap<UUID, Client> clients;
     private HashMap<UUID, HashMap<UUID, Account>> accounts;
 
-    private Bank(UUID id, String name, float interestOnBalance, float creditCommission, ArrayList<DepositAndInterest> depositInterests) {
+    private Bank(UUID id, String name, float interestOnBalance, float creditCommission, BigDecimal accountRestrictions, ArrayList<DepositAndInterest> depositInterests) {
         this.id = id;
         this.name = name;
         this.interestOnBalance = interestOnBalance;
         this.creditCommission = creditCommission;
+        this.accountRestrictions = accountRestrictions;
         this.depositInterests = depositInterests;
     }
 
@@ -78,6 +80,8 @@ public class Bank {
         private String name;
         private float interestOnBalance;
         private float creditCommission;
+
+        private BigDecimal accountRestrictions;
         private ArrayList<DepositAndInterest> depositInterests;
 
         public BankBuilder withId(UUID id) {
@@ -108,6 +112,14 @@ public class Bank {
             return this;
         }
 
+        public BankBuilder withAccountRestrictions(BigDecimal accountRestrictions) throws IllegalArgumentException {
+            if (accountRestrictions.compareTo(new BigDecimal(0)) < 0)
+                throw new IllegalArgumentException("Account restriction can't be less than 0");
+
+            this.accountRestrictions = accountRestrictions;
+            return this;
+        }
+
         public BankBuilder withDepositInterests(ArrayList<DepositAndInterest> depositInterests) throws IllegalArgumentException {
             depositInterests.sort(DepositAndInterest.ByDepositAscending);
             Optional<DepositAndInterest> withNegativeBalance = depositInterests.stream().filter(pair -> pair.deposit() < 0).findFirst();
@@ -124,7 +136,7 @@ public class Bank {
         }
 
         public Bank build() {
-            return new Bank(id, name, interestOnBalance, creditCommission, depositInterests);
+            return new Bank(id, name, interestOnBalance, creditCommission, accountRestrictions, depositInterests);
         }
     }
 }

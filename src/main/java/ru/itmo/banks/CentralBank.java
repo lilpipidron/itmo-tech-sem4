@@ -6,6 +6,7 @@ import ru.itmo.clients.Client;
 import ru.itmo.exceptions.TransactionException;
 import ru.itmo.transactions.Transaction;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
@@ -16,7 +17,7 @@ public class CentralBank {
     @Getter
     private HashMap<UUID, Transaction> transactions;
 
-    public Bank createBank(String name, float interestOnBalance, float creditCommission, ArrayList<DepositAndInterest>
+    public Bank createBank(String name, float interestOnBalance, float creditCommission, BigDecimal accountRestriction, ArrayList<DepositAndInterest>
             depositInterests) throws IllegalArgumentException {
         Bank.BankBuilder bankBuilder = new Bank.BankBuilder();
         UUID id = UUID.randomUUID();
@@ -24,6 +25,7 @@ public class CentralBank {
                 .withName(name)
                 .withInterestOnBalance(interestOnBalance)
                 .withCreditCommission(creditCommission)
+                .withAccountRestrictions(accountRestriction)
                 .withDepositInterests(depositInterests)
                 .build();
 
@@ -45,9 +47,7 @@ public class CentralBank {
     }
 
     public void WithdrawalTransaction(Account transactionAccount,
-                                      UUID recipientBankId,
-                                      UUID recipientId,
-                                      UUID recipientAccountId) throws TransactionException {
+                                     Client transactionOwner) throws TransactionException {
 
     }
 }
