@@ -1,6 +1,6 @@
 package ru.itmo.clients;
 
-public enum Status {
+public enum ClientStatus {
     Dubious,
     Normal
 }

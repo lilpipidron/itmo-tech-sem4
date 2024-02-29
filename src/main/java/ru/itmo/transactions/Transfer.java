@@ -1,14 +1,18 @@
 package ru.itmo.transactions;
 
+import lombok.Getter;
+
 import java.math.BigDecimal;
 import java.util.UUID;
 
 public class Transfer implements Transaction {
 
-    private final UUID senderId;
-    private final UUID senderBank;
+
+    @Getter
     private final UUID recipientId;
+    @Getter
     private final UUID recipientBank;
+    @Getter
     private final BigDecimal transferAmount;
 
     private TransactionStatus status = TransactionStatus.NotOccurred;

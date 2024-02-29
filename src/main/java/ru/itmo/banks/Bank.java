@@ -1,12 +1,19 @@
 package ru.itmo.banks;
 
+import lombok.Getter;
+import ru.itmo.accounts.Account;
+import ru.itmo.accounts.CreditAccount;
+import ru.itmo.accounts.DebitAccount;
+import ru.itmo.accounts.DepositAccount;
 import ru.itmo.clients.Client;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
+@Getter
 public class Bank {
 
     private UUID id;
@@ -14,8 +21,8 @@ public class Bank {
     private float interestOnBalance;
     private float creditCommission;
     private ArrayList<DepositAndInterest> depositInterests;
-
     private HashMap<UUID, Client> clients;
+    private HashMap<UUID, HashMap<UUID, Account>> accounts;
 
     private Bank(UUID id, String name, float interestOnBalance, float creditCommission, ArrayList<DepositAndInterest> depositInterests) {
         this.id = id;
@@ -30,12 +37,40 @@ public class Bank {
         UUID id = UUID.randomUUID();
         Client client = builder.withId(id)
                 .withName(name)
+                .withBank(this)
                 .withSurname(surname)
                 .withPassport(passport)
                 .withAddress(address)
                 .build();
         clients.put(id, client);
         return client;
+    }
+
+    public CreditAccount createCreditAccount(UUID clientID, Client owner) {
+        UUID id = UUID.randomUUID();
+        CreditAccount account = new CreditAccount(id, new BigDecimal(0), creditCommission, owner);
+        HashMap<UUID, Account> map = accounts.get(clientID);
+        map.put(id, account);
+        accounts.put(clientID, map);
+        return account;
+    }
+
+    public DebitAccount createDebitAccount(UUID clientID, Client owner) {
+        UUID id = UUID.randomUUID();
+        DebitAccount account = new DebitAccount(id, new BigDecimal(0), interestOnBalance, owner);
+        HashMap<UUID, Account> map = accounts.get(clientID);
+        map.put(id, account);
+        accounts.put(clientID, map);
+        return account;
+    }
+
+    public DepositAccount createDepositAccount() {
+        //TODO
+        return null;
+    }
+
+    public Client findClient(UUID id) {
+        return clients.get(id);
     }
 
     public static class BankBuilder {
