@@ -48,19 +48,16 @@ public class CentralBank {
         UUID transactionId = UUID.randomUUID();
         Transaction transaction = new Withdrawal(transactionId, account, amount);
         transaction.execute();
-        account.addNewTransaction(transactionId, transaction);
     }
 
     public void replenishmentTransaction(Account account, BigDecimal amount) throws TransactionException {
         UUID transactionId = UUID.randomUUID();
         Transaction transaction = new Replenishment(transactionId, account, amount);
         transaction.execute();
-        account.addNewTransaction(transactionId, transaction);
     }
 
     public void cancelTransaction(Account account, UUID transactionId) throws TransactionException {
         Transaction transaction = account.findTransactionById(transactionId);
         transaction.cancel();
-        account.addNewTransaction(transactionId, transaction);
     }
 }

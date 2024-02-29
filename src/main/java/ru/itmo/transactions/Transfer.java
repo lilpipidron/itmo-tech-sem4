@@ -1,6 +1,7 @@
 package ru.itmo.transactions;
 
 import lombok.Getter;
+import ru.itmo.exceptions.TransactionException;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -15,7 +16,7 @@ public class Transfer implements Transaction {
     @Getter
     private final BigDecimal transferAmount;
 
-    private TransactionStatus status = TransactionStatus.NotOccurred;
+    private TransactionStatus status = TransactionStatus.Occurred;
 
     public Transfer(UUID senderId, UUID senderBank, UUID recipientId, UUID recipientBank, BigDecimal transferAmount) {
         this.senderId = senderId;
@@ -26,21 +27,21 @@ public class Transfer implements Transaction {
     }
 
     @Override
-    public void execute() throws IllegalStateException {
+    public void execute() throws TransactionException {
         if (status == TransactionStatus.Occurred)
-            throw new IllegalStateException("The transaction has already occurred");
+            throw new TransactionException("The transaction has already occurred");
         if (status == TransactionStatus.Canceled)
-            throw new IllegalStateException("The transaction has already been canceled");
+            throw new TransactionException("The transaction has already been canceled");
         status = TransactionStatus.Occurred;
         //TODO
     }
 
     @Override
-    public void cancel() {
+    public void cancel() throws TransactionException {
         if (status == TransactionStatus.NotOccurred)
-            throw new IllegalStateException("The transaction has not occurred yet");
+            throw new TransactionException("The transaction has not occurred yet");
         if (status == TransactionStatus.Canceled)
-            throw new IllegalStateException("The transaction has already been canceled");
+            throw new TransactionException("The transaction has already been canceled");
         status = TransactionStatus.Canceled;
         //TODO
     }

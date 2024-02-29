@@ -28,6 +28,7 @@ public class Replenishment implements Transaction {
         if (status == TransactionStatus.Canceled)
             throw new TransactionException("The transaction has already been canceled");
         account.replenishment(amount);
+        account.addNewTransaction(transactionId, this);
     }
 
     @Override
@@ -38,5 +39,6 @@ public class Replenishment implements Transaction {
             throw new TransactionException("The transaction has already been canceled");
         account.withdraw(amount);
         status = TransactionStatus.Canceled;
+        account.addNewTransaction(transactionId, this);
     }
 }

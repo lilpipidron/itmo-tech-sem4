@@ -9,14 +9,14 @@ import java.util.UUID;
 
 public class Withdrawal implements Transaction {
     @Getter
-    private final UUID transactionID;
+    private final UUID transactionId;
     private final Account account;
     private final BigDecimal amount;
 
     private TransactionStatus status = TransactionStatus.NotOccurred;
 
     public Withdrawal(UUID transactionID, Account account, BigDecimal amount) {
-        this.transactionID = transactionID;
+        this.transactionId = transactionID;
         this.account = account;
         this.amount = amount;
     }
@@ -29,6 +29,7 @@ public class Withdrawal implements Transaction {
             throw new TransactionException("The transaction has already been canceled");
         account.withdraw(amount);
         status = TransactionStatus.Occurred;
+        account.addNewTransaction(transactionId, this);
     }
 
     @Override
@@ -39,5 +40,6 @@ public class Withdrawal implements Transaction {
             throw new TransactionException("The transaction has already been canceled");
         account.replenishment(amount);
         status = TransactionStatus.Canceled;
+        account.addNewTransaction(transactionId, this);
     }
 }
