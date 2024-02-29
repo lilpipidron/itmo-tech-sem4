@@ -4,6 +4,7 @@ import lombok.Getter;
 import ru.itmo.accounts.Account;
 import ru.itmo.clients.Client;
 import ru.itmo.exceptions.TransactionException;
+import ru.itmo.transactions.Replenishment;
 import ru.itmo.transactions.Transaction;
 import ru.itmo.transactions.Withdrawal;
 
@@ -33,11 +34,7 @@ public class CentralBank {
         return bank;
     }
 
-    public void transferTransaction(Account senderAccount,
-                                    Client sender,
-                                    UUID recipientBankId,
-                                    UUID recipientId,
-                                    UUID recipientAccountId) throws TransactionException {
+    public void transferTransaction(Account senderAccount, Client sender, UUID recipientBankId, UUID recipientId, UUID recipientAccountId) throws TransactionException {
         Client recepientClient = banks.get(recipientBankId)
                 .findClient(recipientId);
         Account recepientAccount = banks.get(recipientBankId)
@@ -46,14 +43,24 @@ public class CentralBank {
                 .get(recipientAccountId);
     }
 
-    public void withdrawalTransaction(Account account,
-                                      BigDecimal amount) throws TransactionException {
+    public void withdrawalTransaction(Account account, BigDecimal amount) throws TransactionException {
         Transaction transaction = new Withdrawal(account, amount);
+        transaction.execute();
         HashMap<UUID, Transaction> transactionsByAccount = transactions.get(account.getAccountId());
         UUID transactionId = UUID.randomUUID();
         transactionsByAccount.put(transactionId, transaction);
         transactions.put(account.getAccountId(), transactionsByAccount);
     }
+
+    public void replenishmentTransaction(Account account, BigDecimal amount) throws TransactionException {
+        Transaction transaction = new Replenishment(account, amount);
+        transaction.execute();
+        HashMap<UUID, Transaction> transactionsByAccount = transactions.get(account.getAccountId());
+        UUID transactionId = UUID.randomUUID();
+        transactionsByAccount.put(transactionId, transaction);
+        transactions.put(account.getAccountId(), transactionsByAccount);
+    }
+
 
     public void cancelTransaction(Account account, UUID transactionId) throws TransactionException {
         transactions.get(account.getAccountId()).get(transactionId).cancel();

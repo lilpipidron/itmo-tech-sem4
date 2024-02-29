@@ -5,13 +5,13 @@ import ru.itmo.exceptions.TransactionException;
 
 import java.math.BigDecimal;
 
-public class Withdrawal implements Transaction {
+public class Replenishment implements Transaction {
     private final Account account;
     private final BigDecimal amount;
 
     private TransactionStatus status = TransactionStatus.NotOccurred;
 
-    public Withdrawal(Account account, BigDecimal amount) {
+    public Replenishment(Account account, BigDecimal amount) {
         this.account = account;
         this.amount = amount;
     }
@@ -22,8 +22,7 @@ public class Withdrawal implements Transaction {
             throw new TransactionException("The transaction has already occurred");
         if (status == TransactionStatus.Canceled)
             throw new TransactionException("The transaction has already been canceled");
-        account.withdraw(amount);
-        status = TransactionStatus.Occurred;
+        account.replenishment(amount);
     }
 
     @Override
@@ -32,7 +31,7 @@ public class Withdrawal implements Transaction {
             throw new TransactionException("The transaction has not occurred yet");
         if (status == TransactionStatus.Canceled)
             throw new TransactionException("The transaction has already been canceled");
-        account.replenishment(amount);
+        account.withdraw(amount);
         status = TransactionStatus.Canceled;
     }
 }
