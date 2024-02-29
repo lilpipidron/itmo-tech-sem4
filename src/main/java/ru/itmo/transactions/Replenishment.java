@@ -1,17 +1,22 @@
 package ru.itmo.transactions;
 
+import lombok.Getter;
 import ru.itmo.accounts.Account;
 import ru.itmo.exceptions.TransactionException;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 public class Replenishment implements Transaction {
+    @Getter
+    private final UUID transactionId;
     private final Account account;
     private final BigDecimal amount;
 
     private TransactionStatus status = TransactionStatus.NotOccurred;
 
-    public Replenishment(Account account, BigDecimal amount) {
+    public Replenishment(UUID transactionId, Account account, BigDecimal amount) {
+        this.transactionId = transactionId;
         this.account = account;
         this.amount = amount;
     }

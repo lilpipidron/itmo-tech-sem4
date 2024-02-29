@@ -1,17 +1,22 @@
 package ru.itmo.transactions;
 
+import lombok.Getter;
 import ru.itmo.accounts.Account;
 import ru.itmo.exceptions.TransactionException;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 public class Withdrawal implements Transaction {
+    @Getter
+    private final UUID transactionID;
     private final Account account;
     private final BigDecimal amount;
 
     private TransactionStatus status = TransactionStatus.NotOccurred;
 
-    public Withdrawal(Account account, BigDecimal amount) {
+    public Withdrawal(UUID transactionID, Account account, BigDecimal amount) {
+        this.transactionID = transactionID;
         this.account = account;
         this.amount = amount;
     }

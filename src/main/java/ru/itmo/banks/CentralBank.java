@@ -16,7 +16,6 @@ import java.util.UUID;
 @Getter
 public class CentralBank {
     private HashMap<UUID, Bank> banks;
-    private HashMap<UUID, HashMap<UUID, Transaction>> transactions;
 
     public Bank createBank(String name, float interestOnBalance, float creditCommission, BigDecimal accountRestriction, ArrayList<DepositAndInterest>
             depositInterests) throws IllegalArgumentException {
@@ -41,28 +40,27 @@ public class CentralBank {
                 .getAccounts()
                 .get(recipientId)
                 .get(recipientAccountId);
+
+        //TODO
     }
 
     public void withdrawalTransaction(Account account, BigDecimal amount) throws TransactionException {
-        Transaction transaction = new Withdrawal(account, amount);
-        transaction.execute();
-        HashMap<UUID, Transaction> transactionsByAccount = transactions.get(account.getAccountId());
         UUID transactionId = UUID.randomUUID();
-        transactionsByAccount.put(transactionId, transaction);
-        transactions.put(account.getAccountId(), transactionsByAccount);
+        Transaction transaction = new Withdrawal(transactionId, account, amount);
+        transaction.execute();
+        account.addNewTransaction(transactionId, transaction);
     }
 
     public void replenishmentTransaction(Account account, BigDecimal amount) throws TransactionException {
-        Transaction transaction = new Replenishment(account, amount);
-        transaction.execute();
-        HashMap<UUID, Transaction> transactionsByAccount = transactions.get(account.getAccountId());
         UUID transactionId = UUID.randomUUID();
-        transactionsByAccount.put(transactionId, transaction);
-        transactions.put(account.getAccountId(), transactionsByAccount);
+        Transaction transaction = new Replenishment(transactionId, account, amount);
+        transaction.execute();
+        account.addNewTransaction(transactionId, transaction);
     }
 
-
     public void cancelTransaction(Account account, UUID transactionId) throws TransactionException {
-        transactions.get(account.getAccountId()).get(transactionId).cancel();
+        Transaction transaction = account.findTransactionById(transactionId);
+        transaction.cancel();
+        account.addNewTransaction(transactionId, transaction);
     }
 }

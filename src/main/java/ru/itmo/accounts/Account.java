@@ -4,16 +4,18 @@ import lombok.Getter;
 import ru.itmo.clients.Client;
 import ru.itmo.clients.ClientStatus;
 import ru.itmo.exceptions.TransactionException;
+import ru.itmo.transactions.Transaction;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.UUID;
 
 @Getter
 public abstract class Account {
     protected final UUID accountId;
     protected BigDecimal balance;
-
     protected final Client client;
+    protected HashMap<UUID, Transaction> transactions;
 
     public Account(UUID accountId, Client client) {
         this.accountId = accountId;
@@ -30,6 +32,14 @@ public abstract class Account {
 
     public void transfer(BigDecimal amount, UUID recipientId, UUID recipientBankId) {
 //TODO
+    }
+
+    public void addNewTransaction(UUID transactionId, Transaction transaction) {
+        transactions.put(transactionId, transaction);
+    }
+
+    public Transaction findTransactionById(UUID transactionId) {
+        return transactions.get(transactionId);
     }
 
     public abstract void withdraw(BigDecimal amount) throws TransactionException;
