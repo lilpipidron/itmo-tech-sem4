@@ -5,17 +5,17 @@ import ru.itmo.accounts.Account;
 import ru.itmo.clients.Client;
 import ru.itmo.exceptions.TransactionException;
 import ru.itmo.transactions.Transaction;
+import ru.itmo.transactions.Withdrawal;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
+@Getter
 public class CentralBank {
-    @Getter
     private HashMap<UUID, Bank> banks;
-    @Getter
-    private HashMap<UUID, Transaction> transactions;
+    private HashMap<UUID, HashMap<UUID, Transaction>> transactions;
 
     public Bank createBank(String name, float interestOnBalance, float creditCommission, BigDecimal accountRestriction, ArrayList<DepositAndInterest>
             depositInterests) throws IllegalArgumentException {
@@ -33,7 +33,7 @@ public class CentralBank {
         return bank;
     }
 
-    public void TransferTransaction(Account senderAccount,
+    public void transferTransaction(Account senderAccount,
                                     Client sender,
                                     UUID recipientBankId,
                                     UUID recipientId,
@@ -46,8 +46,16 @@ public class CentralBank {
                 .get(recipientAccountId);
     }
 
-    public void WithdrawalTransaction(Account transactionAccount,
-                                     Client transactionOwner) throws TransactionException {
+    public void withdrawalTransaction(Account account,
+                                      BigDecimal amount) throws TransactionException {
+        Transaction transaction = new Withdrawal(account, amount);
+        HashMap<UUID, Transaction> transactionsByAccount = transactions.get(account.getAccountId());
+        UUID transactionId = UUID.randomUUID();
+        transactionsByAccount.put(transactionId, transaction);
+        transactions.put(account.getAccountId(), transactionsByAccount);
+    }
 
+    public void cancelTransaction(Account account, UUID transactionId) throws TransactionException {
+        transactions.get(account.getAccountId()).get(transactionId).cancel();
     }
 }

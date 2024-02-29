@@ -1,7 +1,9 @@
 package ru.itmo.transactions;
 
-public interface Transaction {
-    void execute();
+import ru.itmo.exceptions.TransactionException;
 
-    void cancel();
+public interface Transaction {
+    void execute() throws TransactionException;
+
+    void cancel() throws TransactionException;
 }

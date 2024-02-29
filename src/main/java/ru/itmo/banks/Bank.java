@@ -16,8 +16,8 @@ import java.util.UUID;
 @Getter
 public class Bank {
 
-    private UUID id;
-    private String name;
+    private final UUID id;
+    private final String name;
     private float interestOnBalance;
     private float creditCommission;
     private BigDecimal accountRestrictions;
@@ -48,18 +48,18 @@ public class Bank {
         return client;
     }
 
-    public CreditAccount createCreditAccount(UUID clientID, Client owner) {
+    public CreditAccount createCreditAccount(UUID clientID, Client client) {
         UUID id = UUID.randomUUID();
-        CreditAccount account = new CreditAccount(id, new BigDecimal(0), creditCommission, owner);
+        CreditAccount account = new CreditAccount(id, client);
         HashMap<UUID, Account> map = accounts.get(clientID);
         map.put(id, account);
         accounts.put(clientID, map);
         return account;
     }
 
-    public DebitAccount createDebitAccount(UUID clientID, Client owner) {
+    public DebitAccount createDebitAccount(UUID clientID, Client client) {
         UUID id = UUID.randomUUID();
-        DebitAccount account = new DebitAccount(id, new BigDecimal(0), interestOnBalance, owner);
+        DebitAccount account = new DebitAccount(id, client);
         HashMap<UUID, Account> map = accounts.get(clientID);
         map.put(id, account);
         accounts.put(clientID, map);
