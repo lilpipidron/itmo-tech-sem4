@@ -46,5 +46,10 @@ public abstract class Account {
         return transactions.get(transactionId);
     }
 
-    public abstract void withdraw(BigDecimal amount) throws TransactionException;
+    public void withdraw(BigDecimal amount) throws TransactionException {
+        if (client.getStatus() == ClientStatus.Dubious && client.getBank().getAccountRestrictions().compareTo(amount) < 0)
+            throw new TransactionException("The withdrawal amount exceeds the allowable amount for a doubtful account");
+        if (amount.compareTo(new BigDecimal(0)) < 0)
+            throw new TransactionException("You cannot withdrawal less than 0 into your account");
+    }
 }

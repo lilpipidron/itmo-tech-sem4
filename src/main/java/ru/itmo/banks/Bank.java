@@ -8,6 +8,7 @@ import ru.itmo.accounts.DepositAccount;
 import ru.itmo.clients.Client;
 
 import java.math.BigDecimal;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
@@ -48,27 +49,31 @@ public class Bank {
         return client;
     }
 
-    public CreditAccount createCreditAccount(UUID clientID, Client client) {
+    public CreditAccount createCreditAccount(UUID clientId, Client client) {
         UUID id = UUID.randomUUID();
         CreditAccount account = new CreditAccount(id, client);
-        HashMap<UUID, Account> map = accounts.get(clientID);
+        HashMap<UUID, Account> map = accounts.get(clientId);
         map.put(id, account);
-        accounts.put(clientID, map);
+        accounts.put(clientId, map);
         return account;
     }
 
-    public DebitAccount createDebitAccount(UUID clientID, Client client) {
+    public DebitAccount createDebitAccount(UUID clientId, Client client) {
         UUID id = UUID.randomUUID();
         DebitAccount account = new DebitAccount(id, client);
-        HashMap<UUID, Account> map = accounts.get(clientID);
+        HashMap<UUID, Account> map = accounts.get(clientId);
         map.put(id, account);
-        accounts.put(clientID, map);
+        accounts.put(clientId, map);
         return account;
     }
 
-    public DepositAccount createDepositAccount() {
-        //TODO
-        return null;
+    public DepositAccount createDepositAccount(UUID clientId, Client client, Time start, Time end) {
+        UUID id = UUID.randomUUID();
+        DepositAccount account = new DepositAccount(id, client, start, end);
+        HashMap<UUID, Account> map = accounts.get(clientId);
+        map.put(id, account);
+        accounts.put(clientId, map);
+        return account;
     }
 
     public Client findClient(UUID id) {
