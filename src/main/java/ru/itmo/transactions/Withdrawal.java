@@ -1,3 +1,6 @@
+/**
+ * Represents a withdrawal transaction from an account.
+ */
 package ru.itmo.transactions;
 
 import lombok.Getter;
@@ -15,12 +18,24 @@ public class Withdrawal implements Transaction {
 
     private TransactionStatus status = TransactionStatus.NotOccurred;
 
+    /**
+     * Constructs a new Withdrawal transaction.
+     *
+     * @param transactionID The unique identifier for the transaction.
+     * @param account The account from which the withdrawal is made.
+     * @param amount The amount to be withdrawn.
+     */
     public Withdrawal(UUID transactionID, Account account, BigDecimal amount) {
         this.transactionId = transactionID;
         this.account = account;
         this.amount = amount;
     }
 
+    /**
+     * Executes the withdrawal transaction.
+     *
+     * @throws TransactionException if the transaction has already occurred or been canceled.
+     */
     @Override
     public void execute() throws TransactionException {
         if (status == TransactionStatus.Occurred)
@@ -32,6 +47,11 @@ public class Withdrawal implements Transaction {
         account.addNewTransaction(transactionId, this);
     }
 
+    /**
+     * Cancels the withdrawal transaction.
+     *
+     * @throws TransactionException if the transaction has not occurred yet or has already been canceled.
+     */
     @Override
     public void cancel() {
         if (status == TransactionStatus.NotOccurred)

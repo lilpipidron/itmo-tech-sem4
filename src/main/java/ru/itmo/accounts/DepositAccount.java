@@ -1,3 +1,6 @@
+/**
+ * Represents a Deposit Account that extends the Account class.
+ */
 package ru.itmo.accounts;
 
 import ru.itmo.clients.Client;
@@ -14,6 +17,16 @@ public class DepositAccount extends Account {
 
     private final float percent;
 
+    /**
+     * Constructor for creating a Deposit Account.
+     *
+     * @param accountId the unique identifier of the account
+     * @param client the client associated with the account
+     * @param balance the initial balance of the account
+     * @param start the start date of the account
+     * @param end the end date of the account
+     * @param percent the interest rate percentage for the account
+     */
     public DepositAccount(UUID accountId, Client client, BigDecimal balance, LocalDate start, LocalDate end, float percent) {
         super(accountId, client);
         super.balance = balance;
@@ -22,6 +35,12 @@ public class DepositAccount extends Account {
         this.percent = percent;
     }
 
+    /**
+     * Withdraws a specified amount from the account.
+     *
+     * @param amount the amount to be withdrawn
+     * @throws TransactionException if withdrawal conditions are not met
+     */
     @Override
     public void withdraw(BigDecimal amount) throws TransactionException {
         if (today.isBefore(end))
@@ -32,12 +51,18 @@ public class DepositAccount extends Account {
         balance = balance.subtract(amount);
     }
 
+    /**
+     * Updates account information for a new day.
+     */
     @Override
     public void newDay() {
         today = today.plusDays(1);
         moneyBuffer = moneyBuffer.add(balance.multiply(new BigDecimal(percent / 100)));
     }
 
+    /**
+     * Updates account information for a new month by calling newDay().
+     */
     @Override
     public void newMonth() {
         newDay();

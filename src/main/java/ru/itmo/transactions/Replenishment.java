@@ -1,3 +1,6 @@
+/**
+ * Represents a replenishment transaction that adds funds to an account.
+ */
 package ru.itmo.transactions;
 
 import lombok.Getter;
@@ -15,12 +18,24 @@ public class Replenishment implements Transaction {
 
     private TransactionStatus status = TransactionStatus.NotOccurred;
 
+    /**
+     * Constructs a new Replenishment transaction with the specified parameters.
+     *
+     * @param transactionId The unique identifier for the transaction.
+     * @param account The account to which the funds will be added.
+     * @param amount The amount of funds to be added to the account.
+     */
     public Replenishment(UUID transactionId, Account account, BigDecimal amount) {
         this.transactionId = transactionId;
         this.account = account;
         this.amount = amount;
     }
 
+    /**
+     * Executes the replenishment transaction by adding the specified amount to the account.
+     *
+     * @throws TransactionException if the transaction has already occurred or been canceled.
+     */
     @Override
     public void execute() throws TransactionException {
         if (status == TransactionStatus.Occurred)
@@ -32,6 +47,11 @@ public class Replenishment implements Transaction {
         account.addNewTransaction(transactionId, this);
     }
 
+    /**
+     * Cancels the replenishment transaction by withdrawing the added funds from the account.
+     *
+     * @throws TransactionException if the transaction has not occurred yet or has already been canceled.
+     */
     @Override
     public void cancel() {
         if (status == TransactionStatus.NotOccurred)
