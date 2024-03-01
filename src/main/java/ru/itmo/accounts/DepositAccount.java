@@ -40,6 +40,6 @@ public class DepositAccount extends Account {
 
     @Override
     public void newMonth() {
-
+        newDay();
     }
 }
