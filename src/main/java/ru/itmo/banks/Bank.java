@@ -6,6 +6,7 @@ import ru.itmo.accounts.CreditAccount;
 import ru.itmo.accounts.DebitAccount;
 import ru.itmo.accounts.DepositAccount;
 import ru.itmo.clients.Client;
+import ru.itmo.notifications.Publisher;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,7 +16,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Getter
-public class Bank {
+public class Bank extends Publisher {
 
     private final UUID id;
     private final String name;
@@ -92,6 +93,26 @@ public class Bank {
         }
     }
 
+    public void setNewInterestOnBalance(float newInterestOnBalance) {
+        this.interestOnBalance = newInterestOnBalance;
+        this.notifySubscribers("New interest on balance");
+    }
+
+    public void setNewCreditCommission(BigDecimal newCreditCommission) {
+        this.creditCommission = newCreditCommission;
+        this.notifySubscribers("New credit commission");
+    }
+
+    public void setNewAccountRestriction(BigDecimal newAccountRestriction) {
+        this.accountRestrictions = newAccountRestriction;
+        this.notifySubscribers("New account restriction");
+    }
+
+    public void setNewDepositInterests(ArrayList<DepositAndInterest> newDepositInterests) {
+        newDepositInterests.sort(DepositAndInterest.ByDepositAscending);
+        this.depositInterests = newDepositInterests;
+        this.notifySubscribers("New deposit interests");
+    }
     public static class BankBuilder {
         private UUID id;
         private String name;

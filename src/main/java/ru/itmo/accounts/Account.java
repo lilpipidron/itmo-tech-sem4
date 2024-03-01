@@ -4,6 +4,7 @@ import lombok.Getter;
 import ru.itmo.clients.Client;
 import ru.itmo.clients.ClientStatus;
 import ru.itmo.exceptions.TransactionException;
+import ru.itmo.notifications.Subscriber;
 import ru.itmo.transactions.Transaction;
 import ru.itmo.transactions.TransferRole;
 
@@ -12,7 +13,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 @Getter
-public abstract class Account {
+public abstract class Account extends Subscriber {
     protected final UUID accountId;
     protected BigDecimal balance;
     protected final Client client;
@@ -51,6 +52,15 @@ public abstract class Account {
             throw new TransactionException("The withdrawal amount exceeds the allowable amount for a doubtful account");
         if (amount.compareTo(new BigDecimal(0)) < 0)
             throw new TransactionException("You cannot withdrawal less than 0 into your account");
+    }
+    @Override
+    public void subscribe(){
+        client.getBank().addSubscriber(this);
+    }
+
+    @Override
+    public void unsubscribe(){
+        client.getBank().deleteSubscriber(this);
     }
 
     public abstract void newDay();
