@@ -10,15 +10,17 @@ import ru.itmo.transactions.Transfer;
 import ru.itmo.transactions.Withdrawal;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Getter
 public class CentralBank {
     private HashMap<UUID, Bank> banks;
 
-    public Bank createBank(String name, float interestOnBalance, float creditCommission, BigDecimal accountRestriction, ArrayList<DepositAndInterest>
+    public Bank createBank(String name, float interestOnBalance, BigDecimal creditCommission, BigDecimal accountRestriction, ArrayList<DepositAndInterest>
             depositInterests) throws IllegalArgumentException {
         Bank.BankBuilder bankBuilder = new Bank.BankBuilder();
         UUID id = UUID.randomUUID();
@@ -60,5 +62,11 @@ public class CentralBank {
     public void cancelTransaction(Account account, UUID transactionId) throws TransactionException {
         Transaction transaction = account.findTransactionById(transactionId);
         transaction.cancel();
+    }
+    public void notifyBanks(LocalDate today) {
+        for (Map.Entry<UUID, Bank> entry : banks.entrySet()) {
+            Bank bank = entry.getValue();
+            bank.getNotify(today);
+        }
     }
 }

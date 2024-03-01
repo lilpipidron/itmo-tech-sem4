@@ -52,4 +52,7 @@ public abstract class Account {
         if (amount.compareTo(new BigDecimal(0)) < 0)
             throw new TransactionException("You cannot withdrawal less than 0 into your account");
     }
+
+    public abstract void newDay();
+    public abstract void newMonth();
 }

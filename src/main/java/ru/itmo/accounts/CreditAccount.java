@@ -16,4 +16,15 @@ public class CreditAccount extends Account {
         super.withdraw(amount);
         balance = balance.subtract(amount);
     }
+
+    @Override
+    public void newDay() {
+        if (balance.compareTo(new BigDecimal(0)) < 0)
+            balance = balance.subtract(client.getBank().getCreditCommission());
+    }
+
+    @Override
+    public void newMonth(){
+        newDay();
+    }
 }
