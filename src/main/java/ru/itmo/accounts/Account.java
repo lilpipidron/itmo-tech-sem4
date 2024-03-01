@@ -5,6 +5,7 @@ import ru.itmo.clients.Client;
 import ru.itmo.clients.ClientStatus;
 import ru.itmo.exceptions.TransactionException;
 import ru.itmo.transactions.Transaction;
+import ru.itmo.transactions.TransferRole;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -30,8 +31,11 @@ public abstract class Account {
         balance = balance.add(amount);
     }
 
-    public void transfer(BigDecimal amount, UUID recipientId, UUID recipientBankId) {
-//TODO
+    public void transfer(BigDecimal amount, TransferRole role) throws TransactionException {
+        if (role == TransferRole.Sender)
+            this.withdraw(amount);
+        else
+            this.replenishment(amount);
     }
 
     public void addNewTransaction(UUID transactionId, Transaction transaction) {

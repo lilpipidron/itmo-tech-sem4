@@ -6,6 +6,7 @@ import ru.itmo.clients.Client;
 import ru.itmo.exceptions.TransactionException;
 import ru.itmo.transactions.Replenishment;
 import ru.itmo.transactions.Transaction;
+import ru.itmo.transactions.Transfer;
 import ru.itmo.transactions.Withdrawal;
 
 import java.math.BigDecimal;
@@ -33,15 +34,15 @@ public class CentralBank {
         return bank;
     }
 
-    public void transferTransaction(Account senderAccount, Client sender, UUID recipientBankId, UUID recipientId, UUID recipientAccountId) throws TransactionException {
+    public void transferTransaction(Account senderAccount, Client sender, UUID recipientBankId, UUID recipientId, UUID recipientAccountId, BigDecimal amount) throws TransactionException {
         Client recepientClient = banks.get(recipientBankId)
                 .findClient(recipientId);
-        Account recepientAccount = banks.get(recipientBankId)
+        Account recipientAccount = banks.get(recipientBankId)
                 .getAccounts()
                 .get(recipientId)
                 .get(recipientAccountId);
-
-        //TODO
+        UUID transactionId = UUID.randomUUID();
+        Transaction transaction = new Transfer(transactionId,senderAccount, recipientAccount, amount);
     }
 
     public void withdrawalTransaction(Account account, BigDecimal amount) throws TransactionException {

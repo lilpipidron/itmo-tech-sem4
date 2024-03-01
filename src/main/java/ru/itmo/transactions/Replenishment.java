@@ -28,6 +28,7 @@ public class Replenishment implements Transaction {
         if (status == TransactionStatus.Canceled)
             throw new TransactionException("The transaction has already been canceled");
         account.replenishment(amount);
+        status = TransactionStatus.Occurred;
         account.addNewTransaction(transactionId, this);
     }
 
