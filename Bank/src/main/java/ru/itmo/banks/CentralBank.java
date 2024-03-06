@@ -22,9 +22,10 @@ import java.util.UUID;
 @Getter
 public class CentralBank {
     private HashMap<UUID, Bank> banks;
-    private static CentralBank instance = null;
+    private static CentralBank instance;
 
     private CentralBank() {
+        banks = new HashMap<UUID, Bank>();
     }
 
     public static CentralBank getInstance() {

@@ -1,3 +1,6 @@
+/**
+ * Command to perform a withdrawal transaction.
+ */
 package ru.itmo.console.ConsoleCommands;
 
 import picocli.CommandLine;
@@ -8,31 +11,37 @@ import ru.itmo.clients.Client;
 import ru.itmo.exceptions.TransactionException;
 
 import java.math.BigDecimal;
+import java.util.Scanner;
 import java.util.UUID;
 
-@CommandLine.Command(name = "--withdraw", description = "Do withdraw")
+@CommandLine.Command(name = "--withdraw", description = "Do withdrawal")
 public class DoWithdrawalCommand implements Runnable {
-    @CommandLine.Option(names = {"-c", "--clientId"}, required = true, description = "Client ID for whom the replenishment will be done")
-    private UUID clientId;
 
-    @CommandLine.Option(names = {"-t", "--transactionId"}, description = "Transaction ID for the replenishment")
-    private UUID transactionId;
-
-    @CommandLine.Option(names = {"-a", "--amount"}, required = true, description = "Amount of funds to be added")
-    private BigDecimal amount;
-
-    @CommandLine.Option(names = {"-o", "--operation"}, required = true, description = "Execute/Cancel")
-    private String type;
-
-    @CommandLine.Option(names = {"-b", "--bank"}, required = true, description = "Bank where the client will be created")
-    private String bankName;
-
-    @CommandLine.Option(names = {"-i", "--id"}, required = true, description = "Account id")
-    private UUID accountId;
-
+    /**
+     * Method to execute the command and perform a withdrawal transaction.
+     */
     @Override
     public void run() {
+        Scanner in = new Scanner(System.in);
         CentralBank centralBank = CentralBank.getInstance();
+
+        System.out.println("Enter client ID for whom the withdrawal will be done:");
+        UUID clientId = UUID.fromString(in.nextLine());
+
+        System.out.println("Enter transaction ID for the withdrawal:");
+        UUID transactionId = UUID.fromString(in.nextLine());
+
+        System.out.println("Enter amount of funds to be withdrawn:");
+        BigDecimal amount = new BigDecimal(in.nextLine());
+
+        System.out.println("Enter Execute/Cancel to proceed:");
+        String type = in.nextLine();
+
+        System.out.println("Enter bank name where the client's account is located:");
+        String bankName = in.nextLine();
+
+        System.out.println("Enter account ID:");
+        UUID accountId = UUID.fromString(in.nextLine());
 
         Bank bank = centralBank.findBankByName(bankName);
         if (bank == null) {
@@ -48,6 +57,7 @@ public class DoWithdrawalCommand implements Runnable {
         }
 
         Account account = bank.findAccount(clientId, accountId);
+
         if (account == null) {
             System.out.println("Account not found, check and try again");
             return;
@@ -61,6 +71,8 @@ public class DoWithdrawalCommand implements Runnable {
                 case "Cancel":
                     centralBank.cancelTransaction(account, transactionId);
                     break;
+                default:
+                    System.out.println("Invalid operation. Please choose Execute or Cancel.");
             }
         } catch (TransactionException e) {
             System.out.println(e);

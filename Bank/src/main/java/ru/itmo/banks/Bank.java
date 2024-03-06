@@ -48,6 +48,8 @@ public class Bank extends Publisher {
         this.creditCommission = creditCommission;
         this.accountRestrictions = accountRestrictions;
         this.depositInterests = depositInterests;
+        this.clients = new HashMap<>();
+        this.accounts = new HashMap<>();
     }
 
     /**
@@ -85,6 +87,10 @@ public class Bank extends Publisher {
         UUID id = UUID.randomUUID();
         CreditAccount account = new CreditAccount(id, client);
         HashMap<UUID, Account> map = accounts.get(clientId);
+        if (map == null) {
+            accounts.put(clientId, new HashMap<>());
+            map = accounts.get(clientId);
+        }
         map.put(id, account);
         accounts.put(clientId, map);
         return account;
@@ -101,6 +107,10 @@ public class Bank extends Publisher {
         UUID id = UUID.randomUUID();
         DebitAccount account = new DebitAccount(id, client);
         HashMap<UUID, Account> map = accounts.get(clientId);
+        if (map == null) {
+            accounts.put(clientId, new HashMap<>());
+            map = accounts.get(clientId);
+        }
         map.put(id, account);
         accounts.put(clientId, map);
         return account;
@@ -121,6 +131,10 @@ public class Bank extends Publisher {
         float percent = depositInterests.stream().filter(pair -> pair.deposit().compareTo(balance) > 0).findFirst().get().interest();
         DepositAccount account = new DepositAccount(id, client, balance, start, end, percent);
         HashMap<UUID, Account> map = accounts.get(clientId);
+        if (map == null) {
+            accounts.put(clientId, new HashMap<>());
+            map = accounts.get(clientId);
+        }
         map.put(id, account);
         accounts.put(clientId, map);
         return account;
@@ -290,11 +304,11 @@ public class Bank extends Publisher {
             depositInterests.sort(DepositAndInterest.ByDepositAscending);
             Optional<DepositAndInterest> withNegativeBalance = depositInterests.stream().filter(pair -> pair.deposit().compareTo(new BigDecimal(0)) < 0).findFirst();
 
-            if (withNegativeBalance.isEmpty())
+            if (withNegativeBalance.isPresent())
                 throw new IllegalArgumentException("Deposit can't be less 0");
             Optional<DepositAndInterest> withNegativeInterest = depositInterests.stream().filter(pair -> pair.interest() < 0).findFirst();
 
-            if (withNegativeInterest.isEmpty())
+            if (withNegativeInterest.isPresent())
                 throw new IllegalArgumentException("Interest can't be less 0");
 
             this.depositInterests = depositInterests;

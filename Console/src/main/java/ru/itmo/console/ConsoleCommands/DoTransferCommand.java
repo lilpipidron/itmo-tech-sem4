@@ -8,47 +8,48 @@ import ru.itmo.clients.Client;
 import ru.itmo.exceptions.TransactionException;
 
 import java.math.BigDecimal;
+import java.util.Scanner;
 import java.util.UUID;
-
 @CommandLine.Command(name = "--transfer", description = "Do transfer")
 public class DoTransferCommand implements Runnable {
-    @CommandLine.Option(names = {"-t", "--transactionId"}, description = "Transaction ID for the replenishment")
-    private UUID transactionId;
-
-    @CommandLine.Option(names = {"-a", "--amount"}, description = "Amount of funds to be added")
-    private BigDecimal amount;
-
-    @CommandLine.Option(names = {"-o", "--operation"}, required = true, description = "Execute/Cancel")
-    private String type;
-
-    @CommandLine.Option(names = {"-f", "--from"}, required = true, description = "Bank where the sender will be created")
-    private String bankNameSender;
-
-    @CommandLine.Option(names = {"-z", "--to"}, description = "Bank where the recipient will be created")
-    private String bankNameRecipient;
-
-    @CommandLine.Option(names = {"-s", "--senderId"}, required = true, description = "Sender account id")
-    private UUID senderId;
-
-    @CommandLine.Option(names = {"-r", "--recipientId"}, description = "Recipient account id")
-    private UUID recipientId;
-
-    @CommandLine.Option(names = {"-w", "--senderClientId"}, description = "Sender client id")
-    private UUID senderClientId;
-
-    @CommandLine.Option(names = {"-e", "--recipientClientId"}, description = "Recipient client id")
-    private UUID recipientClientId;
 
     @Override
     public void run() {
+        Scanner in = new Scanner(System.in);
         CentralBank centralBank = CentralBank.getInstance();
+
+        System.out.println("Enter transaction ID for the transfer:");
+        UUID transactionId = UUID.fromString(in.nextLine());
+
+        System.out.println("Enter amount of funds to be transferred:");
+        BigDecimal amount = new BigDecimal(in.nextLine());
+
+        System.out.println("Enter Execute/Cancel to proceed:");
+        String type = in.nextLine();
+
+        System.out.println("Enter bank name of the sender:");
+        String bankNameSender = in.nextLine();
+
+        System.out.println("Enter bank name of the recipient:");
+        String bankNameRecipient = in.nextLine();
+
+        System.out.println("Enter sender's account ID:");
+        UUID senderId = UUID.fromString(in.nextLine());
+
+        System.out.println("Enter recipient's account ID:");
+        UUID recipientId = UUID.fromString(in.nextLine());
+
+        System.out.println("Enter sender's client ID:");
+        UUID senderClientId = UUID.fromString(in.nextLine());
+
+        System.out.println("Enter recipient's client ID:");
+        UUID recipientClientId = UUID.fromString(in.nextLine());
 
         Bank bankSender = centralBank.findBankByName(bankNameSender);
         if (bankSender == null) {
             System.out.println("Bank sender doesn't exist");
             return;
         }
-
 
         Bank bankRecipient = centralBank.findBankByName(bankNameRecipient);
         if (bankRecipient == null) {
@@ -64,10 +65,12 @@ public class DoTransferCommand implements Runnable {
         }
 
         Account accountSender = bankSender.findAccount(senderClientId, senderId);
+
         if (accountSender == null) {
             System.out.println("Account sender not found, check and try again");
             return;
         }
+
         try {
             switch (type) {
                 case "Execute":
@@ -76,10 +79,11 @@ public class DoTransferCommand implements Runnable {
                 case "Cancel":
                     centralBank.cancelTransaction(accountSender, transactionId);
                     break;
+                default:
+                    System.out.println("Invalid operation. Please choose Execute or Cancel.");
             }
         } catch (TransactionException e) {
             System.out.println(e);
         }
-
     }
 }

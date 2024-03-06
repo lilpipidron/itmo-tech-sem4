@@ -31,6 +31,8 @@ public abstract class Account extends Subscriber {
     public Account(UUID accountId, Client client) {
         this.accountId = accountId;
         this.client = client;
+        this.transactions = new HashMap<>();
+        this.balance = new BigDecimal(0);
     }
 
     /**
