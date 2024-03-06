@@ -136,6 +136,10 @@ public class Bank extends Publisher {
         return clients.get(id);
     }
 
+    public Account findAccount(UUID clientId, UUID accountId){
+        return accounts.get(clientId).get(accountId);
+    }
+
     /**
      * Notifies all accounts of the bank about the start of a new day or month.
      *

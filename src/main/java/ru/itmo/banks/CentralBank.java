@@ -22,19 +22,31 @@ import java.util.UUID;
 @Getter
 public class CentralBank {
     private HashMap<UUID, Bank> banks;
+    private static CentralBank instance = null;
+
+    private CentralBank() {
+    }
+
+    public static CentralBank getInstance() {
+        if (instance == null)
+            instance = new CentralBank();
+        return instance;
+    }
 
     /**
      * Creates a new bank with the specified parameters.
      *
-     * @param name the name of the bank
-     * @param interestOnBalance the interest rate on account balance
-     * @param creditCommission the commission for credit operations
+     * @param name               the name of the bank
+     * @param interestOnBalance  the interest rate on account balance
+     * @param creditCommission   the commission for credit operations
      * @param accountRestriction the restriction on account operations
-     * @param depositInterests the list of deposit interests
+     * @param depositInterests   the list of deposit interests
      * @return the newly created bank
      * @throws IllegalArgumentException if the parameters are invalid
      */
     public Bank createBank(String name, float interestOnBalance, BigDecimal creditCommission, BigDecimal accountRestriction, ArrayList<DepositAndInterest> depositInterests) throws IllegalArgumentException {
+        if (findBankByName(name) != null)
+            throw new IllegalArgumentException("Bank exists");
         Bank.BankBuilder bankBuilder = new Bank.BankBuilder();
         UUID id = UUID.randomUUID();
         Bank bank = bankBuilder.withId(id)
@@ -49,29 +61,41 @@ public class CentralBank {
         return bank;
     }
 
+    public Bank findBankByName(String name) {
+        Bank bank = null;
+        for (Map.Entry<UUID, Bank> entry : banks.entrySet()) {
+            if (entry.getValue().getName().equals(name)) {
+                UUID bankId = entry.getKey();
+                bank = entry.getValue();
+                break;
+            }
+        }
+        return bank;
+    }
+
     /**
      * Initiates a transfer transaction between accounts.
      *
-     * @param senderAccount the account initiating the transfer
-     * @param sender the client initiating the transfer
-     * @param recipientBankId the ID of the recipient bank
-     * @param recipientId the ID of the recipient client
+     * @param senderAccount      the account initiating the transfer
+     * @param sender             the client initiating the transfer
+     * @param recipientBankId    the ID of the recipient bank
+     * @param recipientId        the ID of the recipient client
      * @param recipientAccountId the ID of the recipient account
-     * @param amount the amount to transfer
+     * @param amount             the amount to transfer
      * @throws TransactionException if the transaction encounters an issue
      */
     public void transferTransaction(Account senderAccount, Client sender, UUID recipientBankId, UUID recipientId, UUID recipientAccountId, BigDecimal amount) throws TransactionException {
         Client recepientClient = banks.get(recipientBankId).findClient(recipientId);
         Account recipientAccount = banks.get(recipientBankId).getAccounts().get(recipientId).get(recipientAccountId);
         UUID transactionId = UUID.randomUUID();
-        Transaction transaction = new Transfer(transactionId,senderAccount, recipientAccount, amount);
+        Transaction transaction = new Transfer(transactionId, senderAccount, recipientAccount, amount);
     }
 
     /**
      * Initiates a withdrawal transaction from an account.
      *
      * @param account the account for withdrawal
-     * @param amount the amount to withdraw
+     * @param amount  the amount to withdraw
      * @throws TransactionException if the transaction encounters an issue
      */
     public void withdrawalTransaction(Account account, BigDecimal amount) throws TransactionException {
@@ -84,7 +108,7 @@ public class CentralBank {
      * Initiates a replenishment transaction for an account.
      *
      * @param account the account for replenishment
-     * @param amount the amount to replenish
+     * @param amount  the amount to replenish
      * @throws TransactionException if the transaction encounters an issue
      */
     public void replenishmentTransaction(Account account, BigDecimal amount) throws TransactionException {
@@ -96,7 +120,7 @@ public class CentralBank {
     /**
      * Cancels a specific transaction associated with an account.
      *
-     * @param account the account related to the transaction
+     * @param account       the account related to the transaction
      * @param transactionId the ID of the transaction to cancel
      * @throws TransactionException if canceling the transaction fails
      */
