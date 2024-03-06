@@ -1,4 +1,4 @@
-package ru.itmo.console;
+package ru.itmo.console.ConsoleCommands;
 
 import picocli.CommandLine;
 import ru.itmo.accounts.Account;
@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 @CommandLine.Command(name = "--transfer", description = "Do transfer")
-public class DoTransferTransaction implements Runnable {
+public class DoTransferCommand implements Runnable {
     @CommandLine.Option(names = {"-t", "--transactionId"}, description = "Transaction ID for the replenishment")
     private UUID transactionId;
 

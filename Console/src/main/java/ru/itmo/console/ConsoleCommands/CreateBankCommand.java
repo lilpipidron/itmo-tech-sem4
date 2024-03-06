@@ -1,4 +1,4 @@
-package ru.itmo.console;
+package ru.itmo.console.ConsoleCommands;
 
 import picocli.CommandLine;
 import ru.itmo.banks.CentralBank;
