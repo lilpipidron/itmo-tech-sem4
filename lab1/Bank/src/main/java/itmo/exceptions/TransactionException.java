@@ -3,7 +3,7 @@
  */
 package ru.itmo.exceptions;
 
-public class TransactionException extends RuntimeException {
+public class TransactionException extends Exception {
 
     /**
      * Constructs a new TransactionException with the specified error message.

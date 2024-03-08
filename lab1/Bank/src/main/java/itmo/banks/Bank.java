@@ -10,7 +10,13 @@ import ru.itmo.accounts.CreditAccount;
 import ru.itmo.accounts.DebitAccount;
 import ru.itmo.accounts.DepositAccount;
 import ru.itmo.clients.Client;
+import ru.itmo.exceptions.TransactionException;
 import ru.itmo.notifications.Publisher;
+import ru.itmo.notifications.Subscriber;
+import ru.itmo.transactions.Replenishment;
+import ru.itmo.transactions.Transaction;
+import ru.itmo.transactions.Transfer;
+import ru.itmo.transactions.Withdrawal;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -20,7 +26,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Getter
-public class Bank extends Publisher {
+public class Bank {
 
     private final UUID id;
     private final String name;
@@ -30,11 +36,12 @@ public class Bank extends Publisher {
     private ArrayList<DepositAndInterest> depositInterests;
     private HashMap<UUID, Client> clients;
     private HashMap<UUID, HashMap<UUID, Account>> accounts;
+    private Publisher publisher;
 
     /**
      * Constructs a new Bank with the specified parameters.
      *
-     * @param id                 the unique identifier of the bank
+     * @param id                  the unique identifier of the bank
      * @param name                the name of the bank
      * @param interestOnBalance   the interest rate applied on the balance
      * @param creditCommission    the commission rate for credit accounts
@@ -50,19 +57,19 @@ public class Bank extends Publisher {
         this.depositInterests = depositInterests;
         this.clients = new HashMap<>();
         this.accounts = new HashMap<>();
+        this.publisher = new Publisher();
     }
 
     /**
      * Creates a new client and adds them to the bank's client list.
      *
-     * @param name       the client's name
-     * @param surname    the client's surname
-     * @param passport   the client's passport number
-     * @param address    the client's address
+     * @param name     the client's name
+     * @param surname  the client's surname
+     * @param passport the client's passport number
+     * @param address  the client's address
      * @return the created client
-     * @throws IllegalArgumentException if any of the provided arguments are invalid
      */
-    public Client createClient(String name, String surname, String passport, String address) throws IllegalArgumentException {
+    public Client createClient(String name, String surname, String passport, String address) {
         Client.ClientBuilder builder = new Client.ClientBuilder();
         UUID id = UUID.randomUUID();
         Client client = builder.withId(id)
@@ -86,11 +93,8 @@ public class Bank extends Publisher {
     public CreditAccount createCreditAccount(UUID clientId, Client client) {
         UUID id = UUID.randomUUID();
         CreditAccount account = new CreditAccount(id, client);
+        accounts.computeIfAbsent(clientId, k -> new HashMap<>());
         HashMap<UUID, Account> map = accounts.get(clientId);
-        if (map == null) {
-            accounts.put(clientId, new HashMap<>());
-            map = accounts.get(clientId);
-        }
         map.put(id, account);
         accounts.put(clientId, map);
         return account;
@@ -106,11 +110,8 @@ public class Bank extends Publisher {
     public DebitAccount createDebitAccount(UUID clientId, Client client) {
         UUID id = UUID.randomUUID();
         DebitAccount account = new DebitAccount(id, client);
+        accounts.computeIfAbsent(clientId, k -> new HashMap<>());
         HashMap<UUID, Account> map = accounts.get(clientId);
-        if (map == null) {
-            accounts.put(clientId, new HashMap<>());
-            map = accounts.get(clientId);
-        }
         map.put(id, account);
         accounts.put(clientId, map);
         return account;
@@ -121,7 +122,7 @@ public class Bank extends Publisher {
      *
      * @param clientId the unique identifier of the client
      * @param client   the client for whom the account is being created
-     * @param balance the initial balance of the deposit account
+     * @param balance  the initial balance of the deposit account
      * @param start    the start date of the deposit
      * @param end      the end date of the deposit
      * @return the created deposit account
@@ -130,14 +131,68 @@ public class Bank extends Publisher {
         UUID id = UUID.randomUUID();
         float percent = depositInterests.stream().filter(pair -> pair.deposit().compareTo(balance) > 0).findFirst().get().interest();
         DepositAccount account = new DepositAccount(id, client, balance, start, end, percent);
+        accounts.computeIfAbsent(clientId, k -> new HashMap<>());
         HashMap<UUID, Account> map = accounts.get(clientId);
-        if (map == null) {
-            accounts.put(clientId, new HashMap<>());
-            map = accounts.get(clientId);
-        }
         map.put(id, account);
         accounts.put(clientId, map);
         return account;
+    }
+
+    public Transaction withdrawTransaction(Account account, BigDecimal amount) throws TransactionException {
+        UUID transactionId = UUID.randomUUID();
+        Transaction transaction = new Withdrawal(transactionId, account, amount);
+        transaction.execute();
+        return transaction;
+    }
+
+    public Transaction replenishmentTransaction(Account account, BigDecimal amount) throws TransactionException {
+        UUID transactionId = UUID.randomUUID();
+        Transaction transaction = new Replenishment(transactionId, account, amount);
+        transaction.execute();
+        return transaction;
+    }
+
+    /**
+     * Initiates a transfer transaction between accounts.
+     *
+     * @param senderAccount      the account initiating the transfer
+     * @param sender             the client initiating the transfer
+     * @param recipientBankId    the ID of the recipient bank
+     * @param recipientId        the ID of the recipient client
+     * @param recipientAccountId the ID of the recipient account
+     * @param amount             the amount to transfer
+     * @throws TransactionException if the transaction encounters an issue
+     */
+    public Transaction transferTransaction(Account senderAccount, Client sender, UUID recipientBankId, UUID recipientId, UUID recipientAccountId, BigDecimal amount) throws TransactionException {
+        if (recipientBankId != this.id) {
+            return CentralBank.getInstance().transferTransaction(senderAccount, sender, recipientBankId, recipientId, recipientAccountId, amount);
+        } else {
+            UUID transactionId = UUID.randomUUID();
+            Account recipientAccount = accounts.computeIfAbsent(recipientId, k -> new HashMap<>())
+                    .computeIfAbsent(recipientAccountId, k -> {
+                        try {
+                            throw new TransactionException("Recipient account not found");
+                        } catch (TransactionException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+            Transaction transaction = new Transfer(transactionId, senderAccount, recipientAccount, amount);
+            transaction.execute();
+            return transaction;
+        }
+    }
+
+    /**
+     * Cancels a specific transaction associated with an account.
+     *
+     * @param account       the account related to the transaction
+     * @param transactionId the ID of the transaction to cancel
+     * @throws TransactionException if canceling the transaction fails
+     */
+
+    public void cancelTransaction(Account account, UUID transactionId) throws TransactionException {
+        Transaction transaction = account.findTransactionById(transactionId);
+        transaction.cancel();
     }
 
     /**
@@ -150,7 +205,7 @@ public class Bank extends Publisher {
         return clients.get(id);
     }
 
-    public Account findAccount(UUID clientId, UUID accountId){
+    public Account findAccount(UUID clientId, UUID accountId) {
         return accounts.get(clientId).get(accountId);
     }
 
@@ -170,6 +225,14 @@ public class Bank extends Publisher {
         }
     }
 
+    public void addSubscriber(Subscriber subscriber) {
+        this.publisher.addSubscriber(subscriber);
+    }
+
+    public void deleteSubscriber(Subscriber subscriber) {
+        this.publisher.deleteSubscriber(subscriber);
+    }
+
     /**
      * Sets a new interest rate on balance and notifies subscribers.
      *
@@ -177,7 +240,7 @@ public class Bank extends Publisher {
      */
     public void setNewInterestOnBalance(float newInterestOnBalance) {
         this.interestOnBalance = newInterestOnBalance;
-        this.notifySubscribers("New interest on balance");
+        this.publisher.notifySubscribers("New interest on balance");
     }
 
     /**
@@ -187,7 +250,7 @@ public class Bank extends Publisher {
      */
     public void setNewCreditCommission(BigDecimal newCreditCommission) {
         this.creditCommission = newCreditCommission;
-        this.notifySubscribers("New credit commission");
+        this.publisher.notifySubscribers("New credit commission");
     }
 
     /**
@@ -197,7 +260,7 @@ public class Bank extends Publisher {
      */
     public void setNewAccountRestriction(BigDecimal newAccountRestriction) {
         this.accountRestrictions = newAccountRestriction;
-        this.notifySubscribers("New account restriction");
+        this.publisher.notifySubscribers("New account restriction");
     }
 
     /**
@@ -208,7 +271,7 @@ public class Bank extends Publisher {
     public void setNewDepositInterests(ArrayList<DepositAndInterest> newDepositInterests) {
         newDepositInterests.sort(DepositAndInterest.ByDepositAscending);
         this.depositInterests = newDepositInterests;
-        this.notifySubscribers("New deposit interests");
+        this.publisher.notifySubscribers("New deposit interests");
     }
 
     /**
@@ -239,9 +302,8 @@ public class Bank extends Publisher {
          *
          * @param name the name of the bank
          * @return the builder instance
-         * @throws IllegalArgumentException if the name is empty
          */
-        public BankBuilder withName(String name) throws IllegalArgumentException {
+        public BankBuilder withName(String name) {
             if (name.isEmpty())
                 throw new IllegalArgumentException("You must indicate the name of the bank");
             this.name = name;
@@ -253,9 +315,8 @@ public class Bank extends Publisher {
          *
          * @param interestOnBalance the interest rate
          * @return the builder instance
-         * @throws IllegalArgumentException if the interest rate is less than 0
          */
-        public BankBuilder withInterestOnBalance(float interestOnBalance) throws IllegalArgumentException {
+        public BankBuilder withInterestOnBalance(float interestOnBalance) {
             if (interestOnBalance < 0)
                 throw new IllegalArgumentException("Interest on balance can't be less than 0");
 
@@ -268,10 +329,9 @@ public class Bank extends Publisher {
          *
          * @param creditCommission the commission rate
          * @return the builder instance
-         * @throws IllegalArgumentException if the commission rate is less than 0
          */
-        public BankBuilder withCreditCommission(                BigDecimal creditCommission) throws IllegalArgumentException {
-            if (creditCommission.compareTo(new BigDecimal(0)) < 0)
+        public BankBuilder withCreditCommission(BigDecimal creditCommission) {
+            if (creditCommission.compareTo(BigDecimal.ZERO) < 0)
                 throw new IllegalArgumentException("Credit commission can't be less than 0");
 
             this.creditCommission = creditCommission;
@@ -283,10 +343,9 @@ public class Bank extends Publisher {
          *
          * @param accountRestrictions the account restrictions
          * @return the builder instance
-         * @throws IllegalArgumentException if the account restrictions are less than 0
          */
-        public BankBuilder withAccountRestrictions(BigDecimal accountRestrictions) throws IllegalArgumentException {
-            if (accountRestrictions.compareTo(new BigDecimal(0)) < 0)
+        public BankBuilder withAccountRestrictions(BigDecimal accountRestrictions) {
+            if (accountRestrictions.compareTo(BigDecimal.ZERO) < 0)
                 throw new IllegalArgumentException("Account restriction can't be less than 0");
 
             this.accountRestrictions = accountRestrictions;
@@ -298,11 +357,10 @@ public class Bank extends Publisher {
          *
          * @param depositInterests the deposit interests
          * @return the builder instance
-         * @throws IllegalArgumentException if any deposit interest is less than 0 or if the deposit interests list is empty
          */
-        public BankBuilder withDepositInterests(ArrayList<DepositAndInterest> depositInterests) throws IllegalArgumentException {
+        public BankBuilder withDepositInterests(ArrayList<DepositAndInterest> depositInterests) {
             depositInterests.sort(DepositAndInterest.ByDepositAscending);
-            Optional<DepositAndInterest> withNegativeBalance = depositInterests.stream().filter(pair -> pair.deposit().compareTo(new BigDecimal(0)) < 0).findFirst();
+            Optional<DepositAndInterest> withNegativeBalance = depositInterests.stream().filter(pair -> pair.deposit().compareTo(BigDecimal.ZERO) < 0).findFirst();
 
             if (withNegativeBalance.isPresent())
                 throw new IllegalArgumentException("Deposit can't be less 0");

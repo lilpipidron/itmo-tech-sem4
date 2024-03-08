@@ -37,7 +37,7 @@ public class CreditAccount extends Account {
      */
     @Override
     public void newDay() {
-        if (balance.compareTo(new BigDecimal(0)) < 0)
+        if (balance.compareTo(BigDecimal.ZERO) < 0)
             balance = balance.subtract(client.getBank().getCreditCommission());
     }
 

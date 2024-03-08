@@ -5,7 +5,7 @@ package ru.itmo.notifications;
 
 import java.util.ArrayList;
 
-public abstract class Publisher {
+public class Publisher {
     private ArrayList<Subscriber> subscribers;
 
     /**

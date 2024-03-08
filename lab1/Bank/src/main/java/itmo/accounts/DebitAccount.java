@@ -49,7 +49,7 @@ public class DebitAccount extends Account {
     @Override
     public void newMonth() {
         balance = balance.add(moneyBuffer);
-        moneyBuffer = new BigDecimal(0);
+        moneyBuffer = BigDecimal.ZERO;;
         newDay();
     }
 }

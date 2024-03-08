@@ -74,10 +74,10 @@ public class DoTransferCommand implements Runnable {
         try {
             switch (type) {
                 case "Execute":
-                    centralBank.transferTransaction(accountSender, clientSender, bankRecipient.getId(), recipientClientId, recipientId, amount);
+                    bankSender.transferTransaction(accountSender, clientSender, bankRecipient.getId(), recipientClientId, recipientId, amount);
                     break;
                 case "Cancel":
-                    centralBank.cancelTransaction(accountSender, transactionId);
+                    bankRecipient.cancelTransaction(accountSender, transactionId);
                     break;
                 default:
                     System.out.println("Invalid operation. Please choose Execute or Cancel.");

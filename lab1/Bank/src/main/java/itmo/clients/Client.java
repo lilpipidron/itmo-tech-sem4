@@ -19,7 +19,7 @@ public class Client {
     private String passport = null;
     private String address = null;
     @Getter
-    private ClientStatus status = ClientStatus.Dubious;
+    private ClientStatus status = ClientStatus.DUBIOUS;
 
     /**
      * Constructs a new client with the provided details.
@@ -39,7 +39,7 @@ public class Client {
         this.passport = passport;
         this.address = address;
         if (!passport.isEmpty() && !address.isEmpty())
-            this.status = ClientStatus.Normal;
+            this.status = ClientStatus.NORMAL;
     }
 
     /**
@@ -50,7 +50,7 @@ public class Client {
     public void setPassport(String passport) {
         this.passport = passport;
         if (!passport.isEmpty() && !address.isEmpty())
-            this.status = ClientStatus.Normal;
+            this.status = ClientStatus.NORMAL;
     }
 
     /**
@@ -61,7 +61,7 @@ public class Client {
     public void setAddress(String address) {
         this.address = address;
         if (!passport.isEmpty() && !address.isEmpty())
-            this.status = ClientStatus.Normal;
+            this.status = ClientStatus.NORMAL;
     }
 
     /**
@@ -104,9 +104,8 @@ public class Client {
          *
          * @param name The first name to set.
          * @return A reference to this builder to support method chaining.
-         * @throws IllegalArgumentException If an empty name is provided.
          */
-        public ClientBuilder withName(String name) throws IllegalArgumentException {
+        public ClientBuilder withName(String name) {
             if (name.isEmpty()) {
                 throw new IllegalArgumentException("You must provide a name");
             }
@@ -119,9 +118,8 @@ public class Client {
          *
          * @param surname The last name to set.
          * @return A reference to this builder to support method chaining.
-         * @throws IllegalArgumentException If an empty surname is provided.
          */
-        public ClientBuilder withSurname(String surname) throws IllegalArgumentException {
+        public ClientBuilder withSurname(String surname) {
             if (surname.isEmpty()) {
                 throw new IllegalArgumentException("You must provide a surname");
             }

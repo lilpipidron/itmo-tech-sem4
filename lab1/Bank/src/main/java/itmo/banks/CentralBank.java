@@ -1,16 +1,11 @@
-/**
- * The CentralBank class represents a central bank that manages multiple banks.
- */
 package ru.itmo.banks;
 
 import lombok.Getter;
 import ru.itmo.accounts.Account;
 import ru.itmo.clients.Client;
 import ru.itmo.exceptions.TransactionException;
-import ru.itmo.transactions.Replenishment;
 import ru.itmo.transactions.Transaction;
 import ru.itmo.transactions.Transfer;
-import ru.itmo.transactions.Withdrawal;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,6 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * The CentralBank class represents a central bank that manages multiple banks.
+ */
 @Getter
 public class CentralBank {
     private HashMap<UUID, Bank> banks;
@@ -43,9 +41,8 @@ public class CentralBank {
      * @param accountRestriction the restriction on account operations
      * @param depositInterests   the list of deposit interests
      * @return the newly created bank
-     * @throws IllegalArgumentException if the parameters are invalid
      */
-    public Bank createBank(String name, float interestOnBalance, BigDecimal creditCommission, BigDecimal accountRestriction, ArrayList<DepositAndInterest> depositInterests) throws IllegalArgumentException {
+    public Bank createBank(String name, float interestOnBalance, BigDecimal creditCommission, BigDecimal accountRestriction, ArrayList<DepositAndInterest> depositInterests) {
         if (findBankByName(name) != null)
             throw new IllegalArgumentException("Bank exists");
         Bank.BankBuilder bankBuilder = new Bank.BankBuilder();
@@ -85,51 +82,14 @@ public class CentralBank {
      * @param amount             the amount to transfer
      * @throws TransactionException if the transaction encounters an issue
      */
-    public void transferTransaction(Account senderAccount, Client sender, UUID recipientBankId, UUID recipientId, UUID recipientAccountId, BigDecimal amount) throws TransactionException {
+    public Transaction transferTransaction(Account senderAccount, Client sender, UUID recipientBankId, UUID recipientId, UUID recipientAccountId, BigDecimal amount) throws TransactionException {
         Client recepientClient = banks.get(recipientBankId).findClient(recipientId);
         Account recipientAccount = banks.get(recipientBankId).getAccounts().get(recipientId).get(recipientAccountId);
         UUID transactionId = UUID.randomUUID();
         Transaction transaction = new Transfer(transactionId, senderAccount, recipientAccount, amount);
-    }
-
-    /**
-     * Initiates a withdrawal transaction from an account.
-     *
-     * @param account the account for withdrawal
-     * @param amount  the amount to withdraw
-     * @throws TransactionException if the transaction encounters an issue
-     */
-    public void withdrawalTransaction(Account account, BigDecimal amount) throws TransactionException {
-        UUID transactionId = UUID.randomUUID();
-        Transaction transaction = new Withdrawal(transactionId, account, amount);
         transaction.execute();
+        return transaction;
     }
-
-    /**
-     * Initiates a replenishment transaction for an account.
-     *
-     * @param account the account for replenishment
-     * @param amount  the amount to replenish
-     * @throws TransactionException if the transaction encounters an issue
-     */
-    public void replenishmentTransaction(Account account, BigDecimal amount) throws TransactionException {
-        UUID transactionId = UUID.randomUUID();
-        Transaction transaction = new Replenishment(transactionId, account, amount);
-        transaction.execute();
-    }
-
-    /**
-     * Cancels a specific transaction associated with an account.
-     *
-     * @param account       the account related to the transaction
-     * @param transactionId the ID of the transaction to cancel
-     * @throws TransactionException if canceling the transaction fails
-     */
-    public void cancelTransaction(Account account, UUID transactionId) throws TransactionException {
-        Transaction transaction = account.findTransactionById(transactionId);
-        transaction.cancel();
-    }
-
     /**
      * Notifies all banks about a specific date.
      *

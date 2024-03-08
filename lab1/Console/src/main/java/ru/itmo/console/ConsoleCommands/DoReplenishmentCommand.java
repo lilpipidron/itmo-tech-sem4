@@ -65,10 +65,10 @@ public class DoReplenishmentCommand implements Runnable {
         try {
             switch(type){
                 case "Execute":
-                    centralBank.replenishmentTransaction(account, amount);
+                    bank.replenishmentTransaction(account, amount);
                     break;
                 case "Cancel":
-                    centralBank.cancelTransaction(account, transactionId);
+                    bank.cancelTransaction(account, transactionId);
                     break;
                 default:
                     System.out.println("Invalid operation. Please choose Execute or Cancel.");

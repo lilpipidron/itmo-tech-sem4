@@ -32,7 +32,7 @@ public abstract class Account extends Subscriber {
         this.accountId = accountId;
         this.client = client;
         this.transactions = new HashMap<>();
-        this.balance = new BigDecimal(0);
+        this.balance = BigDecimal.ZERO;
     }
 
     /**
@@ -42,9 +42,9 @@ public abstract class Account extends Subscriber {
      * @throws TransactionException if the deposit amount is invalid.
      */
     public void replenishment(BigDecimal amount) throws TransactionException {
-        if (client.getStatus() == ClientStatus.Dubious && client.getBank().getAccountRestrictions().compareTo(amount) < 0)
+        if (client.getStatus() == ClientStatus.DUBIOUS && client.getBank().getAccountRestrictions().compareTo(amount) < 0)
             throw new TransactionException("The deposit amount exceeds the allowable amount for a questionable account");
-        if (amount.compareTo(new BigDecimal(0)) < 0)
+        if (amount.compareTo(BigDecimal.ZERO) < 0)
             throw new TransactionException("You cannot deposit less than 0 from your account");
         balance = balance.add(amount);
     }
@@ -57,7 +57,7 @@ public abstract class Account extends Subscriber {
      * @throws TransactionException if the transfer fails.
      */
     public void transfer(BigDecimal amount, TransferRole role) throws TransactionException {
-        if (role == TransferRole.Sender)
+        if (role == TransferRole.SENDER)
             this.withdraw(amount);
         else
             this.replenishment(amount);
@@ -90,9 +90,9 @@ public abstract class Account extends Subscriber {
      * @throws TransactionException if the withdrawal amount is invalid.
      */
     public void withdraw(BigDecimal amount) throws TransactionException {
-        if (client.getStatus() == ClientStatus.Dubious && client.getBank().getAccountRestrictions().compareTo(amount) < 0)
+        if (client.getStatus() == ClientStatus.DUBIOUS && client.getBank().getAccountRestrictions().compareTo(amount) < 0)
             throw new TransactionException("The withdrawal amount exceeds the allowable amount for a doubtful account");
-        if (amount.compareTo(new BigDecimal(0)) < 0)
+        if (amount.compareTo(BigDecimal.ZERO) < 0)
             throw new TransactionException("You cannot withdrawal less than 0 into your account");
     }
 

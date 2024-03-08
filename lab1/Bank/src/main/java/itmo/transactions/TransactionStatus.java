@@ -5,7 +5,7 @@
 package ru.itmo.transactions;
 
 public enum TransactionStatus {
-    Occurred,
-    NotOccurred,
-    Canceled
+    OCCURRED,
+    NOT_OCCURRED,
+    CANCELED
 }
