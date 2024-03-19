@@ -1,16 +1,28 @@
 package ru.itmo.owners;
 
 import lombok.Data;
-import ru.itmo.cats.Cat;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.UUID;
 
+@Entity
 @Data
+@Table(name = "owners")
 public class Owner {
-    private final UUID id;
+    @Id
+    @Column(name = "id", unique = true, nullable = false)
+    private final int id;
+    @Column(name = "name", nullable = false)
     private final String name;
+    @Column(name = "birthday", nullable = false)
     private final Date birthday;
-    private final ArrayList<Cat> cats;
+
+    public Owner() {
+        this.id = -1;
+        this.name = null;
+        this.birthday = null;
+    }
 }

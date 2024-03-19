@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public interface CatService {
-    void addNewCat(UUID ownerId, String name, Date birthday, Breed breed);
-    Cat getCatById(UUID id);
-    ArrayList<Cat> getAllFriends(UUID id);
-    void addFriend(UUID catId, UUID friendId);
-    void deleteCat(UUID catId, UUID ownerId);
+    void addNewCat(int ownerId, String name, Date birthday, Breed breed);
+    Cat getCatById(int id);
+    ArrayList<Cat> getAllFriends(int id);
+    void addFriend(int catId, int friendId);
+    void deleteCat(int catId, int ownerId);
 }

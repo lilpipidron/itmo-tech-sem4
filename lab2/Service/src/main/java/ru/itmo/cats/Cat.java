@@ -3,19 +3,37 @@ package ru.itmo.cats;
 import lombok.Data;
 import ru.itmo.breeds.Breed;
 import ru.itmo.colors.Color;
-import ru.itmo.owners.Owner;
 
+import javax.persistence.*;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.UUID;
 
+@Entity
 @Data
+@Table(name = "cats")
 public class Cat {
-    private final UUID id;
+    @Id
+    @Column(name = "id", unique = true, nullable = false)
+    private final int id;
+
+    @Column(name = "name", nullable = false)
     private final String name;
+
+    @Column(name = "birthday", nullable = false)
     private final Date birthday;
+
+    @Enumerated(EnumType.STRING)
+    @JoinColumn(name = "breed", nullable = false)
     private final Breed breed;
+
+    @Enumerated(EnumType.STRING)
+    @JoinColumn(name = "color", nullable = false)
     private final Color color;
-    private final Owner owner;
-    private final ArrayList<Cat> friends;
+
+    public Cat() {
+        this.id = -1;
+        this.name = null;
+        this.birthday = null;
+        this.breed = null;
+        this.color = null;
+    }
 }

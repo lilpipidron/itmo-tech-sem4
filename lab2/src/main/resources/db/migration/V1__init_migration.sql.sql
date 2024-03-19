@@ -1,27 +1,27 @@
 CREATE TYPE colors AS ENUM (
-    'white',
-    'black',
-    'blue',
-    'green',
-    'yellow',
-    'orange',
-    'pink'
+    'WHITE',
+    'BLACK',
+    'BLUE',
+    'GREEN',
+    'YELLOW',
+    'ORANGE',
+    'PINK'
     );
 
 CREATE TYPE breeds AS ENUM (
-    'american shorthair',
-    'britman',
-    'cornish rex',
-    'british shorthair',
-    'munchkin',
-    'oriental',
-    'persian',
-    'peterbald'
+    'AMERICAN SHORTHAIR',
+    'BRITMAN',
+    'CORNISH REX',
+    'BRITISH SHORTHAIR',
+    'MUNCHKIN',
+    'ORIENTAL',
+    'PERSIAN',
+    'PETERBALD'
     );
 
 CREATE TABLE IF NOT EXISTS cats
 (
-    id       varchar not null unique,
+    id       BIGSERIAL not null unique primary key ,
     name     varchar not null,
     birthday date    not null,
     breed    breeds  not null,
@@ -30,19 +30,19 @@ CREATE TABLE IF NOT EXISTS cats
 
 CREATE TABLE IF NOT EXISTS owners
 (
-    id       varchar not null unique,
+    id       BIGSERIAL not null unique primary key,
     name     varchar not null,
     birthday date    not null
 );
 
 CREATE TABLE IF NOT EXISTS owner_cat
 (
-    owner_id varchar not null references owners (id),
-    cat_id   varchar not null references cats (id)
+    owner_id integer not null references owners (id),
+    cat_id   integer not null references cats (id)
 );
 
 CREATE TABLE IF NOT EXISTS cat_friend
 (
-    cat_id    varchar not null references cats (id),
-    friend_id varchar not null references cats (id)
+    cat_id    integer not null references cats (id),
+    friend_id integer not null references cats (id)
 );
