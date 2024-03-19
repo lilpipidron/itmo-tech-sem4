@@ -168,14 +168,10 @@ public class Bank {
             return CentralBank.getInstance().transferTransaction(senderAccount, sender, recipientBankId, recipientId, recipientAccountId, amount);
         } else {
             UUID transactionId = UUID.randomUUID();
-            Account recipientAccount = accounts.computeIfAbsent(recipientId, k -> new HashMap<>())
-                    .computeIfAbsent(recipientAccountId, k -> {
-                        try {
-                            throw new TransactionException("Recipient account not found");
-                        } catch (TransactionException e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
+            Account recipientAccount = accounts.get(recipientId).get(recipientAccountId);
+            if (recipientAccount == null) {
+                throw new TransactionException("Recipient account not found");
+            }
             Transaction transaction = new Transfer(transactionId, senderAccount, recipientAccount, amount);
             transaction.execute();
             return transaction;
