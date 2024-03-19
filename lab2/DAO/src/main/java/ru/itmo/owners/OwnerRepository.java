@@ -1,10 +1,12 @@
 package ru.itmo.owners;
 
-import java.util.UUID;
+import java.util.ArrayList;
 
 public interface OwnerRepository {
     void addNewOwner(Owner owner);
-    Owner getOwnerById(UUID id);
-    void addCat(UUID ownerId, UUID catId);
-    void deleteCat(UUID ownerId, UUID catId);
+    Owner getOwnerById(int id);
+    void addCat(int ownerId, int catId);
+    void deleteOwner(int ownerId);
+
+    ArrayList<Integer> getAllCatsId(int id);
 }

@@ -1,7 +1,6 @@
 package ru.itmo.owners;
 
 import java.sql.Date;
-import java.util.UUID;
 
 public interface OwnerService {
     void addNewOwner(String name, Date birthday);

@@ -4,10 +4,8 @@ import org.flywaydb.core.Flyway;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.query.Query;
-import ru.itmo.cats.Cat;
-
-import java.util.List;
+import ru.itmo.cats.CatRepositoryImp;
+import ru.itmo.owners.OwnerRepositoryImp;
 
 public class Main {
     public static void main(String[] args) {
@@ -23,14 +21,8 @@ public class Main {
 
         Session session = sessionFactory.openSession();
 
-        Query<Cat> query = session.createQuery("FROM Cat", Cat.class);
-
-        List<Cat> cats = query.getResultList();
-
-        // Вывод списка котов
-        for (Cat cat : cats) {
-            System.out.println("Cat ID: " + cat.getId() + ", Name: " + cat.getName());
-        }
+        CatRepositoryImp catsRepository = new CatRepositoryImp(session);
+        OwnerRepositoryImp ownerRepositoryImp = new OwnerRepositoryImp(session);
 
         session.close();
 
