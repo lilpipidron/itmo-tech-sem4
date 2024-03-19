@@ -1,5 +1,3 @@
-CREATE SCHEMA IF NOT EXISTS cats_and_owners;
-
 CREATE TYPE colors AS ENUM (
     'white',
     'black',

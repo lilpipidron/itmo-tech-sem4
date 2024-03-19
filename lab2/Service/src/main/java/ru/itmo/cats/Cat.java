@@ -7,7 +7,6 @@ import ru.itmo.owners.Owner;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.UUID;
 
 @Data

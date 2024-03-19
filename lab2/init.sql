@@ -1,1 +1,1 @@
-create database cats owner postgres;
+create database cats_owners owner postgres;
