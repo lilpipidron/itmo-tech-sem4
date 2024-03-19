@@ -12,5 +12,5 @@ public class Owner {
     private final UUID id;
     private final String name;
     private final Date birthday;
-    private final ArrayList<Cat> ats;
+    private final ArrayList<Cat> cats;
 }
