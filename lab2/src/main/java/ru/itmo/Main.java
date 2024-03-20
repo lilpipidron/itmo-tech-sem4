@@ -6,6 +6,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import ru.itmo.cats.CatRepositoryImp;
 import ru.itmo.owners.OwnerRepositoryImp;
+import ru.itmo.owners.OwnerServiceImp;
 
 public class Main {
     public static void main(String[] args) {

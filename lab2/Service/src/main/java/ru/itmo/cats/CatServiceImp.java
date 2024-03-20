@@ -57,40 +57,31 @@ public class CatServiceImp implements CatService {
         if (id < 0) {
             throw new IllegalArgumentException("Cat id can't be less than 0");
         }
-        return catRepository.getCatById(id);
+
+        Cat cat = catRepository.getCatById(id);
+        if (cat == null) {
+            throw new IllegalArgumentException("Incorrect cat id");
+        }
+        return cat;
     }
 
     @Override
     public ArrayList<Cat> getAllFriends(int id) {
-        Cat cat = getCatById(id);
-        if (cat == null) {
-            throw new IllegalArgumentException("Incorrect cat id");
-        }
+        getCatById(id);
         return catRepository.getAllFriends(id);
     }
 
     @Override
     public void addFriend(int catId, int friendId) {
-        Cat cat = getCatById(catId);
-        if (cat == null) {
-            throw new IllegalArgumentException("Incorrect cat id");
-        }
-
-        Cat friend = getCatById(catId);
-        if (friend == null) {
-            throw new IllegalArgumentException("Incorrect friend id");
-        }
+        getCatById(catId);
+        getCatById(friendId);
 
         catRepository.addFriend(catId, friendId);
     }
 
     @Override
     public void deleteCat(int catId, int ownerId) {
-        Cat cat = getCatById(catId);
-        if (cat == null) {
-            throw new IllegalArgumentException("Incorrect cat id");
-        }
-
+        getCatById(catId);
         if (ownerId < 0) {
             throw new IllegalArgumentException("Owner id can't be less than 0");
         }

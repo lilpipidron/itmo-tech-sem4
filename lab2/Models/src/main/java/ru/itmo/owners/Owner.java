@@ -25,4 +25,10 @@ public class Owner {
         this.name = null;
         this.birthday = null;
     }
+
+    public Owner(String name, Date birthday) {
+        this.id = -1;
+        this.name = name;
+        this.birthday = birthday;
+    }
 }
