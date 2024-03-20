@@ -36,4 +36,12 @@ public class Cat {
         this.breed = null;
         this.color = null;
     }
+
+    public Cat(String name, Date birthday, Breed breed, Color color) {
+        this.id = -1;
+        this.name = name;
+        this.birthday = birthday;
+        this.breed = breed;
+        this.color = color;
+    }
 }

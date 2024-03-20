@@ -18,6 +18,8 @@ dependencies {
 
     testCompileOnly("org.projectlombok:lombok:1.18.30")
     implementation("org.hibernate:hibernate-core:5.4.32.Final")
+
+    implementation(project(":DAO"))
 }
 
 tasks.test {

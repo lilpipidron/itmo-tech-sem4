@@ -6,7 +6,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 
 public interface CatService {
-    void addNewCat(int ownerId, String name, Date birthday, Breed breed);
+    void addNewCat(int ownerId, String name, String birthday, String breed, String Color);
 
     Cat getCatById(int id);
 
