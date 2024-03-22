@@ -12,8 +12,9 @@ import java.sql.Date;
 @Table(name = "cats")
 public class Cat {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
-    private final int id;
+    private int id;
 
     @Column(name = "name", nullable = false)
     private final String name;
@@ -30,7 +31,6 @@ public class Cat {
     private final Color color;
 
     public Cat() {
-        this.id = -1;
         this.name = null;
         this.birthday = null;
         this.breed = null;
@@ -38,7 +38,6 @@ public class Cat {
     }
 
     public Cat(String name, Date birthday, Breed breed, Color color) {
-        this.id = -1;
         this.name = name;
         this.birthday = birthday;
         this.breed = breed;

@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import ru.itmo.cats.CatRepositoryImp;
+import ru.itmo.cats.CatServiceImp;
 import ru.itmo.owners.OwnerRepositoryImp;
 import ru.itmo.owners.OwnerServiceImp;
 
@@ -23,8 +24,11 @@ public class Main {
         Session session = sessionFactory.openSession();
 
         CatRepositoryImp catsRepository = new CatRepositoryImp(session);
-        OwnerRepositoryImp ownerRepositoryImp = new OwnerRepositoryImp(session);
+        OwnerRepositoryImp ownerRepository = new OwnerRepositoryImp(session);
 
+        CatServiceImp catService = new CatServiceImp(catsRepository, ownerRepository);
+        OwnerServiceImp ownerService = new OwnerServiceImp(catsRepository, ownerRepository);
+        ownerService.addNewOwner("name", "2006-01-02");
         session.close();
 
         sessionFactory.close();

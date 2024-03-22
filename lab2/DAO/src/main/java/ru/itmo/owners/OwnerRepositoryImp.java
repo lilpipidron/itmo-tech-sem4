@@ -1,7 +1,6 @@
 package ru.itmo.owners;
 
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.query.NativeQuery;
 
 import java.util.ArrayList;
@@ -15,9 +14,7 @@ public class OwnerRepositoryImp implements OwnerRepository {
 
     @Override
     public void addNewOwner(Owner owner) {
-        Transaction transaction = session.beginTransaction();
         session.save(owner);
-        transaction.commit();
     }
 
     @Override

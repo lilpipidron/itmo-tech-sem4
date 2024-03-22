@@ -1,7 +1,6 @@
 package ru.itmo.cats;
 
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.query.NativeQuery;
 
 import java.io.Serializable;
@@ -17,9 +16,7 @@ public class CatRepositoryImp implements CatRepository {
 
     @Override
     public void addNewCat(Cat cat, int ownerId) {
-        Transaction transaction = session.beginTransaction();
         Serializable catId = session.save(cat);
-        transaction.commit();
 
         String sql = "INSERT INTO owner_cat (owner_id, cat_id) VALUES (:ownerId, :catId)";
         session.createNativeQuery(sql)
@@ -56,6 +53,10 @@ public class CatRepositoryImp implements CatRepository {
                 .setParameter("catId", catId)
                 .setParameter("friendId", friendId)
                 .executeUpdate();
+        session.createNativeQuery(sql)
+                .setParameter("catId", friendId)
+                .setParameter("friendId", catId)
+                .executeUpdate();
     }
 
     @Override
@@ -65,6 +66,17 @@ public class CatRepositoryImp implements CatRepository {
                 .setParameter("ownerId", ownerId)
                 .setParameter("catId", catId)
                 .executeUpdate();
+
+        sql = "DELETE FROM cat_friend where cat_id = :catId";
+        session.createNativeQuery(sql)
+                .setParameter("catId", catId)
+                .executeUpdate();
+
+        sql = "DELETE FROM cat_friend where friend_id = :catId";
+        session.createNativeQuery(sql)
+                .setParameter("catId", catId)
+                .executeUpdate();
+
 
         sql = "DELETE FROM cats where id = :catId";
         session.createNativeQuery(sql)

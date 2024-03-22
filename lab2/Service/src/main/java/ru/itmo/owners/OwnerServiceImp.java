@@ -25,6 +25,7 @@ public class OwnerServiceImp implements OwnerService{
         }
         Owner owner = new Owner(name, birthdayDate);
         ownerRepository.addNewOwner(owner);
+        System.out.println(owner.getId());
     }
 
     @Override
@@ -52,8 +53,6 @@ public class OwnerServiceImp implements OwnerService{
         if (cat == null) {
             throw new IllegalArgumentException("Incorrect cat id");
         }
-
-        ownerRepository.addCat(ownerId, catId);
     }
 
     @Override
