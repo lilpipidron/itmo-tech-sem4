@@ -3,9 +3,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import ru.itmo.breeds.Breed;
 import ru.itmo.cats.Cat;
-import ru.itmo.cats.CatServiceImp;
+import ru.itmo.cats.CatServiceImpl;
 import ru.itmo.colors.Color;
-import ru.itmo.owners.OwnerServiceImp;
+import ru.itmo.owners.OwnerServiceImpl;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -15,13 +15,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CatOwnerTest {
-    private CatServiceImp catService;
-    private OwnerServiceImp ownerService;
+    private CatServiceImpl catService;
+    private OwnerServiceImpl ownerService;
 
     @BeforeEach
     public void setup() {
-        catService = Mockito.mock(CatServiceImp.class);
-        ownerService = Mockito.mock(OwnerServiceImp.class);
+        catService = Mockito.mock(CatServiceImpl.class);
+        ownerService = Mockito.mock(OwnerServiceImpl.class);
     }
 
     @Test

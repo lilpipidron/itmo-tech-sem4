@@ -1,16 +1,17 @@
 package ru.itmo.owners;
 
 import ru.itmo.cats.Cat;
-import ru.itmo.cats.CatRepositoryImp;
+import ru.itmo.cats.CatRepositoryImpl;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 
-public class OwnerServiceImp implements OwnerService{
-    private final CatRepositoryImp catRepository;
-    private final OwnerRepositoryImp ownerRepository;
+public class OwnerServiceImpl implements OwnerService{
+    private final CatRepositoryImpl catRepository;
+    private final OwnerRepositoryImpl ownerRepository;
 
-    public OwnerServiceImp(CatRepositoryImp catRepository, OwnerRepositoryImp ownerRepository) {
+    public OwnerServiceImpl(CatRepositoryImpl catRepository, OwnerRepositoryImpl ownerRepository) {
         this.catRepository = catRepository;
         this.ownerRepository = ownerRepository;
     }
@@ -63,7 +64,7 @@ public class OwnerServiceImp implements OwnerService{
     }
 
     @Override
-    public ArrayList<Integer> getAllCatsId(int ownerId) {
+    public List<Integer> getAllCatsId(int ownerId) {
         getOwnerById(ownerId);
         return ownerRepository.getAllCatsId(ownerId);
     }

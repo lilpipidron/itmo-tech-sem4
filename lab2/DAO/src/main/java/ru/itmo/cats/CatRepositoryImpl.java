@@ -7,10 +7,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CatRepositoryImp implements CatRepository {
+public class CatRepositoryImpl implements CatRepository {
     private final Session session;
 
-    public CatRepositoryImp(Session session) {
+    public CatRepositoryImpl(Session session) {
         this.session = session;
     }
 
@@ -31,8 +31,8 @@ public class CatRepositoryImp implements CatRepository {
     }
 
     @Override
-    public ArrayList<Cat> getAllFriends(int id) {
-        ArrayList<Cat> friends = new ArrayList<>();
+    public List<Cat> getAllFriends(int id) {
+        List<Cat> friends = new ArrayList<>();
         String sql = "SELECT friend_id FROM cat_friend WHERE cat_id = :catId";
         NativeQuery<Integer> query = session.createNativeQuery(sql, Integer.class)
                 .setParameter("catId", id);

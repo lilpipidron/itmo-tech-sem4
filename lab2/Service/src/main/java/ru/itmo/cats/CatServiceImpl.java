@@ -3,16 +3,17 @@ package ru.itmo.cats;
 import ru.itmo.breeds.Breed;
 import ru.itmo.colors.Color;
 import ru.itmo.owners.Owner;
-import ru.itmo.owners.OwnerRepositoryImp;
+import ru.itmo.owners.OwnerRepositoryImpl;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 
-public class CatServiceImp implements CatService {
-    private final CatRepositoryImp catRepository;
-    private final OwnerRepositoryImp ownerRepository;
+public class CatServiceImpl implements CatService {
+    private final CatRepositoryImpl catRepository;
+    private final OwnerRepositoryImpl ownerRepository;
 
-    public CatServiceImp(CatRepositoryImp catRepository, OwnerRepositoryImp ownerRepository) {
+    public CatServiceImpl(CatRepositoryImpl catRepository, OwnerRepositoryImpl ownerRepository) {
         this.catRepository = catRepository;
         this.ownerRepository = ownerRepository;
     }
@@ -66,7 +67,7 @@ public class CatServiceImp implements CatService {
     }
 
     @Override
-    public ArrayList<Cat> getAllFriends(int id) {
+    public List<Cat> getAllFriends(int id) {
         getCatById(id);
         return catRepository.getAllFriends(id);
     }
@@ -90,6 +91,6 @@ public class CatServiceImp implements CatService {
         if (owner == null) {
             throw new IllegalArgumentException("Incorrect owner id");
         }
-        deleteCat(catId, ownerId);
+        catRepository.deleteCat(catId, ownerId);
     }
 }

@@ -4,11 +4,12 @@ import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class OwnerRepositoryImp implements OwnerRepository {
+public class OwnerRepositoryImpl implements OwnerRepository {
     private final Session session;
 
-    public OwnerRepositoryImp(Session session) {
+    public OwnerRepositoryImpl(Session session) {
         this.session = session;
     }
 
@@ -45,10 +46,10 @@ public class OwnerRepositoryImp implements OwnerRepository {
     }
 
     @Override
-    public ArrayList<Integer> getAllCatsId(int id) {
+    public List<Integer> getAllCatsId(int id) {
         String sql = "SELECT cat_id FROM owner_cat WHERE owner_id = :ownerId";
         NativeQuery<Integer> query = session.createNativeQuery(sql, Integer.class)
                 .setParameter("ownerId", id);
-        return (ArrayList<Integer>) query.list();
+        return query.list();
     }
 }

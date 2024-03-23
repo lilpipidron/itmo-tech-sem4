@@ -1,6 +1,7 @@
 package ru.itmo.owners;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface OwnerRepository {
     void addNewOwner(Owner owner);
@@ -11,5 +12,5 @@ public interface OwnerRepository {
 
     void deleteOwner(int ownerId);
 
-    ArrayList<Integer> getAllCatsId(int id);
+    List<Integer> getAllCatsId(int id);
 }

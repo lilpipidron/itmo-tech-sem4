@@ -2,6 +2,7 @@ package ru.itmo.owners;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
+import java.util.List;
 
 public interface OwnerService {
     void addNewOwner(String name, String birthday);
@@ -12,5 +13,5 @@ public interface OwnerService {
 
     void deleteOwner(int ownerId);
 
-    ArrayList<Integer> getAllCatsId(int ownerId);
+    List<Integer> getAllCatsId(int ownerId);
 }

@@ -16,6 +16,7 @@ public class Owner {
 
     @Column(name = "name", nullable = false)
     private final String name;
+
     @Column(name = "birthday", nullable = false)
     private final Date birthday;
 
