@@ -6,7 +6,6 @@ import ru.itmo.owners.Owner;
 import ru.itmo.owners.OwnerRepositoryImpl;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CatServiceImpl implements CatService {

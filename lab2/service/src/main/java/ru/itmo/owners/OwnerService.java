@@ -1,7 +1,5 @@
 package ru.itmo.owners;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface OwnerService {

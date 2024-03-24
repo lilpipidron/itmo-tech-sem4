@@ -1,9 +1,5 @@
 package ru.itmo.cats;
 
-import ru.itmo.breeds.Breed;
-
-import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface CatService {

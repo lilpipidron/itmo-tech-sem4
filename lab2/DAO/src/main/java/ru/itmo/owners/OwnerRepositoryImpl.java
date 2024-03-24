@@ -3,7 +3,6 @@ package ru.itmo.owners;
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class OwnerRepositoryImpl implements OwnerRepository {

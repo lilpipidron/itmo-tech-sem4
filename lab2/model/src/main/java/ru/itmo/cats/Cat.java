@@ -1,6 +1,9 @@
 package ru.itmo.cats;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 import ru.itmo.breeds.Breed;
 import ru.itmo.colors.Color;

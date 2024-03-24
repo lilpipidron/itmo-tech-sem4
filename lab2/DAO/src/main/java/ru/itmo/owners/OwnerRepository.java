@@ -1,6 +1,5 @@
 package ru.itmo.owners;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface OwnerRepository {

@@ -4,7 +4,6 @@ import ru.itmo.cats.Cat;
 import ru.itmo.cats.CatRepositoryImpl;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 public class OwnerServiceImpl implements OwnerService{

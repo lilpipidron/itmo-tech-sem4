@@ -8,12 +8,9 @@ import ru.itmo.cats.CatServiceImpl;
 import ru.itmo.colors.Color;
 import ru.itmo.owners.Owner;
 import ru.itmo.owners.OwnerRepositoryImpl;
-import ru.itmo.owners.OwnerService;
 import ru.itmo.owners.OwnerServiceImpl;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
