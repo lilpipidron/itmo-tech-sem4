@@ -1,5 +1,5 @@
 rootProject.name = "lab2"
-include("Controller")
-include("Service")
+include("controller")
+include("service")
 include("DAO")
-include("Models")
+include("model")

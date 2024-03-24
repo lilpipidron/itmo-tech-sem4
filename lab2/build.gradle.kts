@@ -20,9 +20,9 @@ dependencies {
 
     testCompileOnly("org.projectlombok:lombok:1.18.30")
 
-    implementation(project(":Service"))
+    implementation(project(":service"))
     implementation(project(":DAO"))
-    implementation(project(":Models"))
+    implementation(project(":model"))
 
     implementation("org.hibernate:hibernate-core:5.4.32.Final")
     implementation("org.postgresql:postgresql:42.7.0")

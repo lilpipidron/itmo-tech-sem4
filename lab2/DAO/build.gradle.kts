@@ -19,7 +19,7 @@ dependencies {
 
     implementation("org.hibernate:hibernate-core:5.4.32.Final")
 
-    implementation(project(":Models"))
+    implementation(project(":model"))
 }
 
 tasks.test {
