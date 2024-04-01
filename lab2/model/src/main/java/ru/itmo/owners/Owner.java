@@ -5,9 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
+import ru.itmo.cats.Cat;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -27,6 +30,9 @@ public class Owner {
 
     @Column(name = "birthday", nullable = false)
     private final Date birthday;
+
+    @OneToMany(mappedBy="id", orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Cat> cats = new ArrayList<>();
 
     public Owner() {
         this.name = null;
@@ -48,4 +54,11 @@ public class Owner {
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
+
+    public void addCat(Cat cat) {
+        if (!cats.contains(cat)) {
+            cats.add(cat);
+        }
+    }
+
 }

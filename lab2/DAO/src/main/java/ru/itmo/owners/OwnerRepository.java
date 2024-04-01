@@ -1,5 +1,7 @@
 package ru.itmo.owners;
 
+import ru.itmo.cats.Cat;
+
 import java.util.List;
 
 public interface OwnerRepository {
@@ -7,9 +9,7 @@ public interface OwnerRepository {
 
     Owner getOwnerById(int id);
 
-    void addCat(int ownerId, int catId);
-
     void deleteOwner(int ownerId);
 
-    List<Integer> getAllCatsId(int id);
+    List<Cat> getAllCatsId(int id);
 }

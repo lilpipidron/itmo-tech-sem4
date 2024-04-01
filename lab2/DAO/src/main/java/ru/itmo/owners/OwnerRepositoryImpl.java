@@ -1,54 +1,53 @@
 package ru.itmo.owners;
 
 import org.hibernate.Session;
-import org.hibernate.query.NativeQuery;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+import ru.itmo.hibernate.HibernateSessionFactoryUtil;
 
 import java.util.List;
 
 public class OwnerRepositoryImpl implements OwnerRepository {
-    private final Session session;
-
-    public OwnerRepositoryImpl(Session session) {
-        this.session = session;
-    }
 
     @Override
     public void addNewOwner(Owner owner) {
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
         session.save(owner);
+        transaction.commit();
+        session.close();
     }
 
     @Override
     public Owner getOwnerById(int id) {
-        return session.get(Owner.class, id);
-    }
-
-    @Override
-    public void addCat(int ownerId, int catId) {
-        String sql = "INSERT INTO owner_cat (owner_id, cat_id) VALUES (:ownerId, :catId)";
-        session.createNativeQuery(sql)
-                .setParameter("ownerId", ownerId)
-                .setParameter("catId", catId)
-                .executeUpdate();
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        Owner owner = session.get(Owner.class, id);
+        transaction.commit();
+        session.close();
+        return owner;
     }
 
     @Override
     public void deleteOwner(int ownerId) {
-        String sql = "DELETE FROM owner_cat WHERE owner_id = :ownerId";
-        session.createNativeQuery(sql)
-                .setParameter("ownerId", ownerId)
-                .executeUpdate();
-
-        sql = "DELETE FROM owners WHERE id = :ownerId";
-        session.createNativeQuery(sql)
-                .setParameter("ownerId", ownerId)
-                .executeUpdate();
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        Owner owner = getOwnerById(ownerId);
+        session.delete(owner);
+        transaction.commit();
+        session.close();
     }
 
     @Override
-    public List<Integer> getAllCatsId(int id) {
-        String sql = "SELECT cat_id FROM owner_cat WHERE owner_id = :ownerId";
-        NativeQuery<Integer> query = session.createNativeQuery(sql, Integer.class)
+    public List getAllCatsId(int id) {
+        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+
+        String sql = "SELECT id FROM cats WHERE owner_id = :ownerId";
+        Query query = session.createSQLQuery(sql)
                 .setParameter("ownerId", id);
+        session.close();
         return query.list();
+
     }
 }

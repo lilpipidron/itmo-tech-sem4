@@ -48,8 +48,8 @@ public class CatServiceImpl implements CatService {
         } catch (Exception e) {
             throw new IllegalArgumentException("Incorrect color");
         }
-        Cat cat = new Cat(name, birthdayDate, breedEnum, colorEnum);
-        catRepository.addNewCat(cat, ownerId);
+        Cat cat = new Cat(name, birthdayDate, breedEnum, colorEnum, owner);
+        catRepository.addNewCat(cat);
     }
     private void catVerification(int id) {
         if (id < 0) {
@@ -89,16 +89,8 @@ public class CatServiceImpl implements CatService {
     }
 
     @Override
-    public void deleteCat(int catId, int ownerId) {
+    public void deleteCat(int catId) {
         catVerification(catId);
-        if (ownerId < 0) {
-            throw new IllegalArgumentException("Owner id can't be less than 0");
-        }
-
-        Owner owner = ownerRepository.getOwnerById(ownerId);
-        if (owner == null) {
-            throw new IllegalArgumentException("Incorrect owner id");
-        }
-        catRepository.deleteCat(catId, ownerId);
+        catRepository.deleteCat(catId);
     }
 }

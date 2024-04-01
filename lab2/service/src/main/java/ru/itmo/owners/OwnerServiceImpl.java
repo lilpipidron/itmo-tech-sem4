@@ -7,11 +7,9 @@ import java.sql.Date;
 import java.util.List;
 
 public class OwnerServiceImpl implements OwnerService{
-    private final CatRepositoryImpl catRepository;
     private final OwnerRepositoryImpl ownerRepository;
 
     public OwnerServiceImpl(CatRepositoryImpl catRepository, OwnerRepositoryImpl ownerRepository) {
-        this.catRepository = catRepository;
         this.ownerRepository = ownerRepository;
     }
 
@@ -53,20 +51,6 @@ public class OwnerServiceImpl implements OwnerService{
     }
 
     @Override
-    public void addCat(int ownerId, int catId) {
-        ownerVerification(ownerId);
-
-        if (catId < 0) {
-            throw new IllegalArgumentException("Cat id can't be less 0");
-        }
-
-        Cat cat = catRepository.getCatById(catId);
-        if (cat == null) {
-            throw new IllegalArgumentException("Incorrect cat id");
-        }
-    }
-
-    @Override
     public void deleteOwner(int ownerId) {
         ownerVerification(ownerId);
         ownerRepository.deleteOwner(ownerId);
@@ -74,7 +58,7 @@ public class OwnerServiceImpl implements OwnerService{
     }
 
     @Override
-    public List<Integer> getAllCatsId(int ownerId) {
+    public List getAllCatsId(int ownerId) {
         ownerVerification(ownerId);
         return ownerRepository.getAllCatsId(ownerId);
     }

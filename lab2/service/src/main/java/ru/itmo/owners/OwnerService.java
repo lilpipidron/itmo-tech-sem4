@@ -7,9 +7,7 @@ public interface OwnerService {
 
     Owner getOwnerById(int id);
 
-    void addCat(int ownerId, int catId);
-
     void deleteOwner(int ownerId);
 
-    List<Integer> getAllCatsId(int ownerId);
+    List getAllCatsId(int ownerId);
 }

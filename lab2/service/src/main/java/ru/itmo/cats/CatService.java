@@ -11,5 +11,5 @@ public interface CatService {
 
     void addFriend(int catId, int friendId);
 
-    void deleteCat(int catId, int ownerId);
+    void deleteCat(int catId);
 }
