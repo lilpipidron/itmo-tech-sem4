@@ -39,6 +39,12 @@ public class Owner {
         this.birthday = null;
     }
 
+    public Owner(Long id, String name, Date birthday) {
+        this.id = id;
+        this.name = name;
+        this.birthday = birthday;
+    }
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
