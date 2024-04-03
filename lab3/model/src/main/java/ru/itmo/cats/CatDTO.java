@@ -8,7 +8,7 @@ import java.sql.Date;
 
 @Data
 public class CatDTO {
-    private final int id;
+    private final long id;
     private final String name;
     private final Date birthday;
     private final Breed breed;

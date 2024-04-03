@@ -6,7 +6,7 @@ import java.sql.Date;
 
 @Data
 public class OwnerDTO {
-    private final int id;
+    private final long id;
     private final String name;
     private final Date birthday;
 }

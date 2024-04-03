@@ -25,7 +25,7 @@ public class Cat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
-    private int id;
+    private long id;
 
     @Column(name = "name", nullable = false)
     private final String name;
