@@ -17,7 +17,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web:3.2.3")
 
     implementation(project(":model"))
-    implementation(project(":dao"))
+    implementation(project(":service"))
 }
 
 tasks.test {

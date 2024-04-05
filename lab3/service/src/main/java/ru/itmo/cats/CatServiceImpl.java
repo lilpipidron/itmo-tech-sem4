@@ -47,7 +47,7 @@ public class CatServiceImpl implements CatService {
     }
 
     @Override
-    public List<CatDTO> GetAllFriends(long id) {
+    public List<CatDTO> getAllFriends(long id) {
         List<CatDTO> catDTOS = new ArrayList<>();
         List<Cat> cats = catRepository.getFriendsById(id);
         for (Cat cat : cats) {
@@ -70,7 +70,7 @@ public class CatServiceImpl implements CatService {
     public List<CatDTO> getAllCats(long id) {
         List<CatDTO> catDTOS = new ArrayList<>();
         List<Cat> cats = catRepository.getCatsByOwnerId(id);
-        for (Cat cat: cats) {
+        for (Cat cat : cats) {
             catDTOS.add(CatMapper.fromCatToDTO(cat));
         }
         return catDTOS;

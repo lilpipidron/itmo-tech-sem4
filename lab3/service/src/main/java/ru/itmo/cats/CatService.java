@@ -14,7 +14,7 @@ public interface CatService {
 
     List<CatDTO> findCatsByBreed(Breed breed);
 
-    List<CatDTO> GetAllFriends(long id);
+    List<CatDTO> getAllFriends(long id);
 
     void addFriend(long catId, long friendId);
 
