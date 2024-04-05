@@ -6,4 +6,6 @@ import ru.itmo.cats.CatDTO;
 import java.util.List;
 
 public interface OwnerService {
+    void addOwner(Owner owner);
+    OwnerDTO getOwnerByID(long id);
 }
