@@ -1,15 +1,16 @@
 package ru.itmo.mappers;
 
+import lombok.experimental.UtilityClass;
 import ru.itmo.cats.Cat;
 import ru.itmo.cats.CatDTO;
-import ru.itmo.owners.OwnerDTO;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
+@UtilityClass
 public class CatMapper {
-    public CatDTO fromCatToDTO(Cat cat){
-        return new CatDTO(cat.getId(), cat.getName(), cat.getBirthday(), cat.getBreed(), cat.getColor(), OwnerMapper.fromOwnerToDTO(cat.getOwner()));
+    public CatDTO fromCatToDTO(Optional<Cat> cat) {
+        return new CatDTO(cat.get().getId(), cat.get().getName(), cat.get().getBirthday(), cat.get().getBreed(), cat.get().getColor(), OwnerMapper.fromOwnerToDTO(cat.get().getOwner()));
     }
 
     public Cat fromDTOToCat(CatDTO catDTO) {
