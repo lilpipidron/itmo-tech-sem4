@@ -3,14 +3,9 @@ package ru.itmo.owners;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
-import ru.itmo.cats.Cat;
-import ru.itmo.cats.CatDTO;
-import ru.itmo.cats.CatRepository;
-import ru.itmo.mappers.CatMapper;
+import ru.itmo.repository.CatRepository;
 import ru.itmo.mappers.OwnerMapper;
-
-import java.util.ArrayList;
-import java.util.List;
+import ru.itmo.repository.OwnerRepository;
 
 @Service
 @ComponentScan(basePackages = {"ru.itmo.repository"})

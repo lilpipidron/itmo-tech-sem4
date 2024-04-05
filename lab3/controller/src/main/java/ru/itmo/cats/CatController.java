@@ -47,4 +47,9 @@ public class CatController {
         catServiceImpl.addFriend(catId, friendId);
     }
 
+    @GetMapping("/getAllCatsByOwnerId")
+    public List<CatDTO> getAllCatsByOwnerId(@RequestParam("id") Long id) {
+        return catServiceImpl.getAllCatsByOwnerId(id);
+    }
+
 }

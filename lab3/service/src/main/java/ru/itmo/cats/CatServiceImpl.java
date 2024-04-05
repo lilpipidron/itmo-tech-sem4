@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.itmo.breeds.Breed;
 import ru.itmo.colors.Color;
 import ru.itmo.mappers.CatMapper;
+import ru.itmo.repository.CatRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +68,7 @@ public class CatServiceImpl implements CatService {
     }
 
     @Override
-    public List<CatDTO> getAllCats(long id) {
+    public List<CatDTO> getAllCatsByOwnerId(long id) {
         List<CatDTO> catDTOS = new ArrayList<>();
         List<Cat> cats = catRepository.getCatsByOwnerId(id);
         for (Cat cat : cats) {

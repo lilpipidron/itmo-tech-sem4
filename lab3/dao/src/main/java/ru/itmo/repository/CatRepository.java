@@ -1,8 +1,9 @@
-package ru.itmo.cats;
+package ru.itmo.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.itmo.breeds.Breed;
+import ru.itmo.cats.Cat;
 import ru.itmo.colors.Color;
 
 import java.util.List;
