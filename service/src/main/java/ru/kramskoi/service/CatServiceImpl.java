@@ -52,9 +52,10 @@ public class CatServiceImpl implements CatService {
   @Override
   public List<CatDTO> getFriendsById(Long id) {
     List<CatDTO> catDTOS = new ArrayList<>();
-    List<Cat> cats = catRepository.getFriendsById(id);
-    for (Cat cat : cats) {
-      catDTOS.add(CatMapper.fromCatToDTO(cat));
+    Cat cat = catRepository.getCatById(id);
+    List<Cat> friends = cat.getFriends();
+    for (Cat friend : friends) {
+      catDTOS.add(CatMapper.fromCatToDTO(friend));
     }
     return catDTOS;
   }
