@@ -1,5 +1,3 @@
-rootProject.name = "lab2"
-include("controller")
+include("dao")
 include("service")
-include("DAO")
-include("model")
+include("controller")

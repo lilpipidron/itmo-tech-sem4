@@ -20,10 +20,6 @@ dependencies {
 
     testCompileOnly("org.projectlombok:lombok:1.18.30")
 
-    implementation(project(":service"))
-    implementation(project(":DAO"))
-    implementation(project(":model"))
-
     implementation("org.hibernate:hibernate-core:5.4.32.Final")
     implementation("org.postgresql:postgresql:42.7.0")
     implementation("org.flywaydb:flyway-core:7.15.0")
