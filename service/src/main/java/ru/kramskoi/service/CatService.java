@@ -21,4 +21,8 @@ public interface CatService {
   void addFriend(Long catId, Long friendId);
 
   List<CatDTO> getAllCatsByOwnerId(Long id);
+
+  void updateCat(Cat cat);
+
+  void deleteCat(Long id);
 }

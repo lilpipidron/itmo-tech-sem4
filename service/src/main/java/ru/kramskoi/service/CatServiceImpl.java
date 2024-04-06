@@ -78,4 +78,19 @@ public class CatServiceImpl implements CatService {
     }
     return catDTOS;
   }
+
+  @Override
+  public void updateCat(Cat cat) {
+    Cat prevCat = catRepository.getCatById(cat.getId());
+    prevCat.setName(cat.getName());
+    prevCat.setBirthday(cat.getBirthday());
+    prevCat.setBreed(cat.getBreed());
+    prevCat.setColor(cat.getColor());
+    catRepository.save(cat);
+  }
+
+  @Override
+  public void deleteCat(Long id) {
+    catRepository.deleteById(id);
+  }
 }

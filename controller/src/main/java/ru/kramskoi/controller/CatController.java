@@ -23,11 +23,6 @@ public class CatController {
     this.catService = catService;
   }
 
-  @PostMapping("/addCat")
-  public void addCat(@Valid @RequestBody CatDTO catDTO) {
-    catService.addCat(CatMapper.fromDTOToCat(catDTO));
-  }
-
   @GetMapping("/findCatByID")
   public CatDTO findCatByID(@RequestParam("id") Long id) {
     return catService.findCatByID(id);
@@ -48,13 +43,28 @@ public class CatController {
     return catService.getFriendsById(id);
   }
 
+  @GetMapping("/getAllCatsByOwnerId")
+  public List<CatDTO> getAllCatsByOwnerId(@RequestParam("id") Long id) {
+    return catService.getAllCatsByOwnerId(id);
+  }
+
+  @PutMapping("/updateCat")
+  public void updateCat(@Valid @RequestBody CatDTO catDTO) {
+    catService.updateCat(CatMapper.fromDTOToCat(catDTO));
+  }
   @PostMapping("/addFriend")
   public void addFriend(@RequestParam("catId") Long catId, @RequestParam("friendId") Long friendId) {
     catService.addFriend(catId, friendId);
   }
 
-  @GetMapping("/getAllCatsByOwnerId")
-  public List<CatDTO> getAllCatsByOwnerId(@RequestParam("id") Long id) {
-    return catService.getAllCatsByOwnerId(id);
+  @PostMapping("/addCat")
+  public void addCat(@Valid @RequestBody CatDTO catDTO) {
+    catService.addCat(CatMapper.fromDTOToCat(catDTO));
   }
+
+  @DeleteMapping("/deleteCat")
+  public void deleteCat(@RequestParam("id") Long id) {
+    catService.deleteCat(id);
+  }
+
 }
