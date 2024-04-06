@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.kramskoi.breeds.Breed;
 import ru.kramskoi.colors.Color;
 import ru.kramskoi.dto.CatDTO;
-import ru.kramskoi.entity.Cat;
+import ru.kramskoi.mapper.CatMapper;
 import ru.kramskoi.service.CatService;
 
 import java.util.List;
@@ -23,8 +23,8 @@ public class CatController {
   }
 
   @PostMapping("/addCat")
-  public void addCat(@Validated @RequestBody Cat cat) {
-    catService.addCat(cat);
+  public void addCat(@Validated @RequestBody CatDTO catDTO) {
+    catService.addCat(CatMapper.fromDTOToCat(catDTO));
   }
 
   @GetMapping("/findCatByID")
@@ -44,7 +44,7 @@ public class CatController {
 
   @GetMapping("/getAllFriends")
   public List<CatDTO> getAllFriends(@RequestParam("id") Long id) {
-    return catService.getAllFriends(id);
+    return catService.getFriendsById(id);
   }
 
   @PostMapping("/addFriend")

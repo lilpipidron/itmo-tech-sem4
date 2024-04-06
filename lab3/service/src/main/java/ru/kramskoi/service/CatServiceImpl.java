@@ -50,7 +50,7 @@ public class CatServiceImpl implements CatService {
   }
 
   @Override
-  public List<CatDTO> getAllFriends(Long id) {
+  public List<CatDTO> getFriendsById(Long id) {
     List<CatDTO> catDTOS = new ArrayList<>();
     List<Cat> cats = catRepository.getFriendsById(id);
     for (Cat cat : cats) {

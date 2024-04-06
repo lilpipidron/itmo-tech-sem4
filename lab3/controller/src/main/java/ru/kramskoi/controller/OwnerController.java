@@ -4,6 +4,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.kramskoi.dto.OwnerDTO;
 import ru.kramskoi.entity.Owner;
+import ru.kramskoi.mapper.OwnerMapper;
 import ru.kramskoi.service.OwnerService;
 
 @RestController
@@ -17,8 +18,8 @@ public class OwnerController {
   }
 
   @PostMapping("/addOwner")
-  public void addOwner(@Validated @RequestBody Owner owner) {
-    ownerService.addOwner(owner);
+  public void addOwner(@Validated @RequestBody OwnerDTO ownerDTO) {
+    ownerService.addOwner(OwnerMapper.fromDTOToOwner(ownerDTO));
   }
 
   @GetMapping("/getOwnerById")
