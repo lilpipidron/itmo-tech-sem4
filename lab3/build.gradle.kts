@@ -2,7 +2,7 @@ plugins {
     id("java")
 }
 
-group = "ru.itmo"
+group = "ru.kramskoi"
 version = "1.0-SNAPSHOT"
 
 repositories {
