@@ -1,5 +1,6 @@
 package ru.kramskoi.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.kramskoi.dto.OwnerDTO;
@@ -17,7 +18,7 @@ public class OwnerController {
   }
 
   @PostMapping("/addOwner")
-  public void addOwner(@Validated @RequestBody OwnerDTO ownerDTO) {
+  public void addOwner(@Valid @RequestBody OwnerDTO ownerDTO) {
     ownerService.addOwner(OwnerMapper.fromDTOToOwner(ownerDTO));
   }
 

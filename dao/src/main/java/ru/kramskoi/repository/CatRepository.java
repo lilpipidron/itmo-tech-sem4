@@ -19,4 +19,5 @@ public interface CatRepository extends JpaRepository<Cat, Long> {
   List<Cat> getCatsByOwnerId(Long ownerId);
   @Query(value = "SELECT c.* FROM cats c WHERE c.id IN (SELECT friend_id FROM cat_friend WHERE cat_id = :id)", nativeQuery = true)
   List<Cat> getFriendsById(@Param("id") Long id);
+  void deleteCatById(Long id);
 }

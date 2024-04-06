@@ -1,5 +1,6 @@
 package ru.kramskoi.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class CatController {
   }
 
   @PostMapping("/addCat")
-  public void addCat(@Validated @RequestBody CatDTO catDTO) {
+  public void addCat(@Valid @RequestBody CatDTO catDTO) {
     catService.addCat(CatMapper.fromDTOToCat(catDTO));
   }
 
