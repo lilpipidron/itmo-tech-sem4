@@ -22,7 +22,7 @@ public class CatController {
     this.catService = catService;
   }
 
-  @GetMapping("/addCat")
+  @PostMapping("/addCat")
   public void addCat(@Validated @RequestBody Cat cat) {
     catService.addCat(cat);
   }
@@ -47,7 +47,7 @@ public class CatController {
     return catService.getAllFriends(id);
   }
 
-  @GetMapping("/addFriend")
+  @PostMapping("/addFriend")
   public void addFriend(@RequestParam("catId") Long catId, @RequestParam("friendId") Long friendId) {
     catService.addFriend(catId, friendId);
   }

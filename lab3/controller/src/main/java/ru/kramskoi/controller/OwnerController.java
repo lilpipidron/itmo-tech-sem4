@@ -16,7 +16,7 @@ public class OwnerController {
     this.ownerService = ownerService;
   }
 
-  @GetMapping("/addOwner")
+  @PostMapping("/addOwner")
   public void addOwner(@Validated @RequestBody Owner owner) {
     ownerService.addOwner(owner);
   }
