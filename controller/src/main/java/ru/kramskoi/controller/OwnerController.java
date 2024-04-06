@@ -3,7 +3,6 @@ package ru.kramskoi.controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.kramskoi.dto.OwnerDTO;
-import ru.kramskoi.entity.Owner;
 import ru.kramskoi.mapper.OwnerMapper;
 import ru.kramskoi.service.OwnerService;
 
