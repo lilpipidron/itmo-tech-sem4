@@ -1,8 +1,8 @@
 package ru.kramskoi.controller;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.validation.annotation.*;
 import org.springframework.web.bind.annotation.*;
 import ru.kramskoi.breeds.Breed;
 import ru.kramskoi.colors.Color;
@@ -15,6 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/cat")
 @Validated
+
 public class CatController {
   @Autowired
   private final CatService catService;
@@ -49,7 +50,7 @@ public class CatController {
   }
 
   @PutMapping("/updateCat")
-  public void updateCat(@Valid @RequestBody CatDTO catDTO) {
+  public void updateCat(@Validated @RequestBody CatDTO catDTO) {
     catService.updateCat(CatMapper.fromDTOToCat(catDTO));
   }
   @PostMapping("/addFriend")
@@ -58,7 +59,7 @@ public class CatController {
   }
 
   @PostMapping("/addCat")
-  public void addCat(@Valid @RequestBody CatDTO catDTO) {
+  public void addCat(@Validated @RequestBody CatDTO catDTO) {
     catService.addCat(CatMapper.fromDTOToCat(catDTO));
   }
 

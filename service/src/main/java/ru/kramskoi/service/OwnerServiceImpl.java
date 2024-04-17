@@ -10,6 +10,7 @@ import ru.kramskoi.repository.OwnerRepository;
 
 
 @Service
+
 public class OwnerServiceImpl implements OwnerService {
   @Autowired
   OwnerRepository ownerRepository;

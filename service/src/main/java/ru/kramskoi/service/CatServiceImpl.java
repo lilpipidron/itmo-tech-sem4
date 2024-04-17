@@ -15,6 +15,7 @@ import java.util.List;
 
 @Service
 @ComponentScan(basePackages = {"ru.kramskoi.repository"})
+
 public class CatServiceImpl implements CatService {
   @Autowired
   CatRepository catRepository;

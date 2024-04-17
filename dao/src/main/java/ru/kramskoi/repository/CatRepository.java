@@ -10,6 +10,7 @@ import java.util.List;
 
 
 @Repository
+
 public interface CatRepository extends JpaRepository<Cat, Long> {
   Cat getCatById(Long id);
   List<Cat> getCatsByBreed(Breed breed);

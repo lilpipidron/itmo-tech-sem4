@@ -29,6 +29,8 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
 
     implementation("org.springframework.data:spring-data-jpa:3.2.2")
+    implementation("javax.validation:validation-api:2.0.1.Final")
+
 
 }
 
