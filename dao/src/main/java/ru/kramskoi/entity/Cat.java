@@ -1,6 +1,6 @@
 package ru.kramskoi.entity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 import ru.kramskoi.breeds.Breed;

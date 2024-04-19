@@ -33,7 +33,7 @@ public class OwnerController {
 
     @PostMapping("/addOwner")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addOwner(@Validated @RequestBody OwnerDTO ownerDTO) {
+    public void addOwner(@RequestBody OwnerDTO ownerDTO) {
         ownerService.addOwner(OwnerMapper.fromDTOToOwner(ownerDTO));
     }
 

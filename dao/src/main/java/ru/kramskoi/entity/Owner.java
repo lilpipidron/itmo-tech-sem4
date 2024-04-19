@@ -1,6 +1,6 @@
 package ru.kramskoi.entity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
@@ -28,9 +28,8 @@ public class Owner {
   @Column(name = "birthday", nullable = false)
   private Date birthday;
 
-  @OneToMany(mappedBy="id", orphanRemoval = true, fetch = FetchType.EAGER)
+  @OneToMany(mappedBy="owner", orphanRemoval = true, fetch = FetchType.EAGER)
   private List<Cat> cats = new ArrayList<>();
-
   public Owner(Long id, String name, Date birthday) {
     this.id = id;
     this.name = name;
