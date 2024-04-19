@@ -8,6 +8,8 @@ import ru.kramskoi.dto.OwnerDTO;
 import ru.kramskoi.mapper.OwnerMapper;
 import ru.kramskoi.service.OwnerService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/owner")
 @Validated
@@ -27,13 +29,13 @@ public class OwnerController {
 
     @PutMapping("/updateOwner")
     @ResponseStatus(HttpStatus.OK)
-    public void updateOwner(@Validated @RequestBody OwnerDTO ownerDTO) {
+    public void updateOwner(@Valid @RequestBody OwnerDTO ownerDTO) {
         ownerService.updateOwner(OwnerMapper.fromDTOToOwner(ownerDTO));
     }
 
     @PostMapping("/addOwner")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addOwner(@RequestBody OwnerDTO ownerDTO) {
+    public void addOwner(@Valid @RequestBody OwnerDTO ownerDTO) {
         ownerService.addOwner(OwnerMapper.fromDTOToOwner(ownerDTO));
     }
 

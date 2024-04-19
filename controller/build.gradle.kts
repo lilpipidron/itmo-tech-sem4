@@ -23,6 +23,8 @@ dependencies {
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:3.0.6")
     annotationProcessor("org.projectlombok:lombok:1.18.22")
+    implementation("javax.validation:validation-api:2.0.1.Final")
+
 
     testImplementation("org.springframework.boot:spring-boot-starter-test:3.0.6")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")

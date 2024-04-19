@@ -9,6 +9,7 @@ import ru.kramskoi.dto.CatDTO;
 import ru.kramskoi.mapper.CatMapper;
 import ru.kramskoi.service.CatService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -49,7 +50,7 @@ public class CatController {
   }
 
   @PutMapping("/updateCat")
-  public void updateCat(@Validated @RequestBody CatDTO catDTO) {
+  public void updateCat(@Valid @RequestBody CatDTO catDTO) {
     catService.updateCat(CatMapper.fromDTOToCat(catDTO));
   }
   @PostMapping("/addFriend")
@@ -58,7 +59,7 @@ public class CatController {
   }
 
   @PostMapping("/addCat")
-  public void addCat(@Validated @RequestBody CatDTO catDTO) {
+  public void addCat(@Valid @RequestBody CatDTO catDTO) {
     catService.addCat(CatMapper.fromDTOToCat(catDTO));
   }
 
