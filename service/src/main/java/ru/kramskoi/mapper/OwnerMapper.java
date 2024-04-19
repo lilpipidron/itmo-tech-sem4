@@ -11,10 +11,16 @@ import java.sql.Date;
 public class OwnerMapper {
 
     public OwnerDTO fromOwnerToDTO(Owner owner) {
+        if (owner == null){
+            return null;
+        }
         return new OwnerDTO(owner.getId(), owner.getName(), owner.getBirthday().toString());
     }
 
     public Owner fromDTOToOwner(OwnerDTO ownerDTO) {
+        if (ownerDTO == null){
+            return null;
+        }
         return new Owner(ownerDTO.getId(), ownerDTO.getName(), Date.valueOf(ownerDTO.getBirthday()));
     }
 }

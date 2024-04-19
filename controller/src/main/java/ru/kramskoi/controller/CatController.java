@@ -2,7 +2,6 @@ package ru.kramskoi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.validation.annotation.*;
 import org.springframework.web.bind.annotation.*;
 import ru.kramskoi.breeds.Breed;
 import ru.kramskoi.colors.Color;
