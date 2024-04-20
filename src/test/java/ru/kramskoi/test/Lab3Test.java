@@ -19,7 +19,6 @@ import static ru.kramskoi.colors.Color.PINK;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class Lab3Test {
     private static RestTemplate restTemplate;
-
     @LocalServerPort
     private int port;
     private String baseUrl = "http://localhost";
