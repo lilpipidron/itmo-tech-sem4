@@ -1,6 +1,7 @@
 package ru.kramskoi.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.kramskoi.breeds.Breed;
 import ru.kramskoi.colors.Color;
 import ru.kramskoi.dto.CatDTO;
@@ -21,16 +22,19 @@ public class CatServiceImpl implements CatService {
     }
 
     @Override
+    @Transactional
     public void addCat(Cat cat) {
         catRepository.save(cat);
     }
 
     @Override
+    @Transactional
     public CatDTO findCatByID(Long id) {
         return CatMapper.fromCatToDTO(catRepository.getCatById(id));
     }
 
     @Override
+    @Transactional
     public List<CatDTO> findCatsByColor(Color color) {
         return catRepository.getCatsByColor(color)
                 .stream()
@@ -39,6 +43,7 @@ public class CatServiceImpl implements CatService {
     }
 
     @Override
+    @Transactional
     public List<CatDTO> findCatsByBreed(Breed breed) {
         return catRepository.getCatsByBreed(breed)
                 .stream()
@@ -47,6 +52,7 @@ public class CatServiceImpl implements CatService {
     }
 
     @Override
+    @Transactional
     public List<CatDTO> getFriendsById(Long id) {
         return catRepository.getCatById(id)
                 .getFriends()
@@ -56,6 +62,7 @@ public class CatServiceImpl implements CatService {
     }
 
     @Override
+    @Transactional
     public void addFriend(Long catId, Long friendId) {
         Cat cat = catRepository.getCatById(catId);
         Cat friend = catRepository.getCatById(friendId);
@@ -66,6 +73,7 @@ public class CatServiceImpl implements CatService {
     }
 
     @Override
+    @Transactional
     public List<CatDTO> getAllCatsByOwnerId(Long id) {
         return catRepository.getCatsByOwnerId(id)
                 .stream()
@@ -74,6 +82,7 @@ public class CatServiceImpl implements CatService {
     }
 
     @Override
+    @Transactional
     public void updateCat(Cat cat) {
         Cat prevCat = catRepository.getCatById(cat.getId());
         prevCat.setName(cat.getName());
@@ -84,6 +93,7 @@ public class CatServiceImpl implements CatService {
     }
 
     @Override
+    @Transactional
     public void deleteCat(Long id) {
         catRepository.deleteById(id);
     }
