@@ -4,8 +4,6 @@ import lombok.experimental.UtilityClass;
 import ru.kramskoi.dto.OwnerDTO;
 import ru.kramskoi.entity.Owner;
 
-import java.sql.Date;
-
 @UtilityClass
 
 public class OwnerMapper {
