@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import ru.kramskoi.dto.CatDTO;
 import ru.kramskoi.dto.OwnerDTO;
@@ -35,22 +36,27 @@ public class Lab3Test {
 
     @Test
     void should_create_user_with_id_1_and_get_him() {
-        OwnerDTO owner = new OwnerDTO(1L, "lol", "2006-01-02");
-        restTemplate.postForObject(baseUrl.concat("/owner").concat("/addOwner"), owner, OwnerDTO.class);
+        OwnerDTO owner = new OwnerDTO(1L, "lol", Date.valueOf("2006-01-02"));
+        restTemplate.postForObject(baseUrl.concat("/owner"), owner, OwnerDTO.class);
 
-        OwnerDTO ownerFromGetReq = restTemplate.getForObject(baseUrl.concat("/owner").concat("/getOwnerById?id=1"), OwnerDTO.class);
-        assertEquals(owner, ownerFromGetReq);
+        OwnerDTO ownerFromGetReq = restTemplate.getForObject(baseUrl.concat("/owner").concat("/1"), OwnerDTO.class);
+
+        assertAll(
+                () -> assertEquals(owner.getId(), ownerFromGetReq.getId()),
+                () -> assertEquals(owner.getName(), ownerFromGetReq.getName()),
+                () -> assertEquals(owner.getBirthday().toString(), ownerFromGetReq.getBirthday().toString())
+        );
     }
 
     @Test
     void should_create_cat_with_id_1_and_get_him() {
-        OwnerDTO owner = new OwnerDTO(1L, "lol", "2006-01-02");
-        restTemplate.postForObject(baseUrl.concat("/owner").concat("/addOwner"), owner, OwnerDTO.class);
+        OwnerDTO owner = new OwnerDTO(1L, "lol", Date.valueOf("2006-01-02"));
+        restTemplate.postForObject(baseUrl.concat("/owner"), owner, OwnerDTO.class);
 
         CatDTO cat = new CatDTO(1L, "lol", Date.valueOf("2006-01-02"), BRITMAN, PINK, 1L);
-        restTemplate.postForObject(baseUrl.concat("/cat").concat("/addCat"), cat, CatDTO.class);
+        restTemplate.postForObject(baseUrl.concat("/cat"), cat, CatDTO.class);
 
-        CatDTO catFromGetReq = restTemplate.getForObject(baseUrl.concat("/cat").concat("/findCatByID?id=1"), CatDTO.class);
+        CatDTO catFromGetReq = restTemplate.getForObject(baseUrl.concat("/cat").concat("/1"), CatDTO.class);
         assertNotNull(catFromGetReq);
 
         assertAll(
@@ -65,15 +71,16 @@ public class Lab3Test {
 
     @Test
     void should_create_cat_with_id_1_and_delete_him() {
-        OwnerDTO owner = new OwnerDTO(1L, "lol", "2006-01-02");
-        restTemplate.postForObject(baseUrl.concat("/owner").concat("/addOwner"), owner, OwnerDTO.class);
+        OwnerDTO owner = new OwnerDTO(1L, "lol", Date.valueOf("2006-01-02"));
+        restTemplate.postForObject(baseUrl.concat("/owner"), owner, OwnerDTO.class);
 
         CatDTO cat = new CatDTO(1L, "lol", Date.valueOf("2006-01-02"), BRITMAN, PINK, 1L);
-        restTemplate.postForObject(baseUrl.concat("/cat").concat("/addCat"), cat, CatDTO.class);
+        restTemplate.postForObject(baseUrl.concat("/cat"), cat, CatDTO.class);
 
-        restTemplate.delete(baseUrl.concat("/cat").concat("/deleteCat?id=1"));
+        restTemplate.delete(baseUrl.concat("/cat").concat("/1"));
 
-        CatDTO catFromGetReq = restTemplate.getForObject(baseUrl.concat("/cat").concat("/findCatByID?id=1"), CatDTO.class);
-        assertNull(catFromGetReq);
+        assertThrows(HttpClientErrorException.NotFound.class, () -> {
+            restTemplate.getForObject(baseUrl.concat("/cat").concat("/1"), CatDTO.class);
+        });
     }
 }

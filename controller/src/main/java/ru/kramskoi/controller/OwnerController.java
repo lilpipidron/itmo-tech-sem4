@@ -12,7 +12,7 @@ import ru.kramskoi.service.OwnerService;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/owners")
+@RequestMapping("/owner")
 @Validated
 public class OwnerController {
 

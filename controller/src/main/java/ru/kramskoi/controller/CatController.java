@@ -15,7 +15,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/cats")
+@RequestMapping("/cat")
 @Validated
 public class CatController {
 
@@ -34,22 +34,6 @@ public class CatController {
     }
     return new ResponseEntity<>(catDTO, HttpStatus.OK);
   }
-
-  /*
-  @GetMapping
-  public ResponseEntity<List<CatDTO>> getCatsByColor(@RequestParam(value = "color", required = false) Color color,
-                                                     @RequestParam(value = "breed", required = false) Breed breed) {
-    List<CatDTO> catDTOList;
-    if (color != null) {
-      catDTOList = catService.findCatsByColor(color);
-    } else if (breed != null) {
-      catDTOList = catService.findCatsByBreed(breed);
-    } else {
-      catDTOList = catService.findAllCats();
-    }
-    return new ResponseEntity<>(catDTOList, HttpStatus.OK);
-  }
-*/
   @GetMapping("/color/{color}")
   public ResponseEntity<List<CatDTO>> getCatsByColor(@PathVariable("color") Color color) {
     List<CatDTO> catDTOList = catService.findCatsByColor(color);

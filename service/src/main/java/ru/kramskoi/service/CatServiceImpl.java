@@ -1,6 +1,5 @@
 package ru.kramskoi.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.kramskoi.breeds.Breed;
 import ru.kramskoi.colors.Color;
