@@ -14,13 +14,13 @@ public class OwnerMapper {
         if (owner == null){
             return null;
         }
-        return new OwnerDTO(owner.getId(), owner.getName(), owner.getBirthday().toString());
+        return new OwnerDTO(owner.getId(), owner.getName(), owner.getBirthday());
     }
 
     public Owner fromDTOToOwner(OwnerDTO ownerDTO) {
         if (ownerDTO == null){
             return null;
         }
-        return new Owner(ownerDTO.getId(), ownerDTO.getName(), Date.valueOf(ownerDTO.getBirthday()));
+        return new Owner(ownerDTO.getId(), ownerDTO.getName(), ownerDTO.getBirthday());
     }
 }

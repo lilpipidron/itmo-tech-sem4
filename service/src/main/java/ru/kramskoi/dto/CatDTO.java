@@ -1,9 +1,6 @@
 package ru.kramskoi.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,6 +23,7 @@ public class CatDTO {
     @Size(max = 20, message = "name can't be bigger than 20 symbols")
     private String name;
 
+    @PastOrPresent
     private Date birthday;
 
     private Breed breed;
