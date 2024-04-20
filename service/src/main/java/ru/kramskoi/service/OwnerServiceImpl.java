@@ -28,7 +28,7 @@ public class OwnerServiceImpl implements OwnerService {
   }
 
   @Override
-  @Transactional
+  @Transactional(readOnly = true)
   public OwnerDTO getOwnerByID(Long id) {
     return OwnerMapper.fromOwnerToDTO(ownerRepository.getOwnerById(id));
   }

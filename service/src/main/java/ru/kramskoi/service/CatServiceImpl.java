@@ -28,13 +28,13 @@ public class CatServiceImpl implements CatService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public CatDTO findCatByID(Long id) {
         return CatMapper.fromCatToDTO(catRepository.getCatById(id));
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<CatDTO> findCatsByColor(Color color) {
         return catRepository.getCatsByColor(color)
                 .stream()
@@ -43,7 +43,7 @@ public class CatServiceImpl implements CatService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<CatDTO> findCatsByBreed(Breed breed) {
         return catRepository.getCatsByBreed(breed)
                 .stream()
@@ -52,7 +52,7 @@ public class CatServiceImpl implements CatService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<CatDTO> getFriendsById(Long id) {
         return catRepository.getCatById(id)
                 .getFriends()
@@ -73,7 +73,7 @@ public class CatServiceImpl implements CatService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<CatDTO> getAllCatsByOwnerId(Long id) {
         return catRepository.getCatsByOwnerId(id)
                 .stream()
