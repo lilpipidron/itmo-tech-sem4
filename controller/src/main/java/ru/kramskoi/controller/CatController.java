@@ -35,7 +35,7 @@ public class CatController {
 
     @GetMapping
     public ResponseEntity<List<CatDTO>> getCatsByColorOrBreed(
-            @RequestParam(value = "color") Color color,
+            @RequestParam(value = "color", required = false) Color color,
             @RequestParam(value = "breed", required = false) Breed breed) {
 
         if (color == null && breed == null) {
