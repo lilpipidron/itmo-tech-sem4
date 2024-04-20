@@ -1,6 +1,8 @@
 package ru.kramskoi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.kramskoi.breeds.Breed;
@@ -13,10 +15,10 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/cat")
+@RequestMapping("/cats")
 @Validated
-
 public class CatController {
+
   @Autowired
   private final CatService catService;
 
@@ -24,48 +26,94 @@ public class CatController {
     this.catService = catService;
   }
 
-  @GetMapping("/findCatByID")
-  public CatDTO findCatByID(@RequestParam("id") Long id) {
-    return catService.findCatByID(id);
+  @GetMapping("/{id}")
+  public ResponseEntity<CatDTO> getCatById(@PathVariable("id") Long id) {
+    CatDTO catDTO = catService.findCatByID(id);
+    if (catDTO == null) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    return new ResponseEntity<>(catDTO, HttpStatus.OK);
   }
 
-  @GetMapping("/findCatsByColor")
-  public List<CatDTO> findCatsByColor(@RequestParam("color") Color color) {
-    return catService.findCatsByColor(color);
+  /*
+  @GetMapping
+  public ResponseEntity<List<CatDTO>> getCatsByColor(@RequestParam(value = "color", required = false) Color color,
+                                                     @RequestParam(value = "breed", required = false) Breed breed) {
+    List<CatDTO> catDTOList;
+    if (color != null) {
+      catDTOList = catService.findCatsByColor(color);
+    } else if (breed != null) {
+      catDTOList = catService.findCatsByBreed(breed);
+    } else {
+      catDTOList = catService.findAllCats();
+    }
+    return new ResponseEntity<>(catDTOList, HttpStatus.OK);
+  }
+*/
+  @GetMapping("/color/{color}")
+  public ResponseEntity<List<CatDTO>> getCatsByColor(@PathVariable("color") Color color) {
+    List<CatDTO> catDTOList = catService.findCatsByColor(color);
+    if (catDTOList.isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    return new ResponseEntity<>(catDTOList, HttpStatus.OK);
   }
 
-  @GetMapping("/findCatsByBreed")
-  public List<CatDTO> findCatsByBreed(@RequestParam("breed") Breed breed) {
-    return catService.findCatsByBreed(breed);
+  @GetMapping("/breed/{breed}")
+  public ResponseEntity<List<CatDTO>> getCatsByBreed(@PathVariable("breed") Breed breed) {
+    List<CatDTO> catDTOList = catService.findCatsByBreed(breed);
+    if (catDTOList.isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    return new ResponseEntity<>(catDTOList, HttpStatus.OK);
+  }
+  @GetMapping("/{id}/friends")
+  public ResponseEntity<List<CatDTO>> getFriendsById(@PathVariable("id") Long id) {
+    List<CatDTO> catDTOList = catService.getFriendsById(id);
+    if (catDTOList.isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    return new ResponseEntity<>(catDTOList, HttpStatus.OK);
   }
 
-  @GetMapping("/getAllFriends")
-  public List<CatDTO> getAllFriends(@RequestParam("id") Long id) {
-    return catService.getFriendsById(id);
+  @GetMapping("/owner/{id}")
+  public ResponseEntity<List<CatDTO>> getAllCatsByOwnerId(@PathVariable("id") Long id) {
+    List<CatDTO> catDTOList = catService.getAllCatsByOwnerId(id);
+    if (catDTOList.isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    return new ResponseEntity<>(catDTOList, HttpStatus.OK);
   }
 
-  @GetMapping("/getAllCatsByOwnerId")
-  public List<CatDTO> getAllCatsByOwnerId(@RequestParam("id") Long id) {
-    return catService.getAllCatsByOwnerId(id);
-  }
-
-  @PutMapping("/updateCat")
-  public void updateCat(@Valid @RequestBody CatDTO catDTO) {
+  @PutMapping("/{id}")
+  public ResponseEntity<Void> updateCat(@PathVariable("id") Long id, @Valid @RequestBody CatDTO catDTO) {
+    CatDTO existingCatDTO = catService.findCatByID(id);
+    if (existingCatDTO == null) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
     catService.updateCat(CatMapper.fromDTOToCat(catDTO));
+    return new ResponseEntity<>(HttpStatus.OK);
   }
-  @PostMapping("/addFriend")
-  public void addFriend(@RequestParam("catId") Long catId, @RequestParam("friendId") Long friendId) {
+
+  @PostMapping("/{catId}/friends/{friendId}")
+  public ResponseEntity<Void> addFriend(@PathVariable("catId") Long catId, @PathVariable("friendId") Long friendId) {
     catService.addFriend(catId, friendId);
+    return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
-  @PostMapping("/addCat")
-  public void addCat(@Valid @RequestBody CatDTO catDTO) {
+  @PostMapping
+  public ResponseEntity<Void> addCat(@Valid @RequestBody CatDTO catDTO) {
     catService.addCat(CatMapper.fromDTOToCat(catDTO));
+    return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
-  @DeleteMapping("/deleteCat")
-  public void deleteCat(@RequestParam("id") Long id) {
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteCat(@PathVariable("id") Long id) {
+    CatDTO catDTO = catService.findCatByID(id);
+    if (catDTO == null) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
     catService.deleteCat(id);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
-
 }
