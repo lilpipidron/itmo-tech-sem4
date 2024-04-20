@@ -22,6 +22,8 @@ public interface CatService {
 
   List<CatDTO> getAllCatsByOwnerId(Long id);
 
+  List<CatDTO> getCatsByColorOrBreed(Color color, Breed breed);
+
   void updateCat(Cat cat);
 
   void deleteCat(Long id);

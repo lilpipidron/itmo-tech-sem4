@@ -23,8 +23,10 @@ public class OwnerController {
 
     @GetMapping("/{id}")
     public ResponseEntity<OwnerDTO> getOwnerById(@PathVariable("id") Long id) {
-        OwnerDTO ownerDTO = ownerService.getOwnerByID(id);
-        if (ownerDTO == null) {
+        OwnerDTO ownerDTO;
+        try {
+            ownerDTO = ownerService.getOwnerByID(id);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(ownerDTO, HttpStatus.OK);
@@ -32,8 +34,9 @@ public class OwnerController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateOwner(@PathVariable("id") Long id, @Valid @RequestBody OwnerDTO ownerDTO) {
-        OwnerDTO existingOwnerDTO = ownerService.getOwnerByID(id);
-        if (existingOwnerDTO == null) {
+        try {
+            ownerService.getOwnerByID(id);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         ownerService.updateOwner(OwnerMapper.fromDTOToOwner(ownerDTO));
@@ -48,8 +51,9 @@ public class OwnerController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOwner(@PathVariable("id") Long id) {
-        OwnerDTO ownerDTO = ownerService.getOwnerByID(id);
-        if (ownerDTO == null) {
+        try {
+            ownerService.getOwnerByID(id);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         ownerService.deleteOwner(id);

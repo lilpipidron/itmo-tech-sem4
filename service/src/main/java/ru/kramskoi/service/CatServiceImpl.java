@@ -10,7 +10,6 @@ import ru.kramskoi.mapper.CatMapper;
 import ru.kramskoi.repository.CatRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CatServiceImpl implements CatService {
@@ -30,35 +29,71 @@ public class CatServiceImpl implements CatService {
     @Override
     @Transactional(readOnly = true)
     public CatDTO findCatByID(Long id) {
-        return CatMapper.fromCatToDTO(catRepository.getCatById(id));
+        Cat cat = catRepository.getCatById(id);
+        if (cat == null) {
+            throw new IllegalArgumentException();
+        }
+        return CatMapper.fromCatToDTO(cat);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<CatDTO> findCatsByColor(Color color) {
-        return catRepository.getCatsByColor(color)
+        List<CatDTO> catDTOList = catRepository.getCatsByColor(color)
                 .stream()
                 .map(CatMapper::fromCatToDTO)
-                .collect(Collectors.toList());
+                .toList();
+        if (catDTOList.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        return catDTOList;
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<CatDTO> findCatsByBreed(Breed breed) {
-        return catRepository.getCatsByBreed(breed)
+        List<CatDTO> catDTOList = catRepository.getCatsByBreed(breed)
                 .stream()
                 .map(CatMapper::fromCatToDTO)
-                .collect(Collectors.toList());
+                .toList();
+        if (catDTOList.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        return catDTOList;
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CatDTO> getCatsByColorOrBreed(Color color, Breed breed) {
+        if (breed == null) {
+            return findCatsByColor(color);
+        } else if (color == null) {
+            return findCatsByBreed(breed);
+        }
+
+        List<CatDTO> catDTOList = catRepository.getCatsByColorOrBreed(color, breed)
+                .stream()
+                .map(CatMapper::fromCatToDTO)
+                .toList();
+        if (catDTOList.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        return catDTOList;
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<CatDTO> getFriendsById(Long id) {
-        return catRepository.getCatById(id)
+        List<CatDTO> catDTOList = catRepository.getCatById(id)
                 .getFriends()
                 .stream()
                 .map(CatMapper::fromCatToDTO)
-                .collect(Collectors.toList());
+                .toList();
+        if (catDTOList.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        return catDTOList;
     }
 
     @Override
@@ -75,10 +110,14 @@ public class CatServiceImpl implements CatService {
     @Override
     @Transactional(readOnly = true)
     public List<CatDTO> getAllCatsByOwnerId(Long id) {
-        return catRepository.getCatsByOwnerId(id)
+        List<CatDTO> catDTOList = catRepository.getCatsByOwnerId(id)
                 .stream()
                 .map(CatMapper::fromCatToDTO)
-                .collect(Collectors.toList());
+                .toList();
+        if (catDTOList.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        return catDTOList;
     }
 
     @Override

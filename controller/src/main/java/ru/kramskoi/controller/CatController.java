@@ -26,8 +26,10 @@ public class CatController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CatDTO> getCatById(@PathVariable("id") Long id) {
-        CatDTO catDTO = catService.findCatByID(id);
-        if (catDTO == null) {
+        CatDTO catDTO;
+        try {
+            catDTO = catService.findCatByID(id);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(catDTO, HttpStatus.OK);
@@ -38,15 +40,11 @@ public class CatController {
             @RequestParam(value = "color", required = false) Color color,
             @RequestParam(value = "breed", required = false) Breed breed) {
 
-        if (color == null && breed == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
         List<CatDTO> catDTOList;
-        if (breed != null) {
-            catDTOList = catService.findCatsByBreed(breed);
-        } else {
-            catDTOList = catService.findCatsByColor(color);
+        try {
+            catDTOList = catService.getCatsByColorOrBreed(color, breed);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         return new ResponseEntity<>(catDTOList, HttpStatus.OK);
@@ -55,8 +53,10 @@ public class CatController {
 
     @GetMapping("/{id}/friends")
     public ResponseEntity<List<CatDTO>> getFriendsById(@PathVariable("id") Long id) {
-        List<CatDTO> catDTOList = catService.getFriendsById(id);
-        if (catDTOList.isEmpty()) {
+        List<CatDTO> catDTOList;
+        try {
+            catDTOList = catService.getFriendsById(id);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(catDTOList, HttpStatus.OK);
@@ -64,8 +64,10 @@ public class CatController {
 
     @GetMapping("/owner/{id}")
     public ResponseEntity<List<CatDTO>> getAllCatsByOwnerId(@PathVariable("id") Long id) {
-        List<CatDTO> catDTOList = catService.getAllCatsByOwnerId(id);
-        if (catDTOList.isEmpty()) {
+        List<CatDTO> catDTOList;
+        try {
+            catDTOList = catService.getAllCatsByOwnerId(id);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(catDTOList, HttpStatus.OK);
@@ -73,10 +75,12 @@ public class CatController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateCat(@PathVariable("id") Long id, @Valid @RequestBody CatDTO catDTO) {
-        CatDTO existingCatDTO = catService.findCatByID(id);
-        if (existingCatDTO == null) {
+        try {
+            catService.findCatByID(id);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
         catService.updateCat(CatMapper.fromDTOToCat(catDTO));
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -95,10 +99,12 @@ public class CatController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCat(@PathVariable("id") Long id) {
-        CatDTO catDTO = catService.findCatByID(id);
-        if (catDTO == null) {
+        try {
+            catService.findCatByID(id);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
         catService.deleteCat(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
