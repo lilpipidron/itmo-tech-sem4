@@ -11,10 +11,15 @@ import ru.kramskoi.repository.OwnerRepository;
 
 @Service
 public class OwnerServiceImpl implements OwnerService {
-  @Autowired
+  final
   OwnerRepository ownerRepository;
-  @Autowired
+  final
   CatRepository catRepository;
+
+  public OwnerServiceImpl(CatRepository catRepository, OwnerRepository ownerRepository) {
+    this.catRepository = catRepository;
+    this.ownerRepository = ownerRepository;
+  }
 
   @Override
   public void addOwner(Owner owner) {

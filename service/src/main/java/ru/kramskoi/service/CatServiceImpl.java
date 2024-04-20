@@ -14,8 +14,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class CatServiceImpl implements CatService {
-    @Autowired
+    final
     CatRepository catRepository;
+
+    public CatServiceImpl(CatRepository catRepository) {
+        this.catRepository = catRepository;
+    }
 
     @Override
     public void addCat(Cat cat) {
