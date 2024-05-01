@@ -24,7 +24,7 @@ dependencies {
     implementation("org.hibernate.orm:hibernate-core:6.2.5.Final")
     implementation("org.postgresql:postgresql:42.7.3")
 
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa:2.7.3")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.0.6")
 
     implementation(project(":controller"))
     implementation(project(":service"))
@@ -38,10 +38,11 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test:3.2.4")
 
     testImplementation("org.springframework.boot:spring-boot-test-autoconfigure:2.7.3")
-    implementation("org.springframework:spring-web:5.3.23")
+    implementation("org.springframework:spring-web:3.0.6")
 
     testImplementation("org.hamcrest:hamcrest:2.2")
-}
+
+    implementation("org.springframework.boot:spring-boot-starter-security:3.0.6")}
 
 tasks.test {
     useJUnitPlatform()

@@ -39,6 +39,9 @@ dependencies {
     implementation("javax.persistence:javax.persistence-api:2.2")
 
     implementation("org.springframework.data:spring-data-jpa:3.2.2")
+
+    implementation("org.springframework.boot:spring-boot-starter-security:3.0.6")
+
 }
 
 tasks.test {
