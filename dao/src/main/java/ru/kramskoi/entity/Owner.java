@@ -30,6 +30,11 @@ public class Owner {
 
   @OneToMany(mappedBy="owner", orphanRemoval = true, fetch = FetchType.EAGER)
   private List<Cat> cats = new ArrayList<>();
+
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @JoinColumn(name = "id", referencedColumnName = "id")
+  private Person person;
+
   public Owner(Long id, String name, Date birthday) {
     this.id = id;
     this.name = name;

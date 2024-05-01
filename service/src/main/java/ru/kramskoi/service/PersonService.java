@@ -1,4 +1,7 @@
 package ru.kramskoi.service;
 
-public class PersonService {
+import ru.kramskoi.entity.Person;
+
+public interface PersonService {
+    void addPerson(Person person);
 }

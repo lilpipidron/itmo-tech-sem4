@@ -13,8 +13,7 @@ import java.util.List;
 
 @Service
 public class CatServiceImpl implements CatService {
-    final
-    CatRepository catRepository;
+    private final CatRepository catRepository;
 
     public CatServiceImpl(CatRepository catRepository) {
         this.catRepository = catRepository;

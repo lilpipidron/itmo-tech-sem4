@@ -22,8 +22,16 @@ public class Person {
     @Column(name = "password")
     private String password;
 
-    @OneToOne(mappedBy = "id")
+    @OneToOne(mappedBy = "person")
     private Owner owner;
 
+    @Column(name = "roles")
     private String roles;
+
+    public Person(Long id, String username, String password, String roles) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+    }
 }
