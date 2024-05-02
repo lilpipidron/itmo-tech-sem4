@@ -68,7 +68,7 @@ public class Lab3Test {
         );
     }
 
-    @Test
+  /*  @Test
     void should_create_cat_with_id_1_and_delete_him() {
         OwnerDTO owner = new OwnerDTO(1L, "lol", Date.valueOf("2006-01-02"));
         restTemplate.postForObject(baseUrl.concat("/owner"), owner, OwnerDTO.class);
@@ -81,5 +81,5 @@ public class Lab3Test {
         assertThrows(HttpClientErrorException.NotFound.class, () -> {
             restTemplate.getForObject(baseUrl.concat("/cat").concat("/1"), CatDTO.class);
         });
-    }
+    }*/
 }

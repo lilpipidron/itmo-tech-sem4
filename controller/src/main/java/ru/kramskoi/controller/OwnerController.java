@@ -5,10 +5,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.kramskoi.dto.OwnerDTO;
+import ru.kramskoi.entity.Owner;
 import ru.kramskoi.mapper.OwnerMapper;
+import ru.kramskoi.repository.OwnerRepository;
 import ru.kramskoi.service.OwnerService;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
+import ru.kramskoi.service.PersonService;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/owner")
@@ -16,9 +21,14 @@ import javax.validation.Valid;
 public class OwnerController {
 
     private final OwnerService ownerService;
+    private final PersonService personService;
+    private final OwnerRepository ownerRepository;
 
-    public OwnerController(OwnerService ownerService) {
+    public OwnerController(OwnerService ownerService, PersonService personService,
+                           OwnerRepository ownerRepository) {
         this.ownerService = ownerService;
+        this.personService = personService;
+        this.ownerRepository = ownerRepository;
     }
 
     @GetMapping("/{id}")
@@ -44,8 +54,9 @@ public class OwnerController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> addOwner(@Valid @RequestBody OwnerDTO ownerDTO) {
+    public ResponseEntity<Void> addOwner(@Valid @RequestBody OwnerDTO ownerDTO, Principal principal) {
         ownerService.addOwner(OwnerMapper.fromDTOToOwner(ownerDTO));
+        personService.addOwner(principal, ownerDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

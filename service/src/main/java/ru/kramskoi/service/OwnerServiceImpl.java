@@ -7,16 +7,20 @@ import ru.kramskoi.entity.Owner;
 import ru.kramskoi.mapper.OwnerMapper;
 import ru.kramskoi.repository.CatRepository;
 import ru.kramskoi.repository.OwnerRepository;
+import ru.kramskoi.repository.PersonRepository;
+
+import java.security.Principal;
 
 
 @Service
 public class OwnerServiceImpl implements OwnerService {
     final
     OwnerRepository ownerRepository;
+
     final
     CatRepository catRepository;
 
-    public OwnerServiceImpl(CatRepository catRepository, OwnerRepository ownerRepository) {
+    public OwnerServiceImpl(CatRepository catRepository, OwnerRepository ownerRepository, PersonRepository personRepository, PersonServiceImpl personService) {
         this.catRepository = catRepository;
         this.ownerRepository = ownerRepository;
     }

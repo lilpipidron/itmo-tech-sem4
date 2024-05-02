@@ -5,26 +5,27 @@ import ru.kramskoi.colors.Color;
 import ru.kramskoi.dto.CatDTO;
 import ru.kramskoi.entity.Cat;
 
+import java.security.Principal;
 import java.util.List;
 
 public interface CatService {
   void addCat(Cat cat);
 
-  CatDTO findCatByID(Long id);
+  CatDTO findCatByID(Long id, Principal principal);
 
-  List<CatDTO> findCatsByColor(Color color);
+  List<CatDTO> findCatsByColor(Color color, Principal principal);
 
-  List<CatDTO> findCatsByBreed(Breed breed);
+  List<CatDTO> findCatsByBreed(Breed breed, Principal principal);
 
-  List<CatDTO> getFriendsById(Long id);
+  List<CatDTO> getFriendsById(Long id, Principal principal);
 
-  void addFriend(Long catId, Long friendId);
+  void addFriend(Long catId, Long friendId, Principal principal);
 
-  List<CatDTO> getAllCatsByOwnerId(Long id);
+  List<CatDTO> getAllCatsByOwnerId(Long id, Principal principal);
 
-  List<CatDTO> getCatsByColorOrBreed(Color color, Breed breed);
+  List<CatDTO> getCatsByColorOrBreed(Color color, Breed breed, Principal principal);
 
-  void updateCat(Cat cat);
+  void updateCat(Cat cat, Principal principal);
 
-  void deleteCat(Long id);
+  void deleteCat(Long id, Principal principal);
 }

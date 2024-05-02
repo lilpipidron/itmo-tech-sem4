@@ -10,7 +10,9 @@ import ru.kramskoi.dto.CatDTO;
 import ru.kramskoi.mapper.CatMapper;
 import ru.kramskoi.service.CatService;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
+
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -25,10 +27,10 @@ public class CatController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CatDTO> getCatById(@PathVariable("id") Long id) {
+    public ResponseEntity<CatDTO> getCatById(@PathVariable("id") Long id, Principal principal) {
         CatDTO catDTO;
         try {
-            catDTO = catService.findCatByID(id);
+            catDTO = catService.findCatByID(id, principal);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

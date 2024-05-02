@@ -6,5 +6,5 @@ import ru.kramskoi.entity.Person;
 import java.util.Optional;
 
 public interface PersonRepository extends JpaRepository<Person, Long> {
-    Optional<Person> findByUsername(String username);
+    Person findByUsername(String username);
 }

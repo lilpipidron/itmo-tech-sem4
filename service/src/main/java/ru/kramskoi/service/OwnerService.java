@@ -3,6 +3,8 @@ package ru.kramskoi.service;
 import ru.kramskoi.dto.OwnerDTO;
 import ru.kramskoi.entity.Owner;
 
+import java.security.Principal;
+
 public interface OwnerService {
     void addOwner(Owner owner);
 
