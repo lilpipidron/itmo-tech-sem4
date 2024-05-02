@@ -10,8 +10,6 @@ import ru.kramskoi.repository.CatRepository;
 import ru.kramskoi.repository.OwnerRepository;
 import ru.kramskoi.repository.PersonRepository;
 
-import java.security.Principal;
-
 
 @Service
 public class OwnerServiceImpl implements OwnerService {

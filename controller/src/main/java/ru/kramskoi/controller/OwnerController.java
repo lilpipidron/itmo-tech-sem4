@@ -2,7 +2,6 @@ package ru.kramskoi.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.kramskoi.dto.OwnerDTO;
@@ -55,7 +54,8 @@ public class OwnerController {
     }
 
     @ExceptionHandler(OwnerNotFound.class)
-    public ResponseEntity<String> handleOwnerException(OwnerNotFound e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleOwnerException(OwnerNotFound e) {
+        return e.getMessage();
     }
 }

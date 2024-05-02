@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.kramskoi.dto.PersonDTO;
-import ru.kramskoi.entity.Person;
 import ru.kramskoi.mapper.PersonMapper;
 import ru.kramskoi.service.PersonServiceImpl;
 

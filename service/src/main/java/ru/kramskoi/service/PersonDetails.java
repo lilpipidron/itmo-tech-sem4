@@ -1,7 +1,6 @@
 package ru.kramskoi.service;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.kramskoi.entity.Person;

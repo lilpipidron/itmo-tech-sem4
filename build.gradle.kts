@@ -2,7 +2,7 @@ plugins {
     java
 }
 
-group = "org.example"
+group = "ru.kramskoi"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -13,6 +13,7 @@ dependencies {
     implementation(project(":service"))
     implementation(project(":dao"))
     implementation(project(":controller"))
+    implementation(project(":security"))
 
     testImplementation(platform("org.junit:junit-bom:5.8.2"))
     testImplementation("org.junit.jupiter:junit-jupiter-api")
@@ -31,6 +32,10 @@ dependencies {
     implementation("org.springframework:spring-web:5.0.0.RELEASE")
 
     testImplementation("org.hamcrest:hamcrest:2.2")
+    testImplementation("org.springframework.security:spring-security-test:6.1.9")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.17.0")
+    implementation("jakarta.servlet:jakarta.servlet-api:6.1.0-M2")
+
 
 }
 
