@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kramskoi.dto.OwnerDTO;
 import ru.kramskoi.entity.Owner;
+import ru.kramskoi.exception.OwnerNotFound;
 import ru.kramskoi.mapper.OwnerMapper;
 import ru.kramskoi.repository.CatRepository;
 import ru.kramskoi.repository.OwnerRepository;
@@ -36,7 +37,7 @@ public class OwnerServiceImpl implements OwnerService {
     public OwnerDTO getOwnerByID(Long id) {
         OwnerDTO ownerDTO = OwnerMapper.fromOwnerToDTO(ownerRepository.getOwnerById(id));
         if (ownerDTO == null) {
-            throw new IllegalArgumentException();
+            throw new OwnerNotFound();
         }
         return ownerDTO;
     }
