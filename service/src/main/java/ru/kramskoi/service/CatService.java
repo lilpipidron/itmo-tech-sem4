@@ -9,7 +9,7 @@ import java.security.Principal;
 import java.util.List;
 
 public interface CatService {
-  void addCat(Cat cat);
+  void addCat(Cat cat, Principal principal);
 
   CatDTO findCatByID(Long id, Principal principal);
 

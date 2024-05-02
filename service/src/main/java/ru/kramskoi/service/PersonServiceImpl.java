@@ -39,8 +39,8 @@ public class PersonServiceImpl implements PersonService {
     public void addOwner(Principal principal, OwnerDTO ownerDTO) {
         Person person = getPersonByUsername(principal.getName());
         Owner owner = ownerRepository.getOwnerById(ownerDTO.getId());
-        person.setOwner(owner);
         owner.setPerson(person);
+        person.setOwner(owner);
         ownerRepository.save(owner);
         personRepository.save(person);
     }

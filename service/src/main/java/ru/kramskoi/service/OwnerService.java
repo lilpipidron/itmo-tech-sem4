@@ -6,7 +6,7 @@ import ru.kramskoi.entity.Owner;
 import java.security.Principal;
 
 public interface OwnerService {
-    void addOwner(Owner owner);
+    Long addOwner(Owner owner);
 
     OwnerDTO getOwnerByID(Long id);
 

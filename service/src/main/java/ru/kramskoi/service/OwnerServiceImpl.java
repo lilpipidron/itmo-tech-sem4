@@ -27,8 +27,8 @@ public class OwnerServiceImpl implements OwnerService {
 
     @Override
     @Transactional
-    public void addOwner(Owner owner) {
-        ownerRepository.save(owner);
+    public Long addOwner(Owner owner) {
+        return ownerRepository.save(owner).getId();
     }
 
     @Override

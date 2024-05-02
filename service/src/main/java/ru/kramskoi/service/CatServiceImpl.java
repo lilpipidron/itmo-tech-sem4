@@ -27,7 +27,11 @@ public class CatServiceImpl implements CatService {
 
     @Override
     @Transactional
-    public void addCat(Cat cat) {
+    public void addCat(Cat cat, Principal principal) {
+        System.out.println(cat);
+        System.out.println(principal.getName());
+        System.out.println(personRepository.findByUsername(principal.getName()).getOwner());
+        cat.setOwner(personRepository.findByUsername(principal.getName()).getOwner());
         catRepository.save(cat);
     }
 
