@@ -23,4 +23,10 @@ public interface CatRepository extends JpaRepository<Cat, Long> {
     List<Cat> getCatsByOwnerId(Long ownerId);
 
     List<Cat> getCatsByColorOrBreedAndOwnerId(Color color, Breed breed, Long ownerId);
+
+    List<Cat> getCatsByBreed(Breed breed);
+
+    List<Cat> getCatsByColor(Color color);
+
+    List<Cat> getCatsByColorOrBreed(Color color, Breed breed);
 }

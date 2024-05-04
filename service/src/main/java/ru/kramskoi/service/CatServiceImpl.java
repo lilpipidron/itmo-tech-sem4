@@ -35,9 +35,13 @@ public class CatServiceImpl implements CatService {
     @Override
     @Transactional(readOnly = true)
     public CatDTO findCatByID(Long id, Principal principal) {
-        String username = principal.getName();
-        Person person = personRepository.findByUsername(username);
-        Cat cat = catRepository.getCatByIdAndOwnerId(id, person.getOwner().getId());
+        Cat cat;
+        Person person = personRepository.findByUsername(principal.getName());
+        if (person.getRoles() == "ADMIN") {
+            cat = catRepository.getCatById(id);
+        } else {
+            cat = catRepository.getCatByIdAndOwnerId(id, person.getOwner().getId());
+        }
         if (cat == null) {
             throw new CatNotFound();
         }
@@ -45,10 +49,15 @@ public class CatServiceImpl implements CatService {
     }
 
     private List<CatDTO> findCatsByColor(Color color, Long ownerId) {
-        List<CatDTO> catDTOList = new java.util.ArrayList<>(catRepository.getCatsByColorAndOwnerId(color, ownerId)
-                .stream()
+        List<Cat> catList;
+        if (ownerId != -1) {
+            catList = catRepository.getCatsByColorAndOwnerId(color, ownerId);
+        } else {
+            catList = catRepository.getCatsByColor(color);
+        }
+        List<CatDTO> catDTOList = catList.stream()
                 .map(CatMapper::fromCatToDTO)
-                .toList());
+                .toList();
         if (catDTOList.isEmpty()) {
             throw new CatNotFound();
         }
@@ -56,8 +65,13 @@ public class CatServiceImpl implements CatService {
     }
 
     private List<CatDTO> findCatsByBreed(Breed breed, Long ownerId) {
-        List<CatDTO> catDTOList = catRepository.getCatsByBreedAndOwnerId(breed, ownerId)
-                .stream()
+        List<Cat> catList;
+        if (ownerId != -1) {
+            catList = catRepository.getCatsByBreedAndOwnerId(breed, ownerId);
+        } else {
+            catList = catRepository.getCatsByBreed(breed);
+        }
+        List<CatDTO> catDTOList = catList.stream()
                 .map(CatMapper::fromCatToDTO)
                 .toList();
         if (catDTOList.isEmpty()) {
@@ -70,7 +84,11 @@ public class CatServiceImpl implements CatService {
     @Override
     @Transactional(readOnly = true)
     public List<CatDTO> getCatsByColorOrBreed(Color color, Breed breed, Principal principal) {
-        Long ownerId = personRepository.findByUsername(principal.getName()).getOwner().getId();
+        Person person = personRepository.findByUsername(principal.getName());
+        Long ownerId = -1L;
+        if (person.getRoles() == "USER") {
+            ownerId = person.getOwner().getId();
+        }
         if (breed == null) {
             return findCatsByColor(color, ownerId);
         } else if (color == null) {
@@ -92,8 +110,14 @@ public class CatServiceImpl implements CatService {
     @Override
     @Transactional(readOnly = true)
     public List<CatDTO> getFriendsById(Long id, Principal principal) {
-        Long ownerId = personRepository.findByUsername(principal.getName()).getOwner().getId();
-        List<CatDTO> catDTOList = catRepository.getCatByIdAndOwnerId(id, ownerId)
+        Person person = personRepository.findByUsername(principal.getName());
+        Cat cat;
+        if (person.getRoles() == "ADMIN") {
+            cat = catRepository.getCatById(id);
+        } else {
+            cat = catRepository.getCatByIdAndOwnerId(id, person.getOwner().getId());
+        }
+        List<CatDTO> catDTOList = cat
                 .getFriends()
                 .stream()
                 .map(CatMapper::fromCatToDTO)
@@ -108,8 +132,13 @@ public class CatServiceImpl implements CatService {
     @Override
     @Transactional
     public void addFriend(Long catId, Long friendId, Principal principal) {
-        Long ownerId = personRepository.findByUsername(principal.getName()).getOwner().getId();
-        Cat cat = catRepository.getCatByIdAndOwnerId(catId, ownerId);
+        Cat cat;
+        Person person = personRepository.findByUsername(principal.getName());
+        if (person.getRoles() == "ADMIN") {
+            cat = catRepository.getCatById(catId);
+        } else {
+            cat = catRepository.getCatByIdAndOwnerId(catId, person.getOwner().getId());
+        }
         Cat friend = catRepository.getCatById(friendId);
         if (cat == null || friend == null) {
             throw new CatNotFound();
@@ -139,12 +168,16 @@ public class CatServiceImpl implements CatService {
     @Override
     @Transactional
     public void updateCat(Cat cat, Principal principal) {
-        Long ownerId = personRepository.findByUsername(principal.getName()).getOwner().getId();
-        Cat prevCat = catRepository.getCatByIdAndOwnerId(cat.getId(), ownerId);
+        Person person = personRepository.findByUsername(principal.getName());
+        Cat prevCat;
+        if (person.getRoles() == "ADMIN") {
+            prevCat = catRepository.getCatById(cat.getId());
+        } else {
+            prevCat = catRepository.getCatByIdAndOwnerId(cat.getId(), person.getOwner().getId());
+        }
         if (prevCat == null) {
             throw new CatNotFound();
         }
-
         prevCat.setName(cat.getName());
         prevCat.setBirthday(cat.getBirthday());
         prevCat.setBreed(cat.getBreed());
@@ -155,11 +188,19 @@ public class CatServiceImpl implements CatService {
     @Override
     @Transactional
     public void deleteCat(Long id, Principal principal) {
-        Long ownerId = personRepository.findByUsername(principal.getName()).getOwner().getId();
-        Cat cat = catRepository.getCatByIdAndOwnerId(id, ownerId);
-        if (cat == null) {
+        Person person = personRepository.findByUsername(principal.getName());
+        if (catRepository.getCatById(id) == null) {
             throw new CatNotFound();
         }
-        catRepository.deleteById(id);
+        if (person.getRoles() == "ADMIN") {
+            catRepository.deleteById(id);
+            return;
+        } else {
+            Cat cat = catRepository.getCatByIdAndOwnerId(id, person.getOwner().getId());
+            if (cat == null) {
+                throw new CatNotFound();
+            }
+            catRepository.deleteById(id);
+        }
     }
 }
