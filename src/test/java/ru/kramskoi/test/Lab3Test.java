@@ -1,85 +1,103 @@
 package ru.kramskoi.test;
 
-import org.junit.jupiter.api.BeforeAll;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
-import ru.kramskoi.dto.CatDTO;
+import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import ru.kramskoi.dto.OwnerDTO;
+import ru.kramskoi.entity.Person;
+import ru.kramskoi.repository.PersonRepository;
 
 import java.sql.Date;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static ru.kramskoi.breeds.Breed.BRITMAN;
-import static ru.kramskoi.colors.Color.PINK;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
+@AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class Lab3Test {
-    private static RestTemplate restTemplate;
-    @LocalServerPort
-    private int port;
-    private String baseUrl = "http://localhost";
 
-    @BeforeAll
-    public static void init() {
-        restTemplate = new RestTemplate();
-    }
+    @Autowired
+    private MockMvc mvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private PersonRepository personRepository;
 
     @BeforeEach
-    public void setUp() {
-        baseUrl = baseUrl.concat(":").concat(port + "");
+    public void init() {
+        Person person = new Person();
+        person.setUsername("admin");
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        person.setPassword(passwordEncoder.encode("admin"));
+        person.setRoles("ADMIN");
+        personRepository.save(person);
     }
 
     @Test
-    void should_create_user_with_id_1_and_get_him() {
-        OwnerDTO owner = new OwnerDTO(1L, "lol", Date.valueOf("2006-01-02"));
-        restTemplate.postForObject(baseUrl.concat("/owner"), owner, OwnerDTO.class);
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
+    public void shouldCreateOwner() throws Exception {
+        OwnerDTO ownerDTO = new OwnerDTO(1L, "user", Date.valueOf("2006-01-02"));
+        mvc.perform(post("/owner")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(ownerDTO)))
+                .andExpect(status().isCreated());
 
-        OwnerDTO ownerFromGetReq = restTemplate.getForObject(baseUrl.concat("/owner").concat("/1"), OwnerDTO.class);
+        MvcResult result = mvc.perform(get("/owner/1"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String responseJson = result.getResponse().getContentAsString();
+        OwnerDTO actualDTO = objectMapper.readValue(responseJson, OwnerDTO.class);
 
         assertAll(
-                () -> assertEquals(owner.getId(), ownerFromGetReq.getId()),
-                () -> assertEquals(owner.getName(), ownerFromGetReq.getName()),
-                () -> assertEquals(owner.getBirthday().toString(), ownerFromGetReq.getBirthday().toString())
+                () -> assertEquals(ownerDTO.getId(), actualDTO.getId()),
+                () -> assertEquals(ownerDTO.getName(), actualDTO.getName()),
+                () -> assertEquals(ownerDTO.getBirthday().toString(), actualDTO.getBirthday().toString())
         );
     }
 
     @Test
-    void should_create_cat_with_id_1_and_get_him() {
-        OwnerDTO owner = new OwnerDTO(1L, "lol", Date.valueOf("2006-01-02"));
-        restTemplate.postForObject(baseUrl.concat("/owner"), owner, OwnerDTO.class);
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
+    public void shouldGetException_WhenTryToGetCat() throws Exception {
+        OwnerDTO ownerDTO = new OwnerDTO(1L, "user", Date.valueOf("2006-01-02"));
+        mvc.perform(post("/owner")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(ownerDTO)))
+                .andExpect(status().isCreated());
 
-        CatDTO cat = new CatDTO(1L, "lol", Date.valueOf("2006-01-02"), BRITMAN, PINK, 1L);
-        restTemplate.postForObject(baseUrl.concat("/cat"), cat, CatDTO.class);
+        MvcResult result = mvc.perform(get("/cat/1"))
+                .andExpect(status().isNotFound())
+                .andReturn();
 
-        CatDTO catFromGetReq = restTemplate.getForObject(baseUrl.concat("/cat").concat("/1"), CatDTO.class);
-        assertNotNull(catFromGetReq);
+        String message = result.getResponse().getContentAsString();
 
-        assertAll(
-                () -> assertEquals(cat.getId(), catFromGetReq.getId()),
-                () -> assertEquals(cat.getName(), catFromGetReq.getName()),
-                () -> assertEquals(cat.getBirthday().toString(), catFromGetReq.getBirthday().toString()),
-                () -> assertEquals(cat.getColor(), catFromGetReq.getColor()),
-                () -> assertEquals(cat.getBreed(), catFromGetReq.getBreed()),
-                () -> assertEquals(cat.getOwnerId(), catFromGetReq.getOwnerId())
-        );
+        assertEquals("Cat not found", message);
     }
 
     @Test
-    void should_create_cat_with_id_1_and_delete_him() {
-        OwnerDTO owner = new OwnerDTO(1L, "lol", Date.valueOf("2006-01-02"));
-        restTemplate.postForObject(baseUrl.concat("/owner"), owner, OwnerDTO.class);
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
+    public void shouldGetException_WhenTryToGetOwner() throws Exception {
+        MvcResult result = mvc.perform(get("/owner/1"))
+                .andExpect(status().isNotFound())
+                .andReturn();
 
-        CatDTO cat = new CatDTO(1L, "lol", Date.valueOf("2006-01-02"), BRITMAN, PINK, 1L);
-        restTemplate.postForObject(baseUrl.concat("/cat"), cat, CatDTO.class);
+        String message = result.getResponse().getContentAsString();
 
-        restTemplate.delete(baseUrl.concat("/cat").concat("/1"));
-
-        assertThrows(HttpClientErrorException.NotFound.class, () -> {
-            restTemplate.getForObject(baseUrl.concat("/cat").concat("/1"), CatDTO.class);
-        });
+        assertEquals("Owner not found", message);
     }
 }

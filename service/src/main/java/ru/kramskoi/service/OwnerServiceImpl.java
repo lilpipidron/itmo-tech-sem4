@@ -4,27 +4,30 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kramskoi.dto.OwnerDTO;
 import ru.kramskoi.entity.Owner;
+import ru.kramskoi.exception.OwnerNotFound;
 import ru.kramskoi.mapper.OwnerMapper;
 import ru.kramskoi.repository.CatRepository;
 import ru.kramskoi.repository.OwnerRepository;
+import ru.kramskoi.repository.PersonRepository;
 
 
 @Service
 public class OwnerServiceImpl implements OwnerService {
     final
     OwnerRepository ownerRepository;
+
     final
     CatRepository catRepository;
 
-    public OwnerServiceImpl(CatRepository catRepository, OwnerRepository ownerRepository) {
+    public OwnerServiceImpl(CatRepository catRepository, OwnerRepository ownerRepository, PersonRepository personRepository, PersonServiceImpl personService) {
         this.catRepository = catRepository;
         this.ownerRepository = ownerRepository;
     }
 
     @Override
     @Transactional
-    public void addOwner(Owner owner) {
-        ownerRepository.save(owner);
+    public Long addOwner(Owner owner) {
+        return ownerRepository.save(owner).getId();
     }
 
     @Override
@@ -32,7 +35,7 @@ public class OwnerServiceImpl implements OwnerService {
     public OwnerDTO getOwnerByID(Long id) {
         OwnerDTO ownerDTO = OwnerMapper.fromOwnerToDTO(ownerRepository.getOwnerById(id));
         if (ownerDTO == null) {
-            throw new IllegalArgumentException();
+            throw new OwnerNotFound();
         }
         return ownerDTO;
     }
