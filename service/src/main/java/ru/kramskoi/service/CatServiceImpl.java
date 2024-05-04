@@ -28,9 +28,6 @@ public class CatServiceImpl implements CatService {
     @Override
     @Transactional
     public void addCat(Cat cat, Principal principal) {
-        System.out.println(cat);
-        System.out.println(principal.getName());
-        System.out.println(personRepository.findByUsername(principal.getName()).getOwner());
         cat.setOwner(personRepository.findByUsername(principal.getName()).getOwner());
         catRepository.save(cat);
     }
@@ -38,25 +35,17 @@ public class CatServiceImpl implements CatService {
     @Override
     @Transactional(readOnly = true)
     public CatDTO findCatByID(Long id, Principal principal) {
-        Cat cat = catRepository.getCatById(id);
+        String username = principal.getName();
+        Person person = personRepository.findByUsername(username);
+        Cat cat = catRepository.getCatByIdAndOwnerId(id, person.getOwner().getId());
         if (cat == null) {
             throw new CatNotFound();
         }
-
-        String username = principal.getName();
-        Person person = personRepository.findByUsername(username);
-        List<Cat> ownersCats = person.getOwner().getCats();
-        if (ownersCats.stream().findFirst().filter(c -> c.getId() == cat.getId()).isEmpty()) {
-            throw new CatNotFound();
-        }
-
         return CatMapper.fromCatToDTO(cat);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<CatDTO> findCatsByColor(Color color, Principal principal) {
-        List<CatDTO> catDTOList = new java.util.ArrayList<>(catRepository.getCatsByColor(color)
+    private List<CatDTO> findCatsByColor(Color color, Long ownerId) {
+        List<CatDTO> catDTOList = new java.util.ArrayList<>(catRepository.getCatsByColorAndOwnerId(color, ownerId)
                 .stream()
                 .map(CatMapper::fromCatToDTO)
                 .toList());
@@ -66,10 +55,8 @@ public class CatServiceImpl implements CatService {
         return catDTOList;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<CatDTO> findCatsByBreed(Breed breed, Principal principal) {
-        List<CatDTO> catDTOList = catRepository.getCatsByBreed(breed)
+    private List<CatDTO> findCatsByBreed(Breed breed, Long ownerId) {
+        List<CatDTO> catDTOList = catRepository.getCatsByBreedAndOwnerId(breed, ownerId)
                 .stream()
                 .map(CatMapper::fromCatToDTO)
                 .toList();
@@ -83,51 +70,34 @@ public class CatServiceImpl implements CatService {
     @Override
     @Transactional(readOnly = true)
     public List<CatDTO> getCatsByColorOrBreed(Color color, Breed breed, Principal principal) {
+        Long ownerId = personRepository.findByUsername(principal.getName()).getOwner().getId();
         if (breed == null) {
-            return findCatsByColor(color, principal);
+            return findCatsByColor(color, ownerId);
         } else if (color == null) {
-            return findCatsByBreed(breed, principal);
+            return findCatsByBreed(breed, ownerId);
         }
 
-        List<CatDTO> catDTOList = catRepository.getCatsByColorOrBreed(color, breed)
+        List<CatDTO> catDTOList = catRepository.getCatsByColorOrBreedAndOwnerId(color, breed, ownerId)
                 .stream()
                 .map(CatMapper::fromCatToDTO)
                 .toList();
 
-        List<Long> ownersCats = personRepository.findByUsername(principal.getName())
-                .getOwner()
-                .getCats()
-                .stream()
-                .map(Cat::getId)
-                .toList();
-
-        catDTOList.removeIf(catDTO -> !ownersCats.contains(catDTO.getId()));
         if (catDTOList.isEmpty()) {
             throw new CatNotFound();
         }
+
         return catDTOList;
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<CatDTO> getFriendsById(Long id, Principal principal) {
-        List<CatDTO> catDTOList = catRepository.getCatById(id)
+        Long ownerId = personRepository.findByUsername(principal.getName()).getOwner().getId();
+        List<CatDTO> catDTOList = catRepository.getCatByIdAndOwnerId(id, ownerId)
                 .getFriends()
                 .stream()
                 .map(CatMapper::fromCatToDTO)
                 .toList();
-        if (catDTOList.isEmpty()) {
-            throw new CatNotFound();
-        }
-
-        List<Long> ownersCats = personRepository.findByUsername(principal.getName())
-                .getOwner()
-                .getCats()
-                .stream()
-                .map(Cat::getId)
-                .toList();
-
-        catDTOList.removeIf(catDTO -> !ownersCats.contains(catDTO.getId()));
         if (catDTOList.isEmpty()) {
             throw new CatNotFound();
         }
@@ -138,15 +108,10 @@ public class CatServiceImpl implements CatService {
     @Override
     @Transactional
     public void addFriend(Long catId, Long friendId, Principal principal) {
-        Cat cat = catRepository.getCatById(catId);
+        Long ownerId = personRepository.findByUsername(principal.getName()).getOwner().getId();
+        Cat cat = catRepository.getCatByIdAndOwnerId(catId, ownerId);
         Cat friend = catRepository.getCatById(friendId);
-        List<Long> ownersCats = personRepository.findByUsername(principal.getName())
-                .getOwner()
-                .getCats()
-                .stream()
-                .map(Cat::getId)
-                .toList();
-        if (!ownersCats.contains(cat.getId())) {
+        if (cat == null || friend == null) {
             throw new CatNotFound();
         }
         cat.addFriend(friend);
@@ -158,19 +123,12 @@ public class CatServiceImpl implements CatService {
     @Override
     @Transactional(readOnly = true)
     public List<CatDTO> getAllCatsByOwnerId(Long id, Principal principal) {
-        List<CatDTO> catDTOList = catRepository.getCatsByOwnerId(id)
+        Long ownerId = personRepository.findByUsername(principal.getName()).getOwner().getId();
+        List<CatDTO> catDTOList = catRepository.getCatsByOwnerId(ownerId)
                 .stream()
                 .map(CatMapper::fromCatToDTO)
                 .toList();
 
-        List<Long> ownersCats = personRepository.findByUsername(principal.getName())
-                .getOwner()
-                .getCats()
-                .stream()
-                .map(Cat::getId)
-                .toList();
-
-        catDTOList.removeIf(catDTO -> !ownersCats.contains(catDTO.getId()));
         if (catDTOList.isEmpty()) {
             throw new CatNotFound();
         }
@@ -181,14 +139,9 @@ public class CatServiceImpl implements CatService {
     @Override
     @Transactional
     public void updateCat(Cat cat, Principal principal) {
-        Cat prevCat = catRepository.getCatById(cat.getId());
-        List<Long> ownersCats = personRepository.findByUsername(principal.getName())
-                .getOwner()
-                .getCats()
-                .stream()
-                .map(Cat::getId)
-                .toList();
-        if (!ownersCats.contains(cat.getId())) {
+        Long ownerId = personRepository.findByUsername(principal.getName()).getOwner().getId();
+        Cat prevCat = catRepository.getCatByIdAndOwnerId(cat.getId(), ownerId);
+        if (prevCat == null) {
             throw new CatNotFound();
         }
 
@@ -202,13 +155,9 @@ public class CatServiceImpl implements CatService {
     @Override
     @Transactional
     public void deleteCat(Long id, Principal principal) {
-        List<Long> ownersCats = personRepository.findByUsername(principal.getName())
-                .getOwner()
-                .getCats()
-                .stream()
-                .map(Cat::getId)
-                .toList();
-        if (!ownersCats.contains(id)) {
+        Long ownerId = personRepository.findByUsername(principal.getName()).getOwner().getId();
+        Cat cat = catRepository.getCatByIdAndOwnerId(id, ownerId);
+        if (cat == null) {
             throw new CatNotFound();
         }
         catRepository.deleteById(id);

@@ -13,10 +13,6 @@ public interface CatService {
 
   CatDTO findCatByID(Long id, Principal principal);
 
-  List<CatDTO> findCatsByColor(Color color, Principal principal);
-
-  List<CatDTO> findCatsByBreed(Breed breed, Principal principal);
-
   List<CatDTO> getFriendsById(Long id, Principal principal);
 
   void addFriend(Long catId, Long friendId, Principal principal);

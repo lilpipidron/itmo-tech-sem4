@@ -12,13 +12,15 @@ import java.util.List;
 @Repository
 
 public interface CatRepository extends JpaRepository<Cat, Long> {
+    Cat getCatByIdAndOwnerId(Long id, Long ownerId);
+
     Cat getCatById(Long id);
 
-    List<Cat> getCatsByBreed(Breed breed);
+    List<Cat> getCatsByBreedAndOwnerId(Breed breed, Long ownerId);
 
-    List<Cat> getCatsByColor(Color color);
+    List<Cat> getCatsByColorAndOwnerId(Color color, Long ownerId);
 
     List<Cat> getCatsByOwnerId(Long ownerId);
 
-    List<Cat> getCatsByColorOrBreed(Color color, Breed breed);
+    List<Cat> getCatsByColorOrBreedAndOwnerId(Color color, Breed breed, Long ownerId);
 }
