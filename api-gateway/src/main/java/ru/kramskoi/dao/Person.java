@@ -1,10 +1,11 @@
-package ru.kramskoi.entity;
+package ru.kramskoi.dao;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.kramskoi.entity.Owner;
 
 @Getter
 @Setter

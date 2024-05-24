@@ -1,4 +1,4 @@
-package ru.kramskoi.config;
+package ru.kramskoi.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
