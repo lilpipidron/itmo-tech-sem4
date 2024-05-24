@@ -3,33 +3,30 @@ package ru.kramskoi.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import ru.kramskoi.dto.Breed;
-import ru.kramskoi.dto.Cat;
+import ru.kramskoi.dto.CatMessage;
 import ru.kramskoi.dto.Color;
 
 import java.util.*;
-
-import static com.fasterxml.jackson.databind.type.LogicalType.Map;
 
 public class HttpCatClientConf implements CatClient {
     @Autowired
     private WebClient webClient;
 
     @Override
-    public Cat getCatById(long id) {
+    public CatMessage getCatById(long id) {
         return webClient
                 .get()
                 .uri("/cat/%d".formatted(id))
                 .retrieve()
-                .bodyToMono(Cat.class)
+                .bodyToMono(CatMessage.class)
                 .block();
     }
 
     @Override
-    public List<Cat> getFriendsById(long id) {
+    public List<CatMessage> getFriendsById(long id) {
         return webClient
                 .get()
                 .uri("cat/%d/friends".formatted(id))
@@ -40,7 +37,7 @@ public class HttpCatClientConf implements CatClient {
     }
 
     @Override
-    public List<Cat> getCatsByColorOrBreed(Color color, Breed breed) {
+    public List<CatMessage> getCatsByColorOrBreed(Color color, Breed breed) {
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.put("color", List.of(color.toString()));
         params.put("breed", List.of(breed.toString()));
@@ -54,13 +51,13 @@ public class HttpCatClientConf implements CatClient {
     }
 
     @Override
-    public void updateCat(Cat cat) {
+    public void updateCat(CatMessage cat) {
         webClient
                 .put()
                 .uri("/cat")
-                .body(Mono.just(cat), Cat.class)
+                .body(Mono.just(cat), CatMessage.class)
                 .retrieve()
-                .bodyToMono(Cat.class)
+                .bodyToMono(CatMessage.class)
                 .block();
     }
 
@@ -80,23 +77,23 @@ public class HttpCatClientConf implements CatClient {
     }
 
     @Override
-    public void addCat(Cat cat) {
+    public void addCat(CatMessage cat) {
         webClient
                 .post()
                 .uri("/cat")
-                .body(Mono.just(cat), Cat.class)
+                .body(Mono.just(cat), CatMessage.class)
                 .retrieve()
-                .bodyToMono(Cat.class)
+                .bodyToMono(CatMessage.class)
                 .block();
     }
 
     @Override
-    public List<Cat> getAllCatsByOwnerId(long ownerId) {
+    public List<CatMessage> getAllCatsByOwnerId(long ownerId) {
         return webClient
                 .get()
                 .uri("/cat/%d".formatted(ownerId))
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<Cat>>() {})
+                .bodyToMono(new ParameterizedTypeReference<List<CatMessage>>() {})
                 .block();
     }
 

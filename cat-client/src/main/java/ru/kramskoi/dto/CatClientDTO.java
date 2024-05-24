@@ -12,7 +12,7 @@ import java.sql.Date;
 @AllArgsConstructor
 @ToString
 @NoArgsConstructor
-public class Cat {
+public class CatClientDTO {
     @NotNull(message = "cat id can't be empty")
     @Min(value = 0, message="cat id can't be less 0")
     private Long id;
