@@ -13,7 +13,6 @@ dependencies {
     implementation(project(":service"))
     implementation(project(":dao"))
     implementation(project(":controller"))
-    implementation(project(":security"))
 
     testImplementation(platform("org.junit:junit-bom:5.8.2"))
     testImplementation("org.junit.jupiter:junit-jupiter-api")
