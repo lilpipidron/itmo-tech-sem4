@@ -16,7 +16,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/cat")
 @Validated
-@ControllerAdvice
 public class CatController {
 
     private final CatService catService;
@@ -51,11 +50,5 @@ public class CatController {
     public List<CatClientDTO> getAllCatsByOwnerId(
             @PathVariable("id") Long id) {
         return catService.getAllCatsByOwnerId(id);
-    }
-
-    @ExceptionHandler(CatNotFound.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleCatException(CatNotFound e) {
-        return e.getMessage();
     }
 }
