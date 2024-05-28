@@ -19,11 +19,8 @@ import java.security.Principal;
 public class OwnerController {
 
     private final OwnerService ownerService;
-    private final PersonService personService;
-
     public OwnerController(OwnerService ownerService, PersonService personService) {
         this.ownerService = ownerService;
-        this.personService = personService;
     }
 
     @GetMapping("/{id}")
