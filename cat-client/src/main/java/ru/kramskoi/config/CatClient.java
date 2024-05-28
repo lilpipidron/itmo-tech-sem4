@@ -13,13 +13,5 @@ public interface CatClient {
 
     List<CatMessage> getCatsByColorOrBreed(Color color, Breed breed);
 
-    void updateCat(CatMessage cat);
-
-    void addFriend(long catId, long friendId);
-
-    void addCat(CatMessage cat);
-
     List<CatMessage> getAllCatsByOwnerId(long ownerId);
-
-    void deleteCat(long id);
 }
