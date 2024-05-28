@@ -5,9 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import ru.kramskoi.breeds.Breed;
-import ru.kramskoi.colors.Color;
-
 import java.sql.Date;
 
 @Data
