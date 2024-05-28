@@ -2,8 +2,8 @@ package ru.kramskoi.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.kramskoi.breeds.Breed;
-import ru.kramskoi.colors.Color;
+import ru.kramskoi.dto.Breed;
+import ru.kramskoi.dto.Color;
 import ru.kramskoi.entity.Cat;
 
 import java.util.List;

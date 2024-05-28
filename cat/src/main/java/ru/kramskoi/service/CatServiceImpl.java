@@ -1,206 +1,124 @@
 package ru.kramskoi.service;
 
-import org.springframework.stereotype.Service;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kramskoi.breeds.Breed;
-import ru.kramskoi.colors.Color;
-import ru.kramskoi.dto.CatDTO;
+import ru.kramskoi.dto.*;
 import ru.kramskoi.entity.Cat;
-import ru.kramskoi.entity.Person;
 import ru.kramskoi.exception.CatNotFound;
 import ru.kramskoi.mapper.CatMapper;
 import ru.kramskoi.repository.CatRepository;
-import ru.kramskoi.repository.PersonRepository;
 
-import java.security.Principal;
 import java.util.List;
 
-@Service
+@Component
+@EnableRabbit
 public class CatServiceImpl implements CatService {
-    private final CatRepository catRepository;
-    private final PersonRepository personRepository;
+    final CatRepository catRepository;
 
-    public CatServiceImpl(CatRepository catRepository, PersonRepository personRepository) {
+    public CatServiceImpl(CatRepository catRepository) {
         this.catRepository = catRepository;
-        this.personRepository = personRepository;
     }
 
     @Override
     @Transactional
-    public void addCat(Cat cat, Principal principal) {
-        cat.setOwner(personRepository.findByUsername(principal.getName()).getOwner());
+    @RabbitListener(queues = "QueueCatAdd")
+    public void addCat(CatMessage catMessage) {
+        catRepository.save(
+                new Cat(catMessage.getName(),
+                        catMessage.getBirthday(),
+                        catMessage.getBreed(),
+                        catMessage.getColor(),
+                        catMessage.getOwnerId())
+        );
+    }
+
+    @Override
+    public CatClientDTO findCatByID(Long id) {
+        Cat cat = catRepository.findById(id).orElseThrow(CatNotFound::new);
+
+        return new CatClientDTO(
+                cat.getId(),
+                cat.getName(),
+                cat.getBirthday(),
+                cat.getBreed(),
+                cat.getColor(),
+                cat.getOwnerID()
+        );
+    }
+
+    @Override
+    public List<CatClientDTO> getFriendsById(Long id) {
+        return List.of();
+    }
+
+    @Override
+    @Transactional
+    @RabbitListener(queues = "QueueCatAddFriend")
+    public void addFriend(FriendMessage friend) {
+        Cat cat = catRepository.findById(friend.getCatID()).orElseThrow(CatNotFound::new);
+        Cat catFriend = catRepository.findById(friend.getFriendID()).orElseThrow(CatNotFound::new);
+
+        cat.addFriend(catFriend);
+        catFriend.addFriend(cat);
+
         catRepository.save(cat);
+        catRepository.save(catFriend);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public CatDTO findCatByID(Long id, Principal principal) {
-        Cat cat;
-        Person person = personRepository.findByUsername(principal.getName());
-        if (person.getRoles() == "ADMIN") {
-            cat = catRepository.getCatById(id);
-        } else {
-            cat = catRepository.getCatByIdAndOwnerId(id, person.getOwner().getId());
-        }
-        if (cat == null) {
-            throw new CatNotFound();
-        }
-        return CatMapper.fromCatToDTO(cat);
-    }
-
-    private List<CatDTO> findCatsByColor(Color color, Long ownerId) {
-        List<Cat> catList;
-        if (ownerId != -1) {
-            catList = catRepository.getCatsByColorAndOwnerId(color, ownerId);
-        } else {
-            catList = catRepository.getCatsByColor(color);
-        }
-        List<CatDTO> catDTOList = catList.stream()
-                .map(CatMapper::fromCatToDTO)
+    public List<CatClientDTO> getAllCatsByOwnerId(Long id) {
+        return catRepository.getCatsByOwnerId(id)
+                .stream()
+                .map(CatMapper::fromCatToDTOClient)
                 .toList();
-        if (catDTOList.isEmpty()) {
-            throw new CatNotFound();
-        }
-        return catDTOList;
     }
-
-    private List<CatDTO> findCatsByBreed(Breed breed, Long ownerId) {
-        List<Cat> catList;
-        if (ownerId != -1) {
-            catList = catRepository.getCatsByBreedAndOwnerId(breed, ownerId);
-        } else {
-            catList = catRepository.getCatsByBreed(breed);
-        }
-        List<CatDTO> catDTOList = catList.stream()
-                .map(CatMapper::fromCatToDTO)
-                .toList();
-        if (catDTOList.isEmpty()) {
-            throw new CatNotFound();
-        }
-        return catDTOList;
-    }
-
 
     @Override
-    @Transactional(readOnly = true)
-    public List<CatDTO> getCatsByColorOrBreed(Color color, Breed breed, Principal principal) {
-        Person person = personRepository.findByUsername(principal.getName());
-        Long ownerId = -1L;
-        if (person.getRoles() == "USER") {
-            ownerId = person.getOwner().getId();
+    public List<CatClientDTO> getCatsByColorOrBreed(Color color, Breed breed) {
+        if (color == null && breed == null) {
+            return null;
         }
+
         if (breed == null) {
-            return findCatsByColor(color, ownerId);
-        } else if (color == null) {
-            return findCatsByBreed(breed, ownerId);
+            return catRepository.getCatsByColor(color)
+                    .stream()
+                    .map(CatMapper::fromCatToDTOClient)
+                    .toList();
         }
 
-        List<CatDTO> catDTOList = catRepository.getCatsByColorOrBreedAndOwnerId(color, breed, ownerId)
+        if (color == null) {
+            return catRepository.getCatsByBreed(breed)
+                    .stream()
+                    .map(CatMapper::fromCatToDTOClient)
+                    .toList();
+        }
+
+        return catRepository.getCatsByColorOrBreed(color, breed)
                 .stream()
-                .map(CatMapper::fromCatToDTO)
+                .map(CatMapper::fromCatToDTOClient)
                 .toList();
-
-        if (catDTOList.isEmpty()) {
-            throw new CatNotFound();
-        }
-
-        return catDTOList;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<CatDTO> getFriendsById(Long id, Principal principal) {
-        Person person = personRepository.findByUsername(principal.getName());
-        Cat cat;
-        if (person.getRoles() == "ADMIN") {
-            cat = catRepository.getCatById(id);
-        } else {
-            cat = catRepository.getCatByIdAndOwnerId(id, person.getOwner().getId());
-        }
-        List<CatDTO> catDTOList = cat
-                .getFriends()
-                .stream()
-                .map(CatMapper::fromCatToDTO)
-                .toList();
-        if (catDTOList.isEmpty()) {
-            throw new CatNotFound();
-        }
-
-        return catDTOList;
     }
 
     @Override
     @Transactional
-    public void addFriend(Long catId, Long friendId, Principal principal) {
-        Cat cat;
-        Person person = personRepository.findByUsername(principal.getName());
-        if (person.getRoles() == "ADMIN") {
-            cat = catRepository.getCatById(catId);
-        } else {
-            cat = catRepository.getCatByIdAndOwnerId(catId, person.getOwner().getId());
-        }
-        Cat friend = catRepository.getCatById(friendId);
-        if (cat == null || friend == null) {
-            throw new CatNotFound();
-        }
-        cat.addFriend(friend);
-        friend.addFriend(cat);
-        catRepository.save(cat);
-        catRepository.save(friend);
-    }
+    @RabbitListener(queues = "QueueCatUpdate")
+    public void updateCat(CatMessage catMessage) {
+        Cat cat = catRepository.findById(catMessage.getId()).orElseThrow(CatNotFound::new);
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<CatDTO> getAllCatsByOwnerId(Long id, Principal principal) {
-        Long ownerId = personRepository.findByUsername(principal.getName()).getOwner().getId();
-        List<CatDTO> catDTOList = catRepository.getCatsByOwnerId(ownerId)
-                .stream()
-                .map(CatMapper::fromCatToDTO)
-                .toList();
-
-        if (catDTOList.isEmpty()) {
-            throw new CatNotFound();
-        }
-
-        return catDTOList;
-    }
-
-    @Override
-    @Transactional
-    public void updateCat(Cat cat, Principal principal) {
-        Person person = personRepository.findByUsername(principal.getName());
-        Cat prevCat;
-        if (person.getRoles() == "ADMIN") {
-            prevCat = catRepository.getCatById(cat.getId());
-        } else {
-            prevCat = catRepository.getCatByIdAndOwnerId(cat.getId(), person.getOwner().getId());
-        }
-        if (prevCat == null) {
-            throw new CatNotFound();
-        }
-        prevCat.setName(cat.getName());
-        prevCat.setBirthday(cat.getBirthday());
-        prevCat.setBreed(cat.getBreed());
-        prevCat.setColor(cat.getColor());
+        cat.setColor(catMessage.getColor());
+        cat.setBreed(catMessage.getBreed());
+        cat.setName(catMessage.getName());
+        cat.setBirthday(catMessage.getBirthday());
         catRepository.save(cat);
     }
 
     @Override
     @Transactional
-    public void deleteCat(Long id, Principal principal) {
-        Person person = personRepository.findByUsername(principal.getName());
-        if (catRepository.getCatById(id) == null) {
-            throw new CatNotFound();
-        }
-        if (person.getRoles() == "ADMIN") {
-            catRepository.deleteById(id);
-            return;
-        } else {
-            Cat cat = catRepository.getCatByIdAndOwnerId(id, person.getOwner().getId());
-            if (cat == null) {
-                throw new CatNotFound();
-            }
-            catRepository.deleteById(id);
-        }
+    @RabbitListener(queues = "QueueCatDelete")
+    public void deleteCat(CatMessage catMessage) {
+        Cat cat = catRepository.findById(catMessage.getId()).orElseThrow(CatNotFound::new);
+        catRepository.delete(cat);
     }
 }

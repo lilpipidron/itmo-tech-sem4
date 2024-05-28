@@ -1,27 +1,27 @@
 package ru.kramskoi.service;
 
-import ru.kramskoi.breeds.Breed;
-import ru.kramskoi.colors.Color;
-import ru.kramskoi.dto.CatDTO;
-import ru.kramskoi.entity.Cat;
+import ru.kramskoi.dto.Breed;
+import ru.kramskoi.dto.Color;
+import ru.kramskoi.dto.CatClientDTO;
+import ru.kramskoi.dto.CatMessage;
+import ru.kramskoi.dto.FriendMessage;
 
-import java.security.Principal;
 import java.util.List;
 
 public interface CatService {
-  void addCat(Cat cat, Principal principal);
+  void addCat(CatMessage catMessage);
 
-  CatDTO findCatByID(Long id, Principal principal);
+  CatClientDTO findCatByID(Long id);
 
-  List<CatDTO> getFriendsById(Long id, Principal principal);
+  List<CatClientDTO> getFriendsById(Long id);
 
-  void addFriend(Long catId, Long friendId, Principal principal);
+  void addFriend(FriendMessage friend);
 
-  List<CatDTO> getAllCatsByOwnerId(Long id, Principal principal);
+  List<CatClientDTO> getAllCatsByOwnerId(Long id);
 
-  List<CatDTO> getCatsByColorOrBreed(Color color, Breed breed, Principal principal);
+  List<CatClientDTO> getCatsByColorOrBreed(Color color, Breed breed);
 
-  void updateCat(Cat cat, Principal principal);
+  void updateCat(CatMessage catMessage);
 
-  void deleteCat(Long id, Principal principal);
+  void deleteCat(CatMessage catMessage);
 }

@@ -3,8 +3,8 @@ package ru.kramskoi.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
-import ru.kramskoi.breeds.Breed;
-import ru.kramskoi.colors.Color;
+import ru.kramskoi.dto.Breed;
+import ru.kramskoi.dto.Color;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -18,7 +18,6 @@ import java.util.Objects;
 @AllArgsConstructor
 @Table(name = "cats")
 @Entity
-@Builder
 public class Cat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,15 +44,14 @@ public class Cat {
             inverseJoinColumns = @JoinColumn(name = "friend_id", referencedColumnName = "id"))
     private List<Cat> friends = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Owner owner;
+    private Long ownerID;
 
-    public Cat(String name, Date birthdayDate, Breed breedEnum, Color colorEnum, Owner owner) {
+    public Cat(String name, Date birthdayDate, Breed breedEnum, Color colorEnum, Long ownerID) {
         this.name = name;
         this.birthday = birthdayDate;
         this.breed = breedEnum;
         this.color = colorEnum;
-        this.owner = owner;
+        this.ownerID = ownerID;
     }
 
     @Override
