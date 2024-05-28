@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.kramskoi.dto.OwnerClientDTO;
 import ru.kramskoi.dto.OwnerDTO;
 import ru.kramskoi.exception.OwnerNotFound;
 import ru.kramskoi.mapper.OwnerMapper;
@@ -15,7 +16,6 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/owner")
 @Validated
-@ControllerAdvice
 public class OwnerController {
 
     private final OwnerService ownerService;
@@ -25,34 +25,7 @@ public class OwnerController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public OwnerDTO getOwnerById(@PathVariable("id") Long id) {
+    public OwnerClientDTO getOwnerById(@PathVariable("id") Long id) {
         return ownerService.getOwnerByID(id);
-    }
-
-    @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void updateOwner(@PathVariable("id") Long id, @Valid @RequestBody OwnerDTO ownerDTO) {
-        ownerService.getOwnerByID(id);
-        ownerService.updateOwner(OwnerMapper.fromDTOToOwner(ownerDTO));
-    }
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void addOwner(@Valid @RequestBody OwnerDTO ownerDTO, Principal principal) {
-        ownerDTO.setId(ownerService.addOwner(OwnerMapper.fromDTOToOwner(ownerDTO)));
-        personService.addOwner(principal, ownerDTO);
-    }
-
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteOwner(@PathVariable("id") Long id) {
-        ownerService.getOwnerByID(id);
-        ownerService.deleteOwner(id);
-    }
-
-    @ExceptionHandler(OwnerNotFound.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleOwnerException(OwnerNotFound e) {
-        return e.getMessage();
     }
 }
