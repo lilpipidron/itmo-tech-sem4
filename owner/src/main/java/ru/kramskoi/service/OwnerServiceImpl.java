@@ -1,8 +1,12 @@
 package ru.kramskoi.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kramskoi.config.OwnerClient;
+import ru.kramskoi.dto.OwnerClientDTO;
 import ru.kramskoi.dto.OwnerDTO;
+import ru.kramskoi.dto.OwnerMessage;
 import ru.kramskoi.entity.Owner;
 import ru.kramskoi.exception.OwnerNotFound;
 import ru.kramskoi.mapper.OwnerMapper;
@@ -16,42 +20,44 @@ public class OwnerServiceImpl implements OwnerService {
     final
     OwnerRepository ownerRepository;
 
-    final
-    CatRepository catRepository;
-
-    public OwnerServiceImpl(CatRepository catRepository, OwnerRepository ownerRepository, PersonRepository personRepository, PersonServiceImpl personService) {
-        this.catRepository = catRepository;
+    public OwnerServiceImpl(OwnerRepository ownerRepository) {
         this.ownerRepository = ownerRepository;
     }
 
     @Override
-    @Transactional
-    public Long addOwner(Owner owner) {
-        return ownerRepository.save(owner).getId();
+    public Long addOwner(OwnerMessage owner) {
+        return ownerRepository.save(
+                new Owner(
+                        owner.getName(),
+                        owner.getBirthday(),
+                        owner.getPersonID()
+                )
+        ).getId();
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public OwnerDTO getOwnerByID(Long id) {
-        OwnerDTO ownerDTO = OwnerMapper.fromOwnerToDTO(ownerRepository.getOwnerById(id));
-        if (ownerDTO == null) {
-            throw new OwnerNotFound();
-        }
-        return ownerDTO;
+    public OwnerClientDTO getOwnerByID(Long id) {
+        Owner owner = ownerRepository.findById(id).orElseThrow(OwnerNotFound::new);
+        return new OwnerClientDTO(
+                owner.getId(),
+                owner.getName(),
+                owner.getBirthday(),
+                owner.getPersonID()
+        );
     }
 
     @Override
-    @Transactional
-    public void updateOwner(Owner owner) {
-        Owner prevOwner = ownerRepository.getOwnerById(owner.getId());
-        prevOwner.setBirthday(owner.getBirthday());
-        prevOwner.setName(owner.getName());
-        ownerRepository.save(owner);
+    public void updateOwner(OwnerMessage owner) {
+        Owner own = ownerRepository.findById(owner.getId()).orElseThrow(OwnerNotFound::new);
+
+        own.setName(owner.getName());
+        owner.setBirthday(owner.getBirthday());
+        ownerRepository.save(own);
     }
 
     @Override
-    @Transactional
     public void deleteOwner(Long id) {
-        ownerRepository.deleteById(id);
+        Owner owner = ownerRepository.findById(id).orElseThrow(OwnerNotFound::new);
+        ownerRepository.delete(owner);
     }
 }

@@ -10,6 +10,7 @@ import ru.kramskoi.exception.CatNotFound;
 import ru.kramskoi.mapper.CatMapper;
 import ru.kramskoi.repository.CatRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -50,7 +51,11 @@ public class CatServiceImpl implements CatService {
 
     @Override
     public List<CatClientDTO> getFriendsById(Long id) {
-        return List.of();
+        Cat cat = catRepository.findById(id).orElseThrow(CatNotFound::new);
+        return cat.getFriends()
+                .stream()
+                .map(CatMapper::fromCatToDTOClient)
+                .toList();
     }
 
     @Override

@@ -1,10 +1,8 @@
 package ru.kramskoi.dto;
 
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
+import lombok.extern.jackson.Jacksonized;
 
 import java.sql.Date;
 
@@ -12,6 +10,8 @@ import java.sql.Date;
 @AllArgsConstructor
 @ToString
 @NoArgsConstructor
+@Jacksonized
+@Builder
 public class CatClientDTO {
     @NotNull(message = "cat id can't be empty")
     @Min(value = 0, message="cat id can't be less 0")

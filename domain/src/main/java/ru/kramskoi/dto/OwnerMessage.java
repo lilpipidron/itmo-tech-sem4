@@ -18,4 +18,6 @@ public class OwnerMessage {
     private String name;
 
     private Date birthday;
+
+    private Long personID;
 }
