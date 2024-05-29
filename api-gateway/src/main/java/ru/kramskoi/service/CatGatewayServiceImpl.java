@@ -62,7 +62,12 @@ public class CatGatewayServiceImpl implements CatGatewayService {
     @Override
     public CatDTO getCat(long id, Principal principal) {
         Person person = personRepository.findByUsername(principal.getName());
-        CatClientDTO cat = catClient.getCatById(id);
+        CatClientDTO cat;
+        try {
+             cat = catClient.getCatById(id);
+        } catch (Exception e) {
+            throw new CatNotFound();
+        }
 
         if (cat == null ||
                 !Objects.equals(cat.getOwnerId(), person.getOwnerID())

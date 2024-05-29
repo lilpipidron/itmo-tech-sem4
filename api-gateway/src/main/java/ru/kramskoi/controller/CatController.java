@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.kramskoi.dto.Breed;
 import ru.kramskoi.dto.CatDTO;
 import ru.kramskoi.dto.Color;
@@ -18,7 +19,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/cat")
 @Validated
-@ControllerAdvice
 public class CatController {
 
     private final CatGatewayService catGatewayService;
@@ -30,7 +30,13 @@ public class CatController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public CatDTO getCatById(@PathVariable("id") Long id, Principal principal) {
-        return catGatewayService.getCat(id, principal);
+        CatDTO cat;
+        try{
+            cat = catGatewayService.getCat(id, principal);
+        } catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return cat;
     }
 
     @GetMapping

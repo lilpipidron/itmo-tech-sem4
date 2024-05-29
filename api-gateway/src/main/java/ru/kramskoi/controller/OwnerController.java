@@ -6,7 +6,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.kramskoi.dto.OwnerDTO;
 import ru.kramskoi.dto.OwnerMessage;
-import ru.kramskoi.mapper.OwnerMapper;
 import ru.kramskoi.mapper.OwnerMapperGateway;
 import ru.kramskoi.service.OwnerService;
 import ru.kramskoi.service.PersonService;
@@ -16,7 +15,6 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/owner")
 @Validated
-@ControllerAdvice
 public class OwnerController {
 
     private final OwnerService ownerService;
@@ -40,7 +38,7 @@ public class OwnerController {
                 ownerDTO.getId(),
                 ownerDTO.getName(),
                 ownerDTO.getBirthday(),
-                ownerDTO.getPersonID()
+                ownerDTO.getPersonId()
         ));
     }
 
@@ -51,7 +49,7 @@ public class OwnerController {
                 ownerDTO.getId(),
                 ownerDTO.getName(),
                 ownerDTO.getBirthday(),
-                ownerDTO.getPersonID()
+                ownerDTO.getPersonId()
         )));
         personService.addOwner(principal, ownerDTO);
     }

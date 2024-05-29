@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.kramskoi.dto.Breed;
 import ru.kramskoi.dto.CatClientDTO;
 import ru.kramskoi.dto.Color;
+import ru.kramskoi.entity.Cat;
 import ru.kramskoi.service.CatService;
 
 import java.util.List;
@@ -25,7 +26,8 @@ public class CatController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public CatClientDTO getCatById(@PathVariable("id") Long id) {
-        return catService.findCatByID(id);
+        CatClientDTO cat = catService.findCatByID(id);
+        return cat;
     }
 
     @GetMapping

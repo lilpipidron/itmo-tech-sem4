@@ -24,6 +24,7 @@ public class OwnerDTO {
     @PastOrPresent
     private Date birthday;
 
-    private Long personID;
+    @NotNull
+    private Long personId;
 
 }

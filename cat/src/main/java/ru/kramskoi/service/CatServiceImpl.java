@@ -36,8 +36,12 @@ public class CatServiceImpl implements CatService {
 
     @Override
     public CatClientDTO findCatByID(Long id) {
-        Cat cat = catRepository.findById(id).orElseThrow(CatNotFound::new);
-
+        Cat cat;
+        try {
+            cat = catRepository.findById(id).orElseThrow(CatNotFound::new);
+        } catch (CatNotFound e) {
+            throw new CatNotFound();
+        }
         return new CatClientDTO(
                 cat.getId(),
                 cat.getName(),
