@@ -10,11 +10,13 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":owner-client"))
+    implementation(project(":domain"))
+
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("junit:junit:4.13.1")
 
-    implementation(project(":dao"))
 
     implementation("org.springframework.boot:spring-boot-starter-validation:3.0.6")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:3.0.6")

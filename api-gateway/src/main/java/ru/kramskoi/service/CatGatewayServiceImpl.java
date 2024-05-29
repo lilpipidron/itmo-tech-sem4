@@ -65,7 +65,7 @@ public class CatGatewayServiceImpl implements CatGatewayService {
         CatClientDTO cat = catClient.getCatById(id);
 
         if (cat == null ||
-                !Objects.equals(cat.getOwnerId(), person.getOwner().getId())
+                !Objects.equals(cat.getOwnerId(), person.getOwnerID())
                         && !Objects.equals(person.getRoles(), "ROLE_ADMIN")) {
             throw new CatNotFound();
         }

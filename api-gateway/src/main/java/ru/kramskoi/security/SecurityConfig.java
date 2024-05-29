@@ -20,13 +20,6 @@ import ru.kramskoi.service.PersonDetailsService;
 public class SecurityConfig {
 
     @Bean
-    public UserDetailsService userDetailsService() {
-
-        return new PersonDetailsService();
-
-    }
-
-    @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
@@ -40,15 +33,5 @@ public class SecurityConfig {
                         .anyRequest().authenticated())
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
                 .build();
-
     }
-
-    @Bean
-    public AuthenticationProvider authProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setPasswordEncoder(passwordEncoder());
-        authProvider.setUserDetailsService(userDetailsService());
-        return authProvider;
-    }
-
 }

@@ -7,7 +7,7 @@ import ru.kramskoi.dto.OwnerMessage;
 import java.security.Principal;
 
 public interface OwnerGatewayService {
-    Long addOwner(OwnerMessage owner, Principal principal);
+    void addOwner(OwnerMessage owner, Principal principal);
 
     OwnerClientDTO getOwnerByID(Long id, Principal principal);
 

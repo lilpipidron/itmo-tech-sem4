@@ -24,8 +24,8 @@ public class Person {
     @Column(name = "password")
     private String password;
 
-    @OneToOne(mappedBy = "person")
-    private Owner owner;
+    @Column(name = "owner_id")
+    private Long ownerID;
 
     @Column(name = "roles")
     private String roles;
