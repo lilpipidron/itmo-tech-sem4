@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.kramskoi.dto.OwnerDTO;
-import ru.kramskoi.exception.OwnerNotFound;
 import ru.kramskoi.mapper.OwnerMapper;
 import ru.kramskoi.service.OwnerService;
 import ru.kramskoi.service.PersonService;
@@ -51,11 +50,5 @@ public class OwnerController {
     public void deleteOwner(@PathVariable("id") Long id) {
         ownerService.getOwnerByID(id);
         ownerService.deleteOwner(id);
-    }
-
-    @ExceptionHandler(OwnerNotFound.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleOwnerException(OwnerNotFound e) {
-        return e.getMessage();
     }
 }

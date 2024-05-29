@@ -5,11 +5,11 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.kramskoi.breeds.Breed;
-import ru.kramskoi.colors.Color;
+import ru.kramskoi.dto.Breed;
 import ru.kramskoi.dto.CatDTO;
-import ru.kramskoi.exception.CatNotFound;
-import ru.kramskoi.mapper.CatMapper;
+import ru.kramskoi.dto.Color;
+import ru.kramskoi.dto.FriendMessage;
+import ru.kramskoi.mapper.CatMapperGateway;
 import ru.kramskoi.service.CatGatewayService;
 
 import java.security.Principal;
@@ -38,52 +38,53 @@ public class CatController {
     public List<CatDTO> getCatsByColorOrBreed(
             @RequestParam(value = "color", required = false) Color color,
             @RequestParam(value = "breed", required = false) Breed breed,
+            @RequestParam(value = "ownerID", required = false) Long ownerID,
             Principal principal) {
-        return catGatewayService.getCatsByColorOrBreed(color, breed, principal);
+        return catGatewayService.getCatsByColorOrBreed(color, breed, ownerID, principal)
+                .stream()
+                .map(CatMapperGateway::fromCatClientDTOToCatDTO)
+                .toList();
     }
 
 
     @GetMapping("/{id}/friends")
     @ResponseStatus(HttpStatus.OK)
     public List<CatDTO> getFriendsById(@PathVariable("id") Long id, Principal principal) {
-        return catGatewayService.getFriends(id, principal);
+        return catGatewayService.getFriends(id, principal)
+                .stream()
+                .map(CatMapperGateway::fromCatClientDTOToCatDTO)
+                .toList();
     }
 
     @GetMapping("/owner/{id}")
     @ResponseStatus(HttpStatus.OK)
     public List<CatDTO> getAllCatsByOwnerId(@PathVariable("id") Long id, Principal principal) {
-        return catGatewayService.(id, principal);
+        return catGatewayService.getAllCatsByOwnerId(id, principal)
+                .stream()
+                .map(CatMapperGateway::fromCatClientDTOToCatDTO)
+                .toList();
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateCat(@PathVariable("id") Long id, @Valid @RequestBody CatDTO catDTO, Principal principal) {
-        catGatewayService.findCatByID(id, principal);
-        catGatewayService.updateCat(CatMapper.fromDTOToCat(catDTO), principal);
+    public void updateCat(@Valid @RequestBody CatDTO catDTO, Principal principal) {
+        catGatewayService.updateCat(catDTO, principal);
     }
 
     @PostMapping("/{c/ Замените на нужную версию JDKatId}/friends/{friendId}")
     @ResponseStatus(HttpStatus.CREATED)
     public void addFriend(@PathVariable("catId") Long catId, @PathVariable("friendId") Long friendId, Principal principal) {
-        catGatewayService.addFriend(catId, friendId, principal);
+        catGatewayService.addFriend(new FriendMessage(catId, friendId), principal);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void addCat(@Valid @RequestBody CatDTO catDTO, Principal principal) {
-        catGatewayService.addCat(CatMapper.fromDTOToCat(catDTO), principal);
+        catGatewayService.addCat(catDTO, principal);
     }
-
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCat(@PathVariable("id") Long id, Principal principal) {
-        catGatewayService.findCatByID(id, principal);
         catGatewayService.deleteCat(id, principal);
-    }
-
-    @ExceptionHandler(CatNotFound.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleCatException(CatNotFound e) {
-        return e.getMessage();
     }
 }

@@ -11,7 +11,7 @@ public interface CatClient {
 
     List<CatClientDTO> getFriendsById(long id);
 
-    List<CatClientDTO> getCatsByColorOrBreed(Color color, Breed breed);
+    List<CatClientDTO> getCatsByColorOrBreedAndOwnerId(Color color, Breed breed, long ownerId);
 
     List<CatClientDTO> getAllCatsByOwnerId(long ownerId);
 }

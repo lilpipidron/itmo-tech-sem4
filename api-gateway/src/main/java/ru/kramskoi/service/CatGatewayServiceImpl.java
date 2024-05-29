@@ -3,10 +3,7 @@ package ru.kramskoi.service;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import ru.kramskoi.config.CatClient;
-import ru.kramskoi.dto.CatClientDTO;
-import ru.kramskoi.dto.CatDTO;
-import ru.kramskoi.dto.CatMessage;
-import ru.kramskoi.dto.FriendMessage;
+import ru.kramskoi.dto.*;
 import ru.kramskoi.entity.Person;
 import ru.kramskoi.exception.CatNotFound;
 import ru.kramskoi.repository.PersonRepository;
@@ -93,5 +90,25 @@ public class CatGatewayServiceImpl implements CatGatewayService {
     public List<CatClientDTO> getFriends(long id, Principal principal) {
         getCat(id, principal);
         return catClient.getFriendsById(id);
+    }
+
+    @Override
+    public List<CatClientDTO> getAllCatsByOwnerId(long id, Principal principal) {
+        Person person = personRepository.findByUsername(principal.getName());
+        if (!Objects.equals(person.getRoles(), "ROLE_ADMIN") && person.getOwnerID() != id) {
+            throw new CatNotFound();
+        }
+
+        return catClient.getAllCatsByOwnerId(id);
+    }
+
+    @Override
+    public List<CatClientDTO> getCatsByColorOrBreed(Color color, Breed breed, Long ownerID, Principal principal) {
+        Person person = personRepository.findByUsername(principal.getName());
+        if (!Objects.equals(person.getRoles(), "ROLE_ADMIN") && !Objects.equals(person.getOwnerID(), ownerID)) {
+            throw new CatNotFound();
+        }
+
+        return catClient.getCatsByColorOrBreedAndOwnerId(color, breed, ownerID);
     }
 }
