@@ -51,7 +51,7 @@ public class Lab3Test {
     @Test
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     public void shouldCreateOwner() throws Exception {
-        OwnerDTO ownerDTO = new OwnerDTO(1L, "user", Date.valueOf("2006-01-02"));
+        OwnerDTO ownerDTO = new OwnerDTO(1L, "user", Date.valueOf("2006-01-02"), 1L);
         mvc.perform(post("/owner")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(ownerDTO)))
@@ -74,7 +74,7 @@ public class Lab3Test {
     @Test
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     public void shouldGetException_WhenTryToGetCat() throws Exception {
-        OwnerDTO ownerDTO = new OwnerDTO(1L, "user", Date.valueOf("2006-01-02"));
+        OwnerDTO ownerDTO = new OwnerDTO(1L, "user", Date.valueOf("2006-01-02"), 1L);
         mvc.perform(post("/owner")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(ownerDTO)))

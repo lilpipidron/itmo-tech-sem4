@@ -35,11 +35,13 @@ public class HttpCatClientConf implements CatClient {
 
     }
 
+
     @Override
-    public List<CatClientDTO> getCatsByColorOrBreed(Color color, Breed breed) {
+    public List<CatClientDTO> getCatsByColorOrBreedAndOwnerId(Color color, Breed breed, long ownerId){
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.put("color", List.of(color.toString()));
         params.put("breed", List.of(breed.toString()));
+        params.put("ownerId", List.of(String.valueOf(ownerId)));
 
         return webClient
                 .get()
