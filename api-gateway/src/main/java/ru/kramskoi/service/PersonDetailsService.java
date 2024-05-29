@@ -9,8 +9,11 @@ import ru.kramskoi.repository.PersonRepository;
 
 @Service
 public class PersonDetailsService implements UserDetailsService {
-    @Autowired
-    private PersonRepository repository;
+    private final PersonRepository repository;
+
+    public PersonDetailsService(PersonRepository repository) {
+        this.repository = repository;
+    }
 
 
     @Override

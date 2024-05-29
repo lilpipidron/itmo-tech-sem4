@@ -15,7 +15,7 @@ public interface CatGatewayService {
 
     void updateCat(CatPost catPost, Principal principal);
 
-    CatDTO getCat(long id, Principal principal);
+    CatClientDTO getCat(long id, Principal principal);
 
     void addFriend(FriendMessage friendMessage, Principal principal);
 

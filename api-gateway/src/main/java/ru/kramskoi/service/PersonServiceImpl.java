@@ -38,8 +38,8 @@ public class PersonServiceImpl implements PersonService {
     @Transactional
     public void addOwner(Principal principal, OwnerDTO ownerDTO) {
         Person person = getPersonByUsername(principal.getName());
-        Owner owner = ownerRepository.getOwnerById(ownerDTO.getId());
-        owner.setPerson(person);
+        Owner owner = ownerRepository.findById(ownerDTO.getId()).get();
+        owner.setPersonID(person.getId());
         person.setOwner(owner);
         ownerRepository.save(owner);
         personRepository.save(person);
