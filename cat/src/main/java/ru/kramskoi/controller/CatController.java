@@ -1,16 +1,14 @@
 package ru.kramskoi.controller;
 
 
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.kramskoi.dto.*;
-import ru.kramskoi.exception.CatNotFound;
-import ru.kramskoi.mapper.CatMapper;
+import ru.kramskoi.dto.Breed;
+import ru.kramskoi.dto.CatClientDTO;
+import ru.kramskoi.dto.Color;
 import ru.kramskoi.service.CatService;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController

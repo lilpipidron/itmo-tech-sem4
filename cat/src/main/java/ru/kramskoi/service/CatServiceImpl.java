@@ -10,7 +10,6 @@ import ru.kramskoi.exception.CatNotFound;
 import ru.kramskoi.mapper.CatMapper;
 import ru.kramskoi.repository.CatRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component

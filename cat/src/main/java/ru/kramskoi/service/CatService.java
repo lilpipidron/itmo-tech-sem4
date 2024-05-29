@@ -1,10 +1,6 @@
 package ru.kramskoi.service;
 
-import ru.kramskoi.dto.Breed;
-import ru.kramskoi.dto.Color;
-import ru.kramskoi.dto.CatClientDTO;
-import ru.kramskoi.dto.CatMessage;
-import ru.kramskoi.dto.FriendMessage;
+import ru.kramskoi.dto.*;
 
 import java.util.List;
 

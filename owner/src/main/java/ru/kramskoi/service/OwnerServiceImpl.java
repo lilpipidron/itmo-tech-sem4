@@ -1,18 +1,11 @@
 package ru.kramskoi.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import ru.kramskoi.config.OwnerClient;
 import ru.kramskoi.dto.OwnerClientDTO;
-import ru.kramskoi.dto.OwnerDTO;
 import ru.kramskoi.dto.OwnerMessage;
 import ru.kramskoi.entity.Owner;
 import ru.kramskoi.exception.OwnerNotFound;
-import ru.kramskoi.mapper.OwnerMapper;
-import ru.kramskoi.repository.CatRepository;
 import ru.kramskoi.repository.OwnerRepository;
-import ru.kramskoi.repository.PersonRepository;
 
 
 @Service
