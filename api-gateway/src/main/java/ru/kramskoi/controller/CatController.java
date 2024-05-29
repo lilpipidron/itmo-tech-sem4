@@ -10,6 +10,7 @@ import ru.kramskoi.colors.Color;
 import ru.kramskoi.dto.CatDTO;
 import ru.kramskoi.exception.CatNotFound;
 import ru.kramskoi.mapper.CatMapper;
+import ru.kramskoi.service.CatGatewayService;
 import ru.kramskoi.service.CatService;
 
 import java.security.Principal;
@@ -21,16 +22,16 @@ import java.util.List;
 @ControllerAdvice
 public class CatController {
 
-    private final CatService catService;
+    private final CatGatewayService catGatewayService;
 
-    public CatController(CatService catService) {
-        this.catService = catService;
+    public CatController(CatGatewayService catService) {
+        this.catGatewayService = catService;
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public CatDTO getCatById(@PathVariable("id") Long id, Principal principal) {
-        return catService.findCatByID(id, principal);
+        return catGatewayService.getCat(id, principal);
     }
 
     @GetMapping
@@ -39,46 +40,46 @@ public class CatController {
             @RequestParam(value = "color", required = false) Color color,
             @RequestParam(value = "breed", required = false) Breed breed,
             Principal principal) {
-        return catService.getCatsByColorOrBreed(color, breed, principal);
+        return catGatewayService.getCatsByColorOrBreed(color, breed, principal);
     }
 
 
     @GetMapping("/{id}/friends")
     @ResponseStatus(HttpStatus.OK)
     public List<CatDTO> getFriendsById(@PathVariable("id") Long id, Principal principal) {
-        return catService.getFriendsById(id, principal);
+        return catGatewayService.getFriends(id, principal);
     }
 
     @GetMapping("/owner/{id}")
     @ResponseStatus(HttpStatus.OK)
     public List<CatDTO> getAllCatsByOwnerId(@PathVariable("id") Long id, Principal principal) {
-        return catService.getAllCatsByOwnerId(id, principal);
+        return catGatewayService.(id, principal);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void updateCat(@PathVariable("id") Long id, @Valid @RequestBody CatDTO catDTO, Principal principal) {
-        catService.findCatByID(id, principal);
-        catService.updateCat(CatMapper.fromDTOToCat(catDTO), principal);
+        catGatewayService.findCatByID(id, principal);
+        catGatewayService.updateCat(CatMapper.fromDTOToCat(catDTO), principal);
     }
 
     @PostMapping("/{catId}/friends/{friendId}")
     @ResponseStatus(HttpStatus.CREATED)
     public void addFriend(@PathVariable("catId") Long catId, @PathVariable("friendId") Long friendId, Principal principal) {
-        catService.addFriend(catId, friendId, principal);
+        catGatewayService.addFriend(catId, friendId, principal);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void addCat(@Valid @RequestBody CatDTO catDTO, Principal principal) {
-        catService.addCat(CatMapper.fromDTOToCat(catDTO), principal);
+        catGatewayService.addCat(CatMapper.fromDTOToCat(catDTO), principal);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCat(@PathVariable("id") Long id, Principal principal) {
-        catService.findCatByID(id, principal);
-        catService.deleteCat(id, principal);
+        catGatewayService.findCatByID(id, principal);
+        catGatewayService.deleteCat(id, principal);
     }
 
     @ExceptionHandler(CatNotFound.class)
