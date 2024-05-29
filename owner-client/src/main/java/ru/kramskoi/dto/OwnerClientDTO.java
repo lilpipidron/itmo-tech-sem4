@@ -16,6 +16,6 @@ import java.sql.Date;
 public class OwnerClientDTO {
     private Long id;
     private String name;
-    private Date birthDate;
+    private Date birthday;
     private Long personID;
 }

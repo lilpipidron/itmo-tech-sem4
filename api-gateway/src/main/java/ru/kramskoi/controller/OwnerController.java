@@ -5,7 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.kramskoi.dto.OwnerDTO;
+import ru.kramskoi.dto.OwnerMessage;
 import ru.kramskoi.mapper.OwnerMapper;
+import ru.kramskoi.mapper.OwnerMapperGateway;
 import ru.kramskoi.service.OwnerService;
 import ru.kramskoi.service.PersonService;
 
@@ -28,20 +30,29 @@ public class OwnerController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public OwnerDTO getOwnerById(@PathVariable("id") Long id) {
-        return ownerService.getOwnerByID(id);
+        return OwnerMapperGateway.fromOwnerClientDTOToDTO(ownerService.getOwnerByID(id));
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateOwner(@PathVariable("id") Long id, @Valid @RequestBody OwnerDTO ownerDTO) {
-        ownerService.getOwnerByID(id);
-        ownerService.updateOwner(OwnerMapper.fromDTOToOwner(ownerDTO));
+    public void updateOwner(@Valid @RequestBody OwnerDTO ownerDTO) {
+        ownerService.updateOwner(new OwnerMessage(
+                ownerDTO.getId(),
+                ownerDTO.getName(),
+                ownerDTO.getBirthday(),
+                ownerDTO.getPersonID()
+        ));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void addOwner(@Valid @RequestBody OwnerDTO ownerDTO, Principal principal) {
-        ownerDTO.setId(ownerService.addOwner(OwnerMapper.fromDTOToOwner(ownerDTO)));
+        ownerDTO.setId(ownerService.addOwner(new OwnerMessage(
+                ownerDTO.getId(),
+                ownerDTO.getName(),
+                ownerDTO.getBirthday(),
+                ownerDTO.getPersonID()
+        )));
         personService.addOwner(principal, ownerDTO);
     }
 
