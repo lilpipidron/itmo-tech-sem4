@@ -6,7 +6,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import ru.kramskoi.dto.Breed;
 import ru.kramskoi.dto.CatClientDTO;
-import ru.kramskoi.dto.CatMessage;
 import ru.kramskoi.dto.Color;
 
 import java.util.List;

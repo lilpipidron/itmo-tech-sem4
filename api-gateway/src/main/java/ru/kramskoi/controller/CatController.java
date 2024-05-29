@@ -11,7 +11,6 @@ import ru.kramskoi.dto.CatDTO;
 import ru.kramskoi.exception.CatNotFound;
 import ru.kramskoi.mapper.CatMapper;
 import ru.kramskoi.service.CatGatewayService;
-import ru.kramskoi.service.CatService;
 
 import java.security.Principal;
 import java.util.List;
@@ -63,7 +62,7 @@ public class CatController {
         catGatewayService.updateCat(CatMapper.fromDTOToCat(catDTO), principal);
     }
 
-    @PostMapping("/{catId}/friends/{friendId}")
+    @PostMapping("/{c/ Замените на нужную версию JDKatId}/friends/{friendId}")
     @ResponseStatus(HttpStatus.CREATED)
     public void addFriend(@PathVariable("catId") Long catId, @PathVariable("friendId") Long friendId, Principal principal) {
         catGatewayService.addFriend(catId, friendId, principal);

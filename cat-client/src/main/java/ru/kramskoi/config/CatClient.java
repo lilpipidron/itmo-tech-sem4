@@ -2,7 +2,6 @@ package ru.kramskoi.config;
 
 import ru.kramskoi.dto.Breed;
 import ru.kramskoi.dto.CatClientDTO;
-import ru.kramskoi.dto.CatMessage;
 import ru.kramskoi.dto.Color;
 
 import java.util.List;
