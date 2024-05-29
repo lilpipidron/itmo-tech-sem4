@@ -73,7 +73,7 @@ public class CatServiceImpl implements CatService {
 
     @Override
     public List<CatClientDTO> getAllCatsByOwnerId(Long id) {
-        return catRepository.getCatsByOwnerId(id)
+        return catRepository.getCatsByOwnerID(id)
                 .stream()
                 .map(CatMapper::fromCatToDTOClient)
                 .toList();

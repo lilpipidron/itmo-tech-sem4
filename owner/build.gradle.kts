@@ -16,25 +16,24 @@ java {
 }
 
 dependencies {
-    implementation(project(":owner-client"))
     implementation(project(":domain"))
+    implementation(project(":owner-client"))
 
-    testImplementation(platform("org.junit:junit-bom:5.9.1"))
+    testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("junit:junit:4.13.1")
 
-    implementation("org.springframework.boot:spring-boot-starter-validation:3.0.6")
-    implementation("org.springframework.boot:spring-boot-starter-test:3.0.6")
+    implementation("org.projectlombok:lombok:1.18.26")
+    annotationProcessor("org.projectlombok:lombok:1.18.26")
+
+    implementation("org.springframework.boot:spring-boot-starter:3.0.6")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.0.6")
-    implementation("org.springframework.boot:spring-boot-starter-security:3.0.6")
+    implementation("org.springframework.boot:spring-boot-starter-web:3.0.6")
+
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:3.0.6")
+    implementation("org.springframework.boot:spring-boot-starter-validation:3.0.6")
 
-    compileOnly("org.projectlombok:lombok:1.18.22")
-    annotationProcessor("org.projectlombok:lombok:1.18.22")
-    implementation("org.projectlombok:lombok:1.18.22")
-
-    implementation("com.fasterxml.jackson.core:jackson-annotations:2.2.1")
-    implementation("at.favre.lib:bcrypt:0.9.0")
+    implementation("org.springframework.amqp:spring-rabbit:3.0.6")
+    implementation("org.postgresql:postgresql:42.5.4")
 }
 
 tasks.test {

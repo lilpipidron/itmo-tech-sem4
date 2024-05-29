@@ -15,8 +15,8 @@ import ru.kramskoi.rabbitmq.RabbitConfig;
         CatClientConf.class
 })
 @SpringBootApplication
-public class Application {
+public class ApplicationGateway {
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(ApplicationGateway.class, args);
     }
 }

@@ -71,7 +71,7 @@ public class CatController {
         catGatewayService.updateCat(catDTO, principal);
     }
 
-    @PostMapping("/{c/ Замените на нужную версию JDKatId}/friends/{friendId}")
+    @PostMapping("/{catId}/friends/{friendId}")
     @ResponseStatus(HttpStatus.CREATED)
     public void addFriend(@PathVariable("catId") Long catId, @PathVariable("friendId") Long friendId, Principal principal) {
         catGatewayService.addFriend(new FriendMessage(catId, friendId), principal);
