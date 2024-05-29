@@ -5,6 +5,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import ru.kramskoi.dto.Breed;
+import ru.kramskoi.dto.CatClientDTO;
 import ru.kramskoi.dto.CatMessage;
 import ru.kramskoi.dto.Color;
 
@@ -15,17 +16,17 @@ public class HttpCatClientConf implements CatClient {
     private WebClient webClient;
 
     @Override
-    public CatMessage getCatById(long id) {
+    public CatClientDTO getCatById(long id) {
         return webClient
                 .get()
                 .uri("/cat/%d".formatted(id))
                 .retrieve()
-                .bodyToMono(CatMessage.class)
+                .bodyToMono(CatClientDTO.class)
                 .block();
     }
 
     @Override
-    public List<CatMessage> getFriendsById(long id) {
+    public List<CatClientDTO> getFriendsById(long id) {
         return webClient
                 .get()
                 .uri("cat/%d/friends".formatted(id))
@@ -36,7 +37,7 @@ public class HttpCatClientConf implements CatClient {
     }
 
     @Override
-    public List<CatMessage> getCatsByColorOrBreed(Color color, Breed breed) {
+    public List<CatClientDTO> getCatsByColorOrBreed(Color color, Breed breed) {
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.put("color", List.of(color.toString()));
         params.put("breed", List.of(breed.toString()));
@@ -50,12 +51,12 @@ public class HttpCatClientConf implements CatClient {
     }
 
     @Override
-    public List<CatMessage> getAllCatsByOwnerId(long ownerId) {
+    public List<CatClientDTO> getAllCatsByOwnerId(long ownerId) {
         return webClient
                 .get()
                 .uri("/cat/%d".formatted(ownerId))
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<CatMessage>>() {
+                .bodyToMono(new ParameterizedTypeReference<List<CatClientDTO>>() {
                 })
                 .block();
     }

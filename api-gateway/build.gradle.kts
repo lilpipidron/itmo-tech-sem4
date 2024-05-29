@@ -10,7 +10,12 @@ repositories {
 }
 
 dependencies {
-   testImplementation("org.junit:junit-bom:5.10.0")
+    implementation(project(":domain"))
+    implementation(project(":cat-client"))
+    implementation(project(":owner"))
+    implementation(project(":owner-client"))
+
+    testImplementation("org.junit:junit-bom:5.10.0")
     testImplementation("org.junit.jupiter:junit-jupiter")
 
 
