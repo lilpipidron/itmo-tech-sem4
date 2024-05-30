@@ -39,7 +39,7 @@ public class CatGatewayServiceImpl implements CatGatewayService {
     }
 
     @Override
-    public void deleteCat(long id, Principal principal) {
+    public void deleteCat(Long id, Principal principal) {
         getCat(id, principal);
         rabbitTemplate.convertAndSend("QueueCatDelete", id);
     }
@@ -60,18 +60,12 @@ public class CatGatewayServiceImpl implements CatGatewayService {
     }
 
     @Override
-    public CatDTO getCat(long id, Principal principal) {
+    public CatDTO getCat(Long id, Principal principal) {
         Person person = personRepository.findByUsername(principal.getName());
-        CatClientDTO cat;
-        try {
-             cat = catClient.getCatById(id);
-        } catch (Exception e) {
-            throw new CatNotFound();
-        }
-
+        CatClientDTO cat = catClient.getCatById(id).orElseThrow(CatNotFound::new);
         if (cat == null ||
                 !Objects.equals(cat.getOwnerId(), person.getOwnerID())
-                        && !Objects.equals(person.getRoles(), "ROLE_ADMIN")) {
+                        && !Objects.equals(person.getRoles(), "ADMIN")) {
             throw new CatNotFound();
         }
 
@@ -92,28 +86,43 @@ public class CatGatewayServiceImpl implements CatGatewayService {
     }
 
     @Override
-    public List<CatClientDTO> getFriends(long id, Principal principal) {
+    public List<CatClientDTO> getFriends(Long id, Principal principal) {
         getCat(id, principal);
-        return catClient.getFriendsById(id);
-    }
-
-    @Override
-    public List<CatClientDTO> getAllCatsByOwnerId(long id, Principal principal) {
-        Person person = personRepository.findByUsername(principal.getName());
-        if (!Objects.equals(person.getRoles(), "ROLE_ADMIN") && person.getOwnerID() != id) {
+        List<CatClientDTO> friends = catClient.getFriendsById(id).get();
+        if (friends == null) {
             throw new CatNotFound();
         }
 
-        return catClient.getAllCatsByOwnerId(id);
+        return friends;
+    }
+
+    @Override
+    public List<CatClientDTO> getAllCatsByOwnerId(Long id, Principal principal) {
+        Person person = personRepository.findByUsername(principal.getName());
+        if (!Objects.equals(person.getRoles(), "ADMIN") && !Objects.equals(person.getOwnerID(), id)) {
+            throw new CatNotFound();
+        }
+
+        List<CatClientDTO> cats = catClient.getAllCatsByOwnerId(id).get();
+        if (cats == null) {
+            throw new CatNotFound();
+        }
+
+        return cats;
     }
 
     @Override
     public List<CatClientDTO> getCatsByColorOrBreed(Color color, Breed breed, Long ownerID, Principal principal) {
         Person person = personRepository.findByUsername(principal.getName());
-        if (!Objects.equals(person.getRoles(), "ROLE_ADMIN") && !Objects.equals(person.getOwnerID(), ownerID)) {
+        if (!Objects.equals(person.getRoles(), "ADMIN") && !Objects.equals(person.getOwnerID(), ownerID)) {
             throw new CatNotFound();
         }
 
-        return catClient.getCatsByColorOrBreedAndOwnerId(color, breed, ownerID);
+        List<CatClientDTO> cats =  catClient.getCatsByColorOrBreedAndOwnerId(color, breed, ownerID).get();
+        if (cats == null) {
+            throw new CatNotFound();
+        }
+
+        return cats;
     }
 }

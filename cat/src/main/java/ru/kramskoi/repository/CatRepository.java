@@ -7,11 +7,13 @@ import ru.kramskoi.dto.Color;
 import ru.kramskoi.entity.Cat;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
 
 public interface CatRepository extends JpaRepository<Cat, Long> {
+    Cat getCatById(Long id);
 
     List<Cat> getCatsByOwnerID(Long ownerId);
 

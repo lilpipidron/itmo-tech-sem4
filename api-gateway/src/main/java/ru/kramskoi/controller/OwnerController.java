@@ -31,7 +31,7 @@ public class OwnerController {
         return OwnerMapperGateway.fromOwnerClientDTOToDTO(ownerService.getOwnerByID(id));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public void updateOwner(@Valid @RequestBody OwnerDTO ownerDTO) {
         ownerService.updateOwner(new OwnerMessage(

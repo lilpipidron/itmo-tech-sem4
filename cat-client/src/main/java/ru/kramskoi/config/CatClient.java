@@ -5,13 +5,14 @@ import ru.kramskoi.dto.CatClientDTO;
 import ru.kramskoi.dto.Color;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CatClient {
-    CatClientDTO getCatById(long id);
+    Optional<CatClientDTO> getCatById(Long id);
 
-    List<CatClientDTO> getFriendsById(long id);
+    Optional<List<CatClientDTO>> getFriendsById(Long id);
 
-    List<CatClientDTO> getCatsByColorOrBreedAndOwnerId(Color color, Breed breed, long ownerId);
+    Optional<List<CatClientDTO>> getCatsByColorOrBreedAndOwnerId(Color color, Breed breed, Long ownerId);
 
-    List<CatClientDTO> getAllCatsByOwnerId(long ownerId);
+    Optional<List<CatClientDTO>> getAllCatsByOwnerId(Long ownerId);
 }

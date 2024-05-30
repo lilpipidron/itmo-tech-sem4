@@ -11,6 +11,7 @@ import ru.kramskoi.dto.Color;
 
 import java.lang.annotation.ElementType;
 import java.util.List;
+import java.util.Optional;
 
 public class HttpCatClient implements CatClient {
     @Qualifier("catWebClient")
@@ -18,51 +19,52 @@ public class HttpCatClient implements CatClient {
     private WebClient webClient;
 
     @Override
-    public CatClientDTO getCatById(long id) {
-        return webClient
+    public Optional<CatClientDTO> getCatById(Long id) {
+        String url = "/cat/" + id;
+        return Optional.ofNullable(webClient
                 .get()
-                .uri("/cat/%d".formatted(id))
+                .uri(url)
                 .retrieve()
                 .bodyToMono(CatClientDTO.class)
-                .block();
+                .block());
     }
 
     @Override
-    public List<CatClientDTO> getFriendsById(long id) {
-        return webClient
+    public Optional<List<CatClientDTO>> getFriendsById(Long id) {
+        return Optional.ofNullable(webClient
                 .get()
                 .uri("cat/%d/friends".formatted(id))
                 .retrieve()
                 .bodyToMono(List.class)
-                .block();
+                .block());
 
     }
 
 
     @Override
-    public List<CatClientDTO> getCatsByColorOrBreedAndOwnerId(Color color, Breed breed, long ownerId){
+    public Optional<List<CatClientDTO>> getCatsByColorOrBreedAndOwnerId(Color color, Breed breed, Long ownerId){
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.put("color", List.of(color.toString()));
         params.put("breed", List.of(breed.toString()));
         params.put("ownerId", List.of(String.valueOf(ownerId)));
 
-        return webClient
+        return Optional.ofNullable(webClient
                 .get()
                 .uri(it -> it.path("/cat").queryParams(params).build())
                 .retrieve()
                 .bodyToMono(List.class)
-                .block();
+                .block());
     }
 
     @Override
-    public List<CatClientDTO> getAllCatsByOwnerId(long ownerId) {
-        return webClient
+    public Optional<List<CatClientDTO>> getAllCatsByOwnerId(Long ownerId) {
+        return Optional.ofNullable(webClient
                 .get()
                 .uri("/cat/%d".formatted(ownerId))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<CatClientDTO>>() {
                 })
-                .block();
+                .block());
     }
 
 }

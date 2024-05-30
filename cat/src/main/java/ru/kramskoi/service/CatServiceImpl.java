@@ -11,6 +11,7 @@ import ru.kramskoi.mapper.CatMapper;
 import ru.kramskoi.repository.CatRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @EnableRabbit
@@ -36,12 +37,9 @@ public class CatServiceImpl implements CatService {
 
     @Override
     public CatClientDTO findCatByID(Long id) {
-        Cat cat;
-        try {
-            cat = catRepository.findById(id).orElseThrow(CatNotFound::new);
-        } catch (CatNotFound e) {
-            throw new CatNotFound();
-        }
+        Cat cat =  catRepository.findById(id)
+                .orElseThrow(CatNotFound::new);
+
         return new CatClientDTO(
                 cat.getId(),
                 cat.getName(),

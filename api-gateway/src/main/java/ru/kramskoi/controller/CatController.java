@@ -5,7 +5,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import ru.kramskoi.dto.Breed;
 import ru.kramskoi.dto.CatDTO;
 import ru.kramskoi.dto.Color;
@@ -31,19 +30,15 @@ public class CatController {
     @ResponseStatus(HttpStatus.OK)
     public CatDTO getCatById(@PathVariable("id") Long id, Principal principal) {
         CatDTO cat;
-        try{
-            cat = catGatewayService.getCat(id, principal);
-        } catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+        cat = catGatewayService.getCat(id, principal);
         return cat;
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<CatDTO> getCatsByColorOrBreed(
-            @RequestParam(value = "color", required = false) Color color,
-            @RequestParam(value = "breed", required = false) Breed breed,
+            @PathVariable(value = "color", required = false) Color color,
+            @PathVariable(value = "breed", required = false) Breed breed,
             @RequestParam(value = "ownerID", required = false) Long ownerID,
             Principal principal) {
         return catGatewayService.getCatsByColorOrBreed(color, breed, ownerID, principal)

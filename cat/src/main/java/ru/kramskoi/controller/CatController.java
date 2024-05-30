@@ -1,6 +1,7 @@
 package ru.kramskoi.controller;
 
 
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +9,7 @@ import ru.kramskoi.dto.Breed;
 import ru.kramskoi.dto.CatClientDTO;
 import ru.kramskoi.dto.Color;
 import ru.kramskoi.entity.Cat;
+import ru.kramskoi.exception.CatNotFound;
 import ru.kramskoi.service.CatService;
 
 import java.util.List;
@@ -26,15 +28,21 @@ public class CatController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public CatClientDTO getCatById(@PathVariable("id") Long id) {
-        CatClientDTO cat = catService.findCatByID(id);
+        CatClientDTO cat;
+        try {
+            cat = catService.findCatByID(id);
+        } catch (CatNotFound e) {
+           throw new CatNotFound();
+        }
+
         return cat;
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<CatClientDTO> getCatsByColorOrBreed(
-            @PathVariable("color") Color color,
-            @PathVariable("breed") Breed breed) {
+            @RequestParam("color") Color color,
+            @RequestParam("breed") Breed breed) {
         return catService.getCatsByColorOrBreed(color, breed);
     }
 
