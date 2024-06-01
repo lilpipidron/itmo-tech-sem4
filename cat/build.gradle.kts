@@ -15,6 +15,12 @@ java {
     }
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(20)
+    }
+}
+
 dependencies {
     implementation(project(":domain"))
     implementation(project(":cat:cat-core"))
