@@ -5,7 +5,6 @@ import ru.kramskoi.dto.CatClientDTO;
 import ru.kramskoi.dto.Color;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CatClient {
     CatClientDTO getCatById(Long id);

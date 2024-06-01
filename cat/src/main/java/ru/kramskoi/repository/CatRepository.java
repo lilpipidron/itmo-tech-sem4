@@ -7,7 +7,6 @@ import ru.kramskoi.dto.Color;
 import ru.kramskoi.entity.Cat;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Repository

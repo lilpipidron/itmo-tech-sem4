@@ -1,14 +1,12 @@
 package ru.kramskoi.controller;
 
 
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.kramskoi.dto.Breed;
 import ru.kramskoi.dto.CatClientDTO;
 import ru.kramskoi.dto.Color;
-import ru.kramskoi.entity.Cat;
 import ru.kramskoi.exception.CatNotFound;
 import ru.kramskoi.service.CatService;
 

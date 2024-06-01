@@ -11,7 +11,6 @@ import ru.kramskoi.mapper.CatMapper;
 import ru.kramskoi.repository.CatRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @EnableRabbit
