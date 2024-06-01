@@ -7,14 +7,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
-
 @Configuration
-public class CatWebClientConf {
-    @Value("${baseurl}")
+public class OwnerWebClientConf {
+    @Value("${baseUrlOwner}")
     private String baseUrl;
 
+
     @Bean
-    public WebClient catWebClient() {
+    public WebClient ownerWebClient() {
         return WebClient.builder()
                 .baseUrl(baseUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
