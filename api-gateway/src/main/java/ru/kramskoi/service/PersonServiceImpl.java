@@ -13,13 +13,11 @@ import java.security.Principal;
 
 @Service
 public class PersonServiceImpl implements PersonService {
-    private PersonRepository personRepository;
-    private OwnerRepository ownerRepository;
-    private BCryptPasswordEncoder passwordEncoder;
+    private final PersonRepository personRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public PersonServiceImpl(PersonRepository repository, OwnerRepository ownerRepository) {
+    public PersonServiceImpl(PersonRepository repository) {
         this.personRepository = repository;
-        this.ownerRepository = ownerRepository;
         passwordEncoder = new BCryptPasswordEncoder();
     }
 
@@ -38,10 +36,7 @@ public class PersonServiceImpl implements PersonService {
     @Transactional
     public void addOwner(Principal principal, OwnerDTO ownerDTO) {
         Person person = getPersonByUsername(principal.getName());
-        Owner owner = ownerRepository.findById(ownerDTO.getId()).get();
-        owner.setPersonID(person.getId());
-        person.setOwnerID(owner.getId());
-        ownerRepository.save(owner);
+        person.setOwnerID(ownerDTO.getId());
         personRepository.save(person);
     }
 }

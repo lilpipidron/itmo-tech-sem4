@@ -7,4 +7,5 @@ import ru.kramskoi.entity.Owner;
 @Repository
 
 public interface OwnerRepository extends JpaRepository<Owner, Long> {
+    Owner findOwnerById(Long id);
 }

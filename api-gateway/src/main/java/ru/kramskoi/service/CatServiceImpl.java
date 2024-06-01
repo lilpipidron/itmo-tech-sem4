@@ -1,5 +1,6 @@
 package ru.kramskoi.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import ru.kramskoi.config.CatClient;
@@ -13,16 +14,11 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-public class CatGatewayServiceImpl implements CatGatewayService {
+@RequiredArgsConstructor
+public class CatServiceImpl implements CatGatewayService {
     private final RabbitTemplate rabbitTemplate;
     private final CatClient catClient;
     private final PersonRepository personRepository;
-
-    public CatGatewayServiceImpl(RabbitTemplate rabbitTemplate, CatClient catClient, PersonRepository personRepository) {
-        this.rabbitTemplate = rabbitTemplate;
-        this.catClient = catClient;
-        this.personRepository = personRepository;
-    }
 
     @Override
     public void addCat(CatDTO catDTO, Principal principal) {
@@ -62,7 +58,7 @@ public class CatGatewayServiceImpl implements CatGatewayService {
     @Override
     public CatDTO getCat(Long id, Principal principal) {
         Person person = personRepository.findByUsername(principal.getName());
-        CatClientDTO cat = catClient.getCatById(id).orElseThrow(CatNotFound::new);
+        CatClientDTO cat = catClient.getCatById(id);
         if (cat == null ||
                 !Objects.equals(cat.getOwnerId(), person.getOwnerID())
                         && !Objects.equals(person.getRoles(), "ADMIN")) {
@@ -88,7 +84,7 @@ public class CatGatewayServiceImpl implements CatGatewayService {
     @Override
     public List<CatClientDTO> getFriends(Long id, Principal principal) {
         getCat(id, principal);
-        List<CatClientDTO> friends = catClient.getFriendsById(id).get();
+        List<CatClientDTO> friends = catClient.getFriendsById(id);
         if (friends == null) {
             throw new CatNotFound();
         }
@@ -103,7 +99,7 @@ public class CatGatewayServiceImpl implements CatGatewayService {
             throw new CatNotFound();
         }
 
-        List<CatClientDTO> cats = catClient.getAllCatsByOwnerId(id).get();
+        List<CatClientDTO> cats = catClient.getAllCatsByOwnerId(id);
         if (cats == null) {
             throw new CatNotFound();
         }
@@ -118,7 +114,7 @@ public class CatGatewayServiceImpl implements CatGatewayService {
             throw new CatNotFound();
         }
 
-        List<CatClientDTO> cats =  catClient.getCatsByColorOrBreedAndOwnerId(color, breed, ownerID).get();
+        List<CatClientDTO> cats =  catClient.getCatsByColorOrBreedAndOwnerId(color, breed, ownerID);
         if (cats == null) {
             throw new CatNotFound();
         }

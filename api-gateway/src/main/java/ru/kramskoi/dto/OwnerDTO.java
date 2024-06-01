@@ -25,6 +25,6 @@ public class OwnerDTO {
     private Date birthday;
 
     @NotNull
-    private Long personId;
+    private Long personID;
 
 }

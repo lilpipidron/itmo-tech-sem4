@@ -5,14 +5,12 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.kramskoi.dto.Breed;
-import ru.kramskoi.dto.CatDTO;
-import ru.kramskoi.dto.Color;
-import ru.kramskoi.dto.FriendMessage;
+import ru.kramskoi.dto.*;
 import ru.kramskoi.mapper.CatMapperGateway;
 import ru.kramskoi.service.CatGatewayService;
 
 import java.security.Principal;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @RestController
@@ -29,41 +27,30 @@ public class CatController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public CatDTO getCatById(@PathVariable("id") Long id, Principal principal) {
-        CatDTO cat;
-        cat = catGatewayService.getCat(id, principal);
-        return cat;
+        return  catGatewayService.getCat(id, principal);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<CatDTO> getCatsByColorOrBreed(
-            @PathVariable(value = "color", required = false) Color color,
-            @PathVariable(value = "breed", required = false) Breed breed,
+    public List<CatClientDTO> getCatsByColorOrBreed(
+            @RequestParam(value = "color", required = false) Color color,
+            @RequestParam(value = "breed", required = false) Breed breed,
             @RequestParam(value = "ownerID", required = false) Long ownerID,
             Principal principal) {
-        return catGatewayService.getCatsByColorOrBreed(color, breed, ownerID, principal)
-                .stream()
-                .map(CatMapperGateway::fromCatClientDTOToCatDTO)
-                .toList();
+        return catGatewayService.getCatsByColorOrBreed(color, breed, ownerID, principal);
     }
 
 
     @GetMapping("/{id}/friends")
     @ResponseStatus(HttpStatus.OK)
-    public List<CatDTO> getFriendsById(@PathVariable("id") Long id, Principal principal) {
-        return catGatewayService.getFriends(id, principal)
-                .stream()
-                .map(CatMapperGateway::fromCatClientDTOToCatDTO)
-                .toList();
+    public List<CatClientDTO> getFriendsById(@PathVariable("id") Long id, Principal principal) {
+        return catGatewayService.getFriends(id, principal);
     }
 
     @GetMapping("/owner/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public List<CatDTO> getAllCatsByOwnerId(@PathVariable("id") Long id, Principal principal) {
-        return catGatewayService.getAllCatsByOwnerId(id, principal)
-                .stream()
-                .map(CatMapperGateway::fromCatClientDTOToCatDTO)
-                .toList();
+    public List<CatClientDTO> getAllCatsByOwnerId(@PathVariable("id") Long id, Principal principal) {
+        return catGatewayService.getAllCatsByOwnerId(id, principal);
     }
 
     @PutMapping("/{id}")

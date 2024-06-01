@@ -1,5 +1,6 @@
 package ru.kramskoi.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import ru.kramskoi.config.OwnerClient;
@@ -13,21 +14,17 @@ import java.security.Principal;
 import java.util.Objects;
 
 @Service
-public class OwnerGatewayServiceImpl implements OwnerGatewayService {
+@RequiredArgsConstructor
+public class OwnerServiceImpl implements OwnerGatewayService {
     private final RabbitTemplate rabbitTemplate;
     private final OwnerClient ownerClient;
     private final PersonRepository personRepository;
 
-    public OwnerGatewayServiceImpl(RabbitTemplate rabbitTemplate, OwnerClient ownerClient, PersonRepository personRepository) {
-        this.rabbitTemplate = rabbitTemplate;
-        this.ownerClient = ownerClient;
-        this.personRepository = personRepository;
-    }
-
     @Override
-    public void addOwner(OwnerMessage owner, Principal principal) {
+    public Long addOwner(OwnerDTO owner, Principal principal) {
         owner.setPersonID(personRepository.findByUsername(principal.getName()).getId());
         rabbitTemplate.convertAndSend("QueueOwnerAdd", owner);
+        return owner.getId();
     }
 
     @Override
