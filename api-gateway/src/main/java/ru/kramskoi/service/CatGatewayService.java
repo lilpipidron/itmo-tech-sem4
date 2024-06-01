@@ -1,6 +1,9 @@
 package ru.kramskoi.service;
 
-import ru.kramskoi.dto.*;
+import ru.kramskoi.dto.FriendMessage;
+import ru.kramskoi.models.Breed;
+import ru.kramskoi.models.CatDTO;
+import ru.kramskoi.models.Color;
 
 import java.security.Principal;
 import java.util.List;
@@ -16,9 +19,9 @@ public interface CatGatewayService {
 
     void addFriend(FriendMessage friendMessage, Principal principal);
 
-    List<CatClientDTO> getFriends(Long id, Principal principal);
+    List<CatDTO> getFriends(Long id, Principal principal);
 
-    List<CatClientDTO> getAllCatsByOwnerId(Long id, Principal principal);
+    List<CatDTO> getAllCatsByOwnerId(Long id, Principal principal);
 
-    List<CatClientDTO> getCatsByColorOrBreed(Color color, Breed breed, Long ownerID, Principal principal);
+    List<CatDTO> getCatsByColorOrBreed(Color color, Breed breed, Long ownerID, Principal principal);
 }

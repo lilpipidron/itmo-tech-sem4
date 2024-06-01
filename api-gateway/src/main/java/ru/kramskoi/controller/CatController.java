@@ -5,7 +5,10 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.kramskoi.dto.*;
+import ru.kramskoi.dto.FriendMessage;
+import ru.kramskoi.models.Breed;
+import ru.kramskoi.models.CatDTO;
+import ru.kramskoi.models.Color;
 import ru.kramskoi.service.CatGatewayService;
 
 import java.security.Principal;
@@ -30,7 +33,7 @@ public class CatController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<CatClientDTO> getCatsByColorOrBreed(
+    public List<CatDTO> getCatsByColorOrBreed(
             @RequestParam(value = "color", required = false) Color color,
             @RequestParam(value = "breed", required = false) Breed breed,
             @RequestParam(value = "ownerID", required = false) Long ownerID,
@@ -41,13 +44,13 @@ public class CatController {
 
     @GetMapping("/{id}/friends")
     @ResponseStatus(HttpStatus.OK)
-    public List<CatClientDTO> getFriendsById(@PathVariable("id") Long id, Principal principal) {
+    public List<CatDTO> getFriendsById(@PathVariable("id") Long id, Principal principal) {
         return catGatewayService.getFriends(id, principal);
     }
 
     @GetMapping("/owner/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public List<CatClientDTO> getAllCatsByOwnerId(@PathVariable("id") Long id, Principal principal) {
+    public List<CatDTO> getAllCatsByOwnerId(@PathVariable("id") Long id, Principal principal) {
         return catGatewayService.getAllCatsByOwnerId(id, principal);
     }
 

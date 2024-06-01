@@ -3,8 +3,8 @@ package ru.kramskoi.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
-import ru.kramskoi.dto.Breed;
-import ru.kramskoi.dto.Color;
+import ru.kramskoi.models.Breed;
+import ru.kramskoi.models.Color;
 
 import java.sql.Date;
 import java.util.ArrayList;

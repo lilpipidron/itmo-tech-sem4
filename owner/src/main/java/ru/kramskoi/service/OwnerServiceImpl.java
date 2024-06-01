@@ -1,10 +1,9 @@
 package ru.kramskoi.service;
 
 import org.springframework.stereotype.Service;
-import ru.kramskoi.dto.OwnerClientDTO;
-import ru.kramskoi.dto.OwnerMessage;
 import ru.kramskoi.entity.Owner;
 import ru.kramskoi.exception.OwnerNotFound;
+import ru.kramskoi.models.OwnerDTO;
 import ru.kramskoi.repository.OwnerRepository;
 
 
@@ -18,7 +17,7 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public Long addOwner(OwnerMessage owner) {
+    public Long addOwner(OwnerDTO owner) {
         return ownerRepository.save(
                 new Owner(
                         owner.getName(),
@@ -29,9 +28,9 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public OwnerClientDTO getOwnerByID(Long id) {
+    public OwnerDTO getOwnerByID(Long id) {
         Owner owner = ownerRepository.findById(id).orElseThrow(OwnerNotFound::new);
-        return new OwnerClientDTO(
+        return new OwnerDTO(
                 owner.getId(),
                 owner.getName(),
                 owner.getBirthday(),
@@ -40,7 +39,7 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public void updateOwner(OwnerMessage owner) {
+    public void updateOwner(OwnerDTO owner) {
         Owner own = ownerRepository.findById(owner.getId()).orElseThrow(OwnerNotFound::new);
 
         own.setName(owner.getName());

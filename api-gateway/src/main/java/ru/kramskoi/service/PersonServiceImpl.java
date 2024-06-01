@@ -3,8 +3,8 @@ package ru.kramskoi.service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kramskoi.dto.OwnerDTO;
 import ru.kramskoi.entity.Person;
+import ru.kramskoi.models.OwnerDTO;
 import ru.kramskoi.repository.PersonRepository;
 
 import java.security.Principal;

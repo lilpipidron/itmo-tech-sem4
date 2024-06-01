@@ -17,8 +17,6 @@ java {
 
 dependencies {
     implementation(project(":api-gateway"))
-    implementation(project(":cat-client"))
-    implementation(project(":owner-client"))
     implementation(project(":owner"))
     implementation(project(":cat"))
     implementation(project(":domain"))

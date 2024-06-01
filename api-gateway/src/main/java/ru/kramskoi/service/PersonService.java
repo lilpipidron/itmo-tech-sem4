@@ -1,7 +1,7 @@
 package ru.kramskoi.service;
 
-import ru.kramskoi.dto.OwnerDTO;
 import ru.kramskoi.entity.Person;
+import ru.kramskoi.models.OwnerDTO;
 
 import java.security.Principal;
 

@@ -1,14 +1,13 @@
 package ru.kramskoi.service;
 
-import ru.kramskoi.dto.OwnerClientDTO;
-import ru.kramskoi.dto.OwnerMessage;
+import ru.kramskoi.models.OwnerDTO;
 
 public interface OwnerService {
-    Long addOwner(OwnerMessage owner);
+    Long addOwner(OwnerDTO owner);
 
-    OwnerClientDTO getOwnerByID(Long id);
+    OwnerDTO getOwnerByID(Long id);
 
-    void updateOwner(OwnerMessage owner);
+    void updateOwner(OwnerDTO owner);
 
     void deleteOwner(Long id);
 }

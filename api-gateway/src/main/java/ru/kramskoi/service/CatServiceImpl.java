@@ -4,9 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import ru.kramskoi.config.CatClient;
-import ru.kramskoi.dto.*;
+import ru.kramskoi.dto.FriendMessage;
 import ru.kramskoi.entity.Person;
 import ru.kramskoi.exception.CatNotFound;
+import ru.kramskoi.models.Breed;
+import ru.kramskoi.models.CatDTO;
+import ru.kramskoi.models.Color;
 import ru.kramskoi.repository.PersonRepository;
 
 import java.security.Principal;
@@ -22,7 +25,7 @@ public class CatServiceImpl implements CatGatewayService {
 
     @Override
     public void addCat(CatDTO catDTO, Principal principal) {
-        CatMessage catMessage = new CatMessage(
+        CatDTO catMessage = new CatDTO(
                 catDTO.getId(),
                 catDTO.getName(),
                 catDTO.getBirthday(),
@@ -43,7 +46,7 @@ public class CatServiceImpl implements CatGatewayService {
     @Override
     public void updateCat(CatDTO catDTO, Principal principal) {
         getCat(catDTO.getId(), principal);
-        CatMessage message = new CatMessage(
+        CatDTO message = new CatDTO(
                 catDTO.getId(),
                 catDTO.getName(),
                 catDTO.getBirthday(),
@@ -58,7 +61,7 @@ public class CatServiceImpl implements CatGatewayService {
     @Override
     public CatDTO getCat(Long id, Principal principal) {
         Person person = personRepository.findByUsername(principal.getName());
-        CatClientDTO cat = catClient.getCatById(id);
+        CatDTO cat = catClient.getCatById(id);
         if (cat == null ||
                 !Objects.equals(cat.getOwnerId(), person.getOwnerID())
                         && !Objects.equals(person.getRoles(), "ADMIN")) {
@@ -82,9 +85,9 @@ public class CatServiceImpl implements CatGatewayService {
     }
 
     @Override
-    public List<CatClientDTO> getFriends(Long id, Principal principal) {
+    public List<CatDTO> getFriends(Long id, Principal principal) {
         getCat(id, principal);
-        List<CatClientDTO> friends = catClient.getFriendsById(id);
+        List<CatDTO> friends = catClient.getFriendsById(id);
         if (friends == null) {
             throw new CatNotFound();
         }
@@ -93,13 +96,13 @@ public class CatServiceImpl implements CatGatewayService {
     }
 
     @Override
-    public List<CatClientDTO> getAllCatsByOwnerId(Long id, Principal principal) {
+    public List<CatDTO> getAllCatsByOwnerId(Long id, Principal principal) {
         Person person = personRepository.findByUsername(principal.getName());
         if (!Objects.equals(person.getRoles(), "ADMIN") && !Objects.equals(person.getOwnerID(), id)) {
             throw new CatNotFound();
         }
 
-        List<CatClientDTO> cats = catClient.getAllCatsByOwnerId(id);
+        List<CatDTO> cats = catClient.getAllCatsByOwnerId(id);
         if (cats == null) {
             throw new CatNotFound();
         }
@@ -108,13 +111,13 @@ public class CatServiceImpl implements CatGatewayService {
     }
 
     @Override
-    public List<CatClientDTO> getCatsByColorOrBreed(Color color, Breed breed, Long ownerID, Principal principal) {
+    public List<CatDTO> getCatsByColorOrBreed(Color color, Breed breed, Long ownerID, Principal principal) {
         Person person = personRepository.findByUsername(principal.getName());
         if (!Objects.equals(person.getRoles(), "ADMIN") && !Objects.equals(person.getOwnerID(), ownerID)) {
             throw new CatNotFound();
         }
 
-        List<CatClientDTO> cats =  catClient.getCatsByColorOrBreedAndOwnerId(color, breed, ownerID);
+        List<CatDTO> cats =  catClient.getCatsByColorOrBreedAndOwnerId(color, breed, ownerID);
         if (cats == null) {
             throw new CatNotFound();
         }

@@ -4,10 +4,13 @@ import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kramskoi.dto.*;
+import ru.kramskoi.dto.FriendMessage;
 import ru.kramskoi.entity.Cat;
 import ru.kramskoi.exception.CatNotFound;
 import ru.kramskoi.mapper.CatMapper;
+import ru.kramskoi.models.Breed;
+import ru.kramskoi.models.CatDTO;
+import ru.kramskoi.models.Color;
 import ru.kramskoi.repository.CatRepository;
 
 import java.util.List;
@@ -24,7 +27,7 @@ public class CatServiceImpl implements CatService {
     @Override
     @Transactional
     @RabbitListener(queues = "QueueCatAdd")
-    public void addCat(CatMessage catMessage) {
+    public void addCat(CatDTO catMessage) {
         catRepository.save(
                 new Cat(catMessage.getName(),
                         catMessage.getBirthday(),
@@ -35,11 +38,11 @@ public class CatServiceImpl implements CatService {
     }
 
     @Override
-    public CatClientDTO findCatByID(Long id) {
+    public CatDTO findCatByID(Long id) {
         Cat cat =  catRepository.findById(id)
                 .orElseThrow(CatNotFound::new);
 
-        return new CatClientDTO(
+        return new CatDTO(
                 cat.getId(),
                 cat.getName(),
                 cat.getBirthday(),
@@ -50,7 +53,7 @@ public class CatServiceImpl implements CatService {
     }
 
     @Override
-    public List<CatClientDTO> getFriendsById(Long id) {
+    public List<CatDTO> getFriendsById(Long id) {
         Cat cat = catRepository.findById(id).orElseThrow(CatNotFound::new);
         return cat.getFriends()
                 .stream()
@@ -73,7 +76,7 @@ public class CatServiceImpl implements CatService {
     }
 
     @Override
-    public List<CatClientDTO> getAllCatsByOwnerId(Long id) {
+    public List<CatDTO> getAllCatsByOwnerId(Long id) {
         return catRepository.getCatsByOwnerID(id)
                 .stream()
                 .map(CatMapper::fromCatToDTOClient)
@@ -81,7 +84,7 @@ public class CatServiceImpl implements CatService {
     }
 
     @Override
-    public List<CatClientDTO> getCatsByColorOrBreed(Color color, Breed breed) {
+    public List<CatDTO> getCatsByColorOrBreed(Color color, Breed breed) {
         if (color == null && breed == null) {
             return null;
         }
@@ -109,7 +112,7 @@ public class CatServiceImpl implements CatService {
     @Override
     @Transactional
     @RabbitListener(queues = "QueueCatUpdate")
-    public void updateCat(CatMessage catMessage) {
+    public void updateCat(CatDTO catMessage) {
         Cat cat = catRepository.findById(catMessage.getId()).orElseThrow(CatNotFound::new);
 
         cat.setColor(catMessage.getColor());
@@ -122,7 +125,7 @@ public class CatServiceImpl implements CatService {
     @Override
     @Transactional
     @RabbitListener(queues = "QueueCatDelete")
-    public void deleteCat(CatMessage catMessage) {
+    public void deleteCat(CatDTO catMessage) {
         Cat cat = catRepository.findById(catMessage.getId()).orElseThrow(CatNotFound::new);
         catRepository.delete(cat);
     }

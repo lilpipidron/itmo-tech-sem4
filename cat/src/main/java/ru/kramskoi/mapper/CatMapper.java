@@ -1,22 +1,22 @@
 package ru.kramskoi.mapper;
 
 import lombok.experimental.UtilityClass;
-import ru.kramskoi.dto.CatClientDTO;
 import ru.kramskoi.entity.Cat;
+import ru.kramskoi.models.CatDTO;
 
 import java.util.ArrayList;
 
 @UtilityClass
 public class CatMapper {
 
-  public CatClientDTO fromCatToDTOClient(Cat cat) {
+  public CatDTO fromCatToDTOClient(Cat cat) {
     if (cat == null){
       return null;
     }
-    return new CatClientDTO(cat.getId(), cat.getName(), cat.getBirthday(), cat.getBreed(), cat.getColor(), cat.getOwnerID());
+    return new CatDTO(cat.getId(), cat.getName(), cat.getBirthday(), cat.getBreed(), cat.getColor(), cat.getOwnerID());
   }
 
-  public Cat fromDTOToCat(CatClientDTO catDTO) {
+  public Cat fromDTOToCat(CatDTO catDTO) {
     if (catDTO == null){
       return null;
     }

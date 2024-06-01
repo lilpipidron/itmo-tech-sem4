@@ -18,10 +18,10 @@ java {
 
 dependencies {
     implementation(project(":domain"))
-    implementation(project(":cat-client"))
-    implementation(project(":owner"))
-    implementation(project(":owner-client"))
     implementation(project(":cat"))
+    implementation(project(":cat:cat-core"))
+    implementation(project(":owner"))
+    implementation(project(":owner:owner-core"))
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")

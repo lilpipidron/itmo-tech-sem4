@@ -4,10 +4,10 @@ package ru.kramskoi.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.kramskoi.dto.Breed;
-import ru.kramskoi.dto.CatClientDTO;
-import ru.kramskoi.dto.Color;
 import ru.kramskoi.exception.CatNotFound;
+import ru.kramskoi.models.Breed;
+import ru.kramskoi.models.CatDTO;
+import ru.kramskoi.models.Color;
 import ru.kramskoi.service.CatService;
 
 import java.util.List;
@@ -25,8 +25,8 @@ public class CatController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public CatClientDTO getCatById(@PathVariable("id") Long id) {
-        CatClientDTO cat;
+    public CatDTO getCatById(@PathVariable("id") Long id) {
+        CatDTO cat;
         try {
             cat = catService.findCatByID(id);
         } catch (CatNotFound e) {
@@ -38,7 +38,7 @@ public class CatController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<CatClientDTO> getCatsByColorOrBreed(
+    public List<CatDTO> getCatsByColorOrBreed(
             @RequestParam("color") Color color,
             @RequestParam("breed") Breed breed) {
         return catService.getCatsByColorOrBreed(color, breed);
@@ -47,13 +47,13 @@ public class CatController {
 
     @GetMapping("/{id}/friends")
     @ResponseStatus(HttpStatus.OK)
-    public List<CatClientDTO> getFriendsById(@PathVariable("id") Long id) {
+    public List<CatDTO> getFriendsById(@PathVariable("id") Long id) {
         return catService.getFriendsById(id);
     }
 
     @GetMapping("/owner/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public List<CatClientDTO> getAllCatsByOwnerId(
+    public List<CatDTO> getAllCatsByOwnerId(
             @PathVariable("id") Long id) {
         return catService.getAllCatsByOwnerId(id);
     }

@@ -3,7 +3,7 @@ package ru.kramskoi.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.kramskoi.dto.OwnerClientDTO;
+import ru.kramskoi.models.OwnerDTO;
 import ru.kramskoi.service.OwnerService;
 
 @RestController
@@ -18,7 +18,7 @@ public class OwnerController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public OwnerClientDTO getOwnerById(@PathVariable("id") Long id) {
+    public OwnerDTO getOwnerById(@PathVariable("id") Long id) {
         return ownerService.getOwnerByID(id);
     }
 }
