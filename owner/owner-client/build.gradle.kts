@@ -16,7 +16,7 @@ java {
 }
 
 dependencies {
-    implementation(project(":cat:cat-core"))
+    implementation(project(":owner:owner-core"))
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
@@ -46,6 +46,7 @@ dependencies {
     implementation("org.hibernate.common:hibernate-commons-annotations:6.0.6.Final")
 
     implementation("org.slf4j:slf4j-api:2.0.6")
+
 }
 
 tasks.test {
