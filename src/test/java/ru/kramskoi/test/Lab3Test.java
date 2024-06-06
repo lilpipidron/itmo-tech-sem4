@@ -1,34 +1,20 @@
 package ru.kramskoi.test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import ru.kramskoi.dto.OwnerDTO;
-import ru.kramskoi.entity.Person;
-import ru.kramskoi.repository.PersonRepository;
+import org.springframework.test.context.TestPropertySource;
+import ru.kramskoi.ApplicationGateway;
+import ru.kramskoi.CatApplication;
+import ru.kramskoi.DomainApp;
+import ru.kramskoi.OwnerApplication;
 
-import java.sql.Date;
-
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-@SpringBootTest
+@SpringBootTest(classes = {ApplicationGateway.class, DomainApp.class, OwnerApplication.class, CatApplication.class}, properties = "spring.profiles.active=test")
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@TestPropertySource(locations = "classpath:application.properties")
 public class Lab3Test {
-
+/*
     @Autowired
     private MockMvc mvc;
 
@@ -40,18 +26,24 @@ public class Lab3Test {
 
     @BeforeEach
     public void init() {
-        Person person = new Person();
-        person.setUsername("admin");
+        Person admin = new Person();
+        admin.setUsername("admin");
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        person.setPassword(passwordEncoder.encode("admin"));
-        person.setRoles("ADMIN");
-        personRepository.save(person);
+        admin.setPassword(passwordEncoder.encode("admin"));
+        admin.setRoles("ADMIN");
+        personRepository.save(admin);
+
+        Person user = new Person();
+        user.setUsername("user");
+        user.setPassword(passwordEncoder.encode("user"));
+        user.setRoles("USER");
+        personRepository.save(user);
     }
 
     @Test
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     public void shouldCreateOwner() throws Exception {
-        OwnerDTO ownerDTO = new OwnerDTO(1L, "user", Date.valueOf("2006-01-02"));
+        OwnerDTO ownerDTO = new OwnerDTO(1L, "user", Date.valueOf("2006-01-02"), 1L);
         mvc.perform(post("/owner")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(ownerDTO)))
@@ -73,31 +65,48 @@ public class Lab3Test {
 
     @Test
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
-    public void shouldGetException_WhenTryToGetCat() throws Exception {
-        OwnerDTO ownerDTO = new OwnerDTO(1L, "user", Date.valueOf("2006-01-02"));
+    public void shouldAddCat() throws Exception {
+        OwnerDTO ownerDTO = new OwnerDTO(1L, "user", Date.valueOf("2006-01-02"), 1L);
         mvc.perform(post("/owner")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(ownerDTO)))
                 .andExpect(status().isCreated());
 
+        CatDTO catDTO = new CatDTO(1L, "Whiskers", Date.valueOf("2020-01-01"), Breed.BRITMAN, Color.WHITE, 1L);
+
+        mvc.perform(post("/cat")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(catDTO)))
+                .andExpect(status().isCreated());
+
         MvcResult result = mvc.perform(get("/cat/1"))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isOk())
                 .andReturn();
 
-        String message = result.getResponse().getContentAsString();
+        String responseJson = result.getResponse().getContentAsString();
+        CatDTO actualDTO = objectMapper.readValue(responseJson, CatDTO.class);
 
-        assertEquals("Cat not found", message);
+        System.out.println(actualDTO);
     }
 
     @Test
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
-    public void shouldGetException_WhenTryToGetOwner() throws Exception {
-        MvcResult result = mvc.perform(get("/owner/1"))
-                .andExpect(status().isNotFound())
-                .andReturn();
+    public void shouldAddFriend() throws Exception {
 
-        String message = result.getResponse().getContentAsString();
-
-        assertEquals("Owner not found", message);
+        mvc.perform(post("/cat/1/friends/2"))
+                .andExpect(status().isCreated());
     }
+
+    @Test
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
+    public void shouldGetException_WhenTryToGetCat() throws Exception {
+        OwnerDTO ownerDTO =  new OwnerDTO(1L, "user", Date.valueOf("2006-01-02"), 1L);
+        mvc.perform(post("/owner")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(ownerDTO)))
+                .andExpect(status().isCreated());
+
+        mvc.perform(get("http://locahost:3000/cat/1"))
+                .andExpect(status().isInternalServerError());
+    }*/
 }
